@@ -1,4 +1,3 @@
-require "prototypes.belt-sorter-old"
 
 -- Item
 local beltSorter = deepcopy(data.raw["item"]["wooden-chest"])
@@ -7,7 +6,7 @@ overwriteContent(beltSorter, {
 	order = "z[belt-sorter]",
 	subgroup = "inserter",
 	place_result = "belt-sorter-v2",
-	icon = "__hardCrafting__/graphics/icons/belt-sorter.png",
+	icon = "__beltSorter__/graphics/icons/belt-sorter.png",
 	fuel_value = "0MJ"
 })
 data:extend({	beltSorter })
@@ -29,7 +28,7 @@ data:extend({
 
 -- Helpers
 local noPicture = {
-	filename="__hardCrafting__/graphics/entity/empty.png",
+	filename="__beltSorter__/graphics/entity/empty.png",
 	width = 0,
 	height = 0,
 	shift = {0, 0}
@@ -39,17 +38,17 @@ local noPicture = {
 local beltSorter = deepcopy(data.raw["lamp"]["small-lamp"])
 overwriteContent(beltSorter, {
 	name = "belt-sorter-v2",
-	icon = "__hardCrafting__/graphics/icons/belt-sorter.png",
+	icon = "__beltSorter__/graphics/icons/belt-sorter.png",
 	energy_usage_per_tick = "50KW",
 	light = {intensity = 0, size = 0},
 	picture_off = {
-		filename="__hardCrafting__/graphics/entity/belt-sorter-off.png",
+		filename="__beltSorter__/graphics/entity/belt-sorter-off.png",
 		width = 46,
 		height = 33,
 		shift = {0.3, 0}
 	},
 	picture_on = {
-		filename="__hardCrafting__/graphics/entity/belt-sorter-on-patch.png",
+		filename="__beltSorter__/graphics/entity/belt-sorter-on-patch.png",
 		width = 46,
 		height = 33,
 		shift = {0.3, 0}
@@ -73,16 +72,8 @@ overwriteContent(beltSorterLamp, {
 	light = {intensity = 0, size = 0},
 	flags = {"placeable-off-grid", "not-repairable", "not-on-map"},
 	picture_off= noPicture,
-	--[[
-	{
-		filename="__hardCrafting__/graphics/entity/belt-sorter-off.png",
-		width = 46,
-		height = 33,
-		shift = {0.3, 0}
-	},
-	]]--
 	picture_on= {
-		filename="__hardCrafting__/graphics/entity/belt-sorter-on-patch.png",
+		filename="__beltSorter__/graphics/entity/belt-sorter-on-patch.png",
 		width = 46,
 		height = 33,
 		shift = {0.3, 0}
@@ -96,7 +87,7 @@ data:extend({
 	{
 		type = "technology",
 		name = "belt-sorter",
-		icon = "__hardCrafting__/graphics/technology/belt-sorter.png",
+		icon = "__beltSorter__/graphics/technology/belt-sorter.png",
 		icon_size = 128,
 		prerequisites = {"circuit-network","advanced-electronics" },
 		effects = {},

@@ -1,7 +1,7 @@
 
-modVersion = "0.4.0"
-modName = "hc" -- required prefix for all ui name components which can be clicked
-fullModName = "hardCrafting" -- required for logging and prototypes
+modVersion = "0.2.0"
+modName = "beltSorter" -- required prefix for all ui name components which can be clicked
+fullModName = "beltSorter" -- required for logging and prototypes
 
 
 local testing = true

@@ -14,7 +14,9 @@ gui = {} -- [$entityName] = { open = $function(player,entity),
 --                            close = $function(player),
 --                            click = $function(nameArr, player, entity) }
 
--- gui_scheduleEvent($uiComponentIdentifier,$player)
+-- Required Calls from control.lua:
+-- gui_tick()
+-- gui_init()
 
 --------------------------------------------------
 -- Global data
@@ -42,6 +44,11 @@ local function handleEvent(uiComponentIdentifier,player)
 				local entity = global.gui.playerData[player.name].openEntity
 				gui[entityName].click(guiEvent,player,entity)
 			end
+		elseif entityName == nil then
+			warn("No entityName found for player "..player.name)
+			warn(global.gui.playerData[player.name])
+		else
+			warn("No gui registered for "..entityName)
 		end
 		return true
 	else

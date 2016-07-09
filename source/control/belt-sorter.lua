@@ -41,20 +41,20 @@ beltSorter.build = function(entity)
 	scheduleAdd(entity, TICK_ASAP)
 
 	local pos = {x = entity.position.x, y=entity.position.y}
-	local lamp = entity.surface.create_entity({name="belt-sorter-lamp",position=pos,force=entity.force})
-	lamp.operable = false
-	lamp.minable = false
-	lamp.destructible = false
-	lamp.set_circuit_condition(defines.circuitconditionindex.lamp,
-		{condition={comparator="=",
-			first_signal={type="item", name="iron-plate"},
-			second_signal={type="item", name="iron-plate"}}
-		})
+--	local lamp = entity.surface.create_entity({name="belt-sorter-lamp",position=pos,force=entity.force})
+--	lamp.operable = false
+--	lamp.minable = false
+--	lamp.destructible = false
+--	lamp.set_circuit_condition(defines.circuitconditionindex.lamp,
+--		{condition={comparator="=",
+--			first_signal={type="item", name="iron-plate"},
+--			second_signal={type="item", name="iron-plate"}}
+--		})
 
-	entity.connect_neighbour{wire=defines.circuitconnector.green,target_entity=lamp}
+--	entity.connect_neighbour{wire=defines.circuitconnector.green,target_entity=lamp}
 
 	return {
-		lamp = lamp,
+--		lamp = lamp,
 		filter = {}
 	}
 end
@@ -69,14 +69,14 @@ end
 
 gui["belt-sorter-v2"]={}
 gui["belt-sorter-v2"].open = function(player,entity)
-	local frame = player.gui.left.add{type="frame",name="beltSorterGui",direction="vertical",caption={"belt-sorter-title"}}
-	frame.add{type="table",name="table",colspan=5}
+	local frame = player.gui.left.add{type="frame",name="beltSorterGui",direction="vertical",caption={"belt-sorter-title"}}	
+	frame.add{type="table",name="table",colspan=5}	
 
 	local labels={"north","west","east","south"}
 	for i,label in pairs(labels) do
 		frame.table.add{type="label",name="title"..i,caption={"",{label},":"}}
 		for j=1,4 do
-			frame.table.add{type="checkbox",name="hc.slot."..i.."."..j,state=true,style="item-empty"}
+			frame.table.add{type="sprite-button",name="beltSorter.slot."..i.."."..j,style="slot_button_style",sprite=""}
 		end
 	end
 	frame.add{type="table",name="settings",colspan=2}
@@ -95,14 +95,14 @@ end
 gui["belt-sorter-v2"].click = function(nameArr,player,entity)
 	local fieldName = table.remove(nameArr,1)
 	if fieldName == "slot" then
-		local box = player.gui.left.beltSorterGui.table["hc.slot."..nameArr[1].."."..nameArr[2]]
-		if box.style.name == "item-empty" then
+		local box = player.gui.left.beltSorterGui.table["beltSorter.slot."..nameArr[1].."."..nameArr[2]]
+		if box.sprite == "" then
 			itemSelection_open(player,function(itemName)
-				box.style="item-"..itemName
+				box.sprite="item/"..itemName
 				beltSorterSetSlotFilter(entity,nameArr,itemName)
 			end)
 		else
-			box.style = "item-empty"
+			box.sprite = ""
 			beltSorterSetSlotFilter(entity,nameArr,nil)
 		end
 	elseif fieldName == "copy" then
@@ -126,11 +126,11 @@ function beltSorterRefreshGui(player,entity)
 	for row = 1,4 do
 		for slot = 1,4 do
 			local itemName = data.guiFilter[row.."."..slot]
-			local element = player.gui.left.beltSorterGui.table["hc.slot."..row.."."..slot]
+			local element = player.gui.left.beltSorterGui.table["beltSorter.slot."..row.."."..slot]
 			if itemName then
-				element.style = "item-"..itemName
+				element.sprite = "item/"..itemName
 			else
-				element.style = "item-empty"
+				element.sprite = ""
 			end
 		end
 	end
@@ -161,12 +161,12 @@ end
 ---------------------------------------------------
 
 beltSorter.tick = function(beltSorter,data)
-	if data.condition == nil or data.nextConditionUpdate == nil or data.nextConditionUpdate <= game.tick then
-		beltSorterUpdateCircuitCondition(beltSorter,data)
-		if data.condition == false then
-			return 60,nil
-		end
-	end
+--	if data.condition == nil or data.nextConditionUpdate == nil or data.nextConditionUpdate <= game.tick then
+--		beltSorterUpdateCircuitCondition(beltSorter,data)
+--		if data.condition == false then
+--			return 60,nil
+--		end
+--	end
 
 	local energyPercentage = math.min(beltSorter.energy,800) / 800
 	local nextUpdate

@@ -22,7 +22,7 @@ data:extend({
 })
 
 -- Entity
-local fastBeltSorter = deepcopy(data.raw.container["belt-sorter"])
+local fastBeltSorter = deepcopy(data.raw.lamp["belt-sorter"])
 fastBeltSorter.name = "fast-belt-sorter"
 fastBeltSorter.minable.result = "fast-belt-sorter"
 data:extend({fastBeltSorter})
@@ -32,7 +32,7 @@ data:extend({
   {
     type = "technology",
     name = "advanced-belt-sorter",
-    icon = "__hardCrafting__/graphics/technology/belt-sorter.png",
+    icon = "__beltSorter__/graphics/technology/belt-sorter.png",
 		icon_size = 128,
     prerequisites = {"belt-sorter" },
     effects = {},
