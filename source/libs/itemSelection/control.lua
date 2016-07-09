@@ -32,10 +32,10 @@ end
 
 local function checkBoxForItem(itemName)
 	return {
-		type = "checkbox",
+		type = "sprite-button",
 		name = "itemSelection.item."..itemName,
-		style = "item-"..itemName,
-		state = true   -- this is important, it makes our graphic, which is the "check mark", display
+		style="slot_button_style",
+		sprite="item/"..itemName
 	}
 end
 
@@ -66,7 +66,7 @@ local function rebuildItemList(player)
 	end
 	
 	local filter = frame.search["itemSelection.field"].text
-	frame.add{type="table",name="items",colspan=mainMaxEntries,style="table-no-border"}
+	frame.add{type="table",name="items",colspan=mainMaxEntries}
 	local index = 1
 	for name,prototype in pairs(game.item_prototypes) do
 		if filter == "" or string.find(name,filter) then
@@ -111,7 +111,7 @@ itemSelection_open = function(player,method)
 	if #playerData.recent > 0 then
 		frame.add{type="table",name="recent",colspan=2}
 		frame.recent.add{type="label",name="title",caption={"",{"recent"},":"}}
-		frame.recent.add{type="table",name="items",colspan=#playerData.recent,style="table-no-border"}
+		frame.recent.add{type="table",name="items",colspan=#playerData.recent}
 		for _,itemName in pairs(playerData.recent) do
 			frame.recent.items.add(checkBoxForItem(itemName))
 		end
