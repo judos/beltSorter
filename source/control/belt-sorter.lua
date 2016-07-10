@@ -111,11 +111,14 @@ gui["belt-sorter-v2"].click = function(nameArr,player,entity)
 		local box = player.gui.left.beltSorterGui.table["beltSorter.slot."..nameArr[1].."."..nameArr[2]]
 		if box.sprite == "" then
 			itemSelection_open(player,function(itemName)
-				box.sprite="item/"..itemName
+				local tip = game.item_prototypes[itemName].localised_name
+				box.sprite = "item/"..itemName
+				box.tooltip = tip
 				beltSorterSetSlotFilter(entity,nameArr,itemName)
 			end)
 		else
 			box.sprite = ""
+			box.tooltip = ""
 			beltSorterSetSlotFilter(entity,nameArr,nil)
 		end
 	elseif fieldName == "copy" then
@@ -140,10 +143,14 @@ function beltSorterRefreshGui(player,entity)
 		for slot = 1,4 do
 			local itemName = data.guiFilter[row.."."..slot]
 			local element = player.gui.left.beltSorterGui.table["beltSorter.slot."..row.."."..slot]
+			
 			if itemName then
+				local tip = game.item_prototypes[itemName].localised_name
 				element.sprite = "item/"..itemName
+				element.tooltip = tip
 			else
 				element.sprite = ""
+				element.tooltip = ""
 			end
 		end
 	end
