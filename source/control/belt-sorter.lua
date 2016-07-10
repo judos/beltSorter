@@ -63,6 +63,15 @@ beltSorter.remove = function(data)
 	data.lamp.destroy()
 end
 
+beltSorter.copy = function(source,srcData,target,targetData)
+	targetData.guiFilter = deepcopy(srcData.guiFilter)
+	beltSorterRebuildFilterFromGui(targetData)
+	local playerWithGuiOfTarget = gui_playersWithOpenGuiOf(target)
+	for _,player in pairs(playerWithGuiOfTarget) do
+		beltSorterRefreshGui(player,target)
+	end
+end
+
 ---------------------------------------------------
 -- gui actions
 ---------------------------------------------------

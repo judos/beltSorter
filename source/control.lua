@@ -10,8 +10,9 @@ require "control.belt-sorter"
 -- global data used:
 -- beltSorter.version = $version
 
-
--- Init --
+---------------------------------------------------
+-- Init
+---------------------------------------------------
 script.on_init(function()
 	if not global.beltSorter then global.beltSorter = {} end
 	local bs = global.beltSorter
@@ -28,6 +29,10 @@ script.on_configuration_changed(function()
 	info("Migrated to version "..bs.version)
 end)
 
+
+---------------------------------------------------
+-- Tick
+---------------------------------------------------
 script.on_event(defines.events.on_tick, function(event)
 	entities_tick()
 	gui_tick()
@@ -42,3 +47,4 @@ end)
 script.on_event(defines.events.on_robot_built_entity, function(event)
 	entities_build(event)
 end)
+
