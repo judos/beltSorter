@@ -31,11 +31,13 @@ local function initGuiForPlayerName(playerName)
 end
 
 local function checkBoxForItem(itemName)
+	local tip = game.item_prototypes[itemName].localised_name
 	return {
 		type = "sprite-button",
 		name = "itemSelection.item."..itemName,
-		style="slot_button_style",
-		sprite="item/"..itemName
+		style = "slot_button_style",
+		tooltip = tip,
+		sprite = "item/"..itemName
 	}
 end
 
@@ -50,7 +52,7 @@ local function selectItem(playerData,player,itemName)
 	if #playerData.recent > maxRecentEntries then
 		table.remove(playerData.recent,maxRecentEntries)
 	end
-	
+
 	if global.itemSelection[player.name].callback then
 		global.itemSelection[player.name].callback(itemName)
 		global.itemSelection[player.name].callback = nil
@@ -64,7 +66,7 @@ local function rebuildItemList(player)
 	if frame.items then
 		frame.items.destroy()
 	end
-	
+
 	local filter = frame.search["itemSelection.field"].text
 	frame.add{type="table",name="items",colspan=mainMaxEntries}
 	local index = 1
@@ -76,7 +78,7 @@ local function rebuildItemList(player)
 				warn("Error occured with item: "..name..". The style is missing probably because item was registered in data-final-fixes.lua instead of before. The item will not be displayed in the list.")
 				warn(err)
 			end
-			
+
 			index = index + 1
 			if index > mainMaxRows*mainMaxEntries then break end
 		end
@@ -116,7 +118,7 @@ itemSelection_open = function(player,method)
 			frame.recent.items.add(checkBoxForItem(itemName))
 		end
 	end
-	
+
 	frame.add{type="table",name="search",colspan=2}
 	frame.search.add{type="label",name="title",caption={"",{"search"},":"}}
 	frame.search.add{type="textfield",name="itemSelection.field"}
@@ -133,7 +135,7 @@ itemSelection_gui_event = function(guiEvent,player)
 	local fieldName = guiEvent[1]
 	local playerData = global.itemSelection[player.name]
 	if playerData == nil then return end
-	if playerData.callback == nil then return end 
+	if playerData.callback == nil then return end
 	if fieldName == "field" then
 		rebuildItemList(player)
 	elseif fieldName == "updateFilter" then
@@ -151,4 +153,5 @@ itemSelection_gui_event = function(guiEvent,player)
 		warn("Unknown fieldName for itemSelection_gui_event: "..tostring(fieldName))
 	end
 end
+
 
