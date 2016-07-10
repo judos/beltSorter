@@ -124,11 +124,6 @@ end
 --------------------------------------------------
 
 script.on_event(defines.events.on_gui_click, function(event)
-	if event.element.style and event.element.style.name then
-		if event.element.style.name:starts("item-") then
-			event.element.state = true
-		end
-	end
 	local player = game.players[event.player_index]
 	local uiComponentIdentifier = event.element.name
 	return handleEvent(uiComponentIdentifier,player)
