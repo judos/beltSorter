@@ -41,26 +41,30 @@ beltSorter.build = function(entity)
 	scheduleAdd(entity, TICK_ASAP)
 
 	local pos = {x = entity.position.x, y=entity.position.y}
---	local lamp = entity.surface.create_entity({name="belt-sorter-lamp",position=pos,force=entity.force})
---	lamp.operable = false
---	lamp.minable = false
---	lamp.destructible = false
---	lamp.set_circuit_condition(defines.circuitconditionindex.lamp,
---		{condition={comparator="=",
---			first_signal={type="item", name="iron-plate"},
---			second_signal={type="item", name="iron-plate"}}
---		})
-
---	entity.connect_neighbour{wire=defines.circuitconnector.green,target_entity=lamp}
+	
+	local lamp = entity.surface.create_entity({name="belt-sorter-lamp",position=pos,force=entity.force})
+	lamp.operable = false
+	lamp.minable = false
+	lamp.destructible = false
+	lamp.get_or_create_control_behavior().circuit_condition = {
+		condition = {
+			comparator = "=",
+			first_signal = {type="item", name="iron-plate"},
+			second_signal = {type="item", name="iron-plate"}
+		}
+	}
+	entity.connect_neighbour{wire=defines.wire_type.green,target_entity=lamp}
 
 	return {
---		lamp = lamp,
+		lamp = lamp,
 		filter = {}
 	}
 end
 
 beltSorter.remove = function(data)
-	data.lamp.destroy()
+	if data.lamp and data.lamp.valid then
+		data.lamp.destroy()
+	end
 end
 
 beltSorter.copy = function(source,srcData,target,targetData)
@@ -170,12 +174,12 @@ end
 ---------------------------------------------------
 
 beltSorter.tick = function(beltSorter,data)
---	if data.condition == nil or data.nextConditionUpdate == nil or data.nextConditionUpdate <= game.tick then
---		beltSorterUpdateCircuitCondition(beltSorter,data)
---		if data.condition == false then
---			return 60,nil
---		end
---	end
+	if data.condition == nil or data.nextConditionUpdate == nil or data.nextConditionUpdate <= game.tick then
+		beltSorterUpdateCircuitCondition(beltSorter,data)
+		if data.condition == false then
+			return 60,nil
+		end
+	end
 
 	local energyPercentage = math.min(beltSorter.energy,800) / 800
 	local nextUpdate
@@ -192,12 +196,25 @@ beltSorter.tick = function(beltSorter,data)
 end
 
 function beltSorterUpdateCircuitCondition(beltSorter,data)
-	local circuitCondition = beltSorter.get_circuit_condition(defines.circuitconditionindex.lamp)
-	if circuitCondition.condition.first_signal.name ~= nil then
-		data.condition = circuitCondition.fulfilled
+	-- check circuit
+	local behavior = beltSorter.get_or_create_control_behavior()
+	local conditionTable = behavior.circuit_condition
+	if conditionTable.condition.first_signal.name ~= nil then
+		data.condition = conditionTable.fulfilled
 	else
 		data.condition = true
 	end
+	
+	-- check logistic condition
+	if data.condition and behavior.connect_to_logistic_network then
+		conditionTable = behavior.logistic_condition
+		if conditionTable.condition.first_signal.name ~= nil then
+			data.condition = conditionTable.fulfilled
+		else
+			data.condition = true
+		end
+	end
+	
 	local lampCondition = {
 		condition = {
 			comparator= (data.condition and "=" or ">"),
@@ -205,7 +222,7 @@ function beltSorterUpdateCircuitCondition(beltSorter,data)
 			second_signal={type="item", name="iron-plate"}
 		}
 	}
-	data.lamp.set_circuit_condition(defines.circuitconditionindex.lamp,lampCondition)
+	data.lamp.get_control_behavior().circuit_condition = lampCondition
 	data.nextConditionUpdate = game.tick + 60
 end
 
