@@ -80,8 +80,8 @@ gui["belt-sorter-v2"].open = function(player,entity)
 		end
 	end
 	frame.add{type="table",name="settings",colspan=2}
-	frame.settings.add{type="button",name="hc.copy",caption={"copy"}}
-	frame.settings.add{type="button",name="hc.paste",caption={"paste"}}
+	frame.settings.add{type="button",name="beltSorter.copy",caption={"copy"}}
+	frame.settings.add{type="button",name="beltSorter.paste",caption={"paste"}}
 	beltSorterRefreshGui(player,entity)
 end
 
