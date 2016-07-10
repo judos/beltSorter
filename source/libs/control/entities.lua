@@ -13,7 +13,8 @@ require "libs.logging"
 -- Register custom entity build, tick or remove function:
 -- [$entityName] = { build = $function(entity):dataArr,
 --                   tick = $function(entity,data):(nextTick,reason),
---                   remove = $function(data) }
+--                   remove = $function(data),
+--                   copy = $function(source,srcData,target,targetData) }
 entities = {}
 
 -- Required calls in control:
@@ -36,6 +37,23 @@ function entities_init()
 	if global.schedule == nil then global.schedule = {} end
 	if global.entityData == nil then global.entityData = {} end
 end
+
+-- -------------------------------------------------
+-- Copying settings
+-- -------------------------------------------------
+
+script.on_event(defines.events.on_entity_settings_pasted, function(event)
+	local source = event.source
+	local target = event.destination
+	local name = source.name
+	if entities[name] ~= nil then
+		if entities[name].copy ~= nil then
+			local srcData = global.entityData[idOfEntity(source)]
+			local targetData = global.entityData[idOfEntity(target)]
+			entities[name].copy(source,srcData,target,targetData)
+		end
+	end
+end)
 
 -- -------------------------------------------------
 -- Updating Entities
