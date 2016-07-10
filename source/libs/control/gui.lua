@@ -18,6 +18,9 @@ gui = {} -- [$entityName] = { open = $function(player,entity),
 -- gui_tick()
 -- gui_init()
 
+-- Helper functions:
+-- gui_playersWithOpenGuiOf(entity) : {x:LuaPlayer, ...}
+
 --------------------------------------------------
 -- Global data
 --------------------------------------------------
@@ -130,3 +133,20 @@ script.on_event(defines.events.on_gui_click, function(event)
 	local uiComponentIdentifier = event.element.name
 	return handleEvent(uiComponentIdentifier,player)
 end)
+
+--------------------------------------------------
+-- Helper functions
+--------------------------------------------------
+
+function gui_playersWithOpenGuiOf(entity)
+	local result = {}
+	for _,player in pairs(game.players) do
+		if player.connected then
+			local openEntity = player.opened
+			if openEntity == entity then
+				table.insert(result,player)
+			end
+		end
+	end
+	return result
+end
