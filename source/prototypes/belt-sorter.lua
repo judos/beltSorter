@@ -18,9 +18,9 @@ data:extend({
 		name = "belt-sorter",
 		enabled = false,
 		ingredients = {
-			{"steel-chest", 1},
-			{"steel-plate", 10},
-			{"advanced-circuit", 10}
+			{"iron-chest", 1},
+			{"iron-plate", 10},
+			{"basic-circuit-board", 10}
 		},
 		result = "belt-sorter"
 	}
@@ -64,7 +64,7 @@ overwriteContent(beltSorterLamp, {
 	order = "zzz",
 	collision_box = {{0, 0}, {0, 0}},
 	selection_box = {{0, 0}, {0, 0}},
-	energy_usage_per_tick = "-1KW",
+	energy_usage_per_tick = "0W",
 	energy_source = {
 		type = "electric",
 		usage_priority = "secondary-output"
@@ -83,23 +83,5 @@ overwriteContent(beltSorterLamp, {
 data:extend({	beltSorterLamp })
 
 -- Technology
-data:extend({
-	{
-		type = "technology",
-		name = "belt-sorter",
-		icon = "__beltSorter__/graphics/technology/belt-sorter.png",
-		icon_size = 128,
-		prerequisites = {"circuit-network","advanced-electronics" },
-		effects = {},
-		unit = {
-			count = 50,
-			ingredients = {
-				{"science-pack-1", 3},
-			},
-			time = 15
-		},
-		order = "_belt-sorter"
-	}
-})
 
-addTechnologyUnlocksRecipe("belt-sorter","belt-sorter")
+addTechnologyUnlocksRecipe("logistics","belt-sorter")
