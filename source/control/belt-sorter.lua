@@ -279,7 +279,7 @@ function beltSorterSearchInputOutput(beltSorter,data)
 		local searchPos = searchPriority[rowIndex]
 		local searchPoint = { x = x + searchPos[1], y = y + searchPos[2] }
 		for _,searchType in pairs(BeltFactory.supportedTypes) do
-			local candidates = surface.find_entities_filtered{area = {searchPoint, searchPoint}, type= searchType}
+			local candidates = surface.find_entities_filtered{position = searchPoint, type= searchType}
 			for _,entity in pairs(candidates) do
 				local access = BeltFactory.accessFor(entity,searchPoint,beltSorter.position)
 				if access:isInput() then
