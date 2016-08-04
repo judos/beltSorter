@@ -43,15 +43,15 @@ overwriteContent(beltSorter, {
 	light = {intensity = 0, size = 0},
 	picture_off = {
 		filename="__beltSorter__/graphics/entity/belt-sorter-off.png",
-		width = 46,
-		height = 33,
-		shift = {0.3, 0}
+		width = 64,
+		height = 64,
+		shift = {0, 0}
 	},
 	picture_on = {
-		filename="__beltSorter__/graphics/entity/belt-sorter-on-patch.png",
-		width = 46,
-		height = 33,
-		shift = {0.3, 0}
+		filename="__beltSorter__/graphics/entity/belt-sorter-on.png",
+		width = 64,
+		height = 64,
+		shift = {0, 0}
 	}
 })
 beltSorter.minable.result = "belt-sorter"
@@ -74,10 +74,10 @@ overwriteContent(beltSorterLamp, {
 	flags = {"placeable-off-grid", "not-repairable", "not-on-map"},
 	picture_off= noPicture,
 	picture_on= {
-		filename="__beltSorter__/graphics/entity/belt-sorter-on-patch.png",
-		width = 46,
-		height = 33,
-		shift = {0.3, 0}
+		filename="__beltSorter__/graphics/entity/belt-sorter-on.png",
+		width = 64,
+		height = 64,
+		shift = {0, 0}
 	}
 })
 
