@@ -61,13 +61,14 @@ data:extend({	beltSorter })
 local beltSorterLamp = deepcopy(data.raw["lamp"]["small-lamp"])
 overwriteContent(beltSorterLamp, {
 	name = "belt-sorter-lamp",
+	icon = "__beltSorter__/graphics/icons/belt-sorter.png",
 	order = "zzz",
 	collision_box = {{0, 0}, {0, 0}},
 	selection_box = {{0, 0}, {0, 0}},
-	energy_usage_per_tick = "-1KW",
+	energy_usage_per_tick = "0.1J",
 	energy_source = {
 		type = "electric",
-		usage_priority = "secondary-output"
+		usage_priority = "primary-input"
 	},
 	light = {intensity = 0, size = 0},
 	flags = {"placeable-off-grid", "not-repairable", "not-on-map"},
