@@ -70,7 +70,7 @@ function entities_tick()
 	if global.schedule[TICK_ASAP] ~= nil then
 		if global.schedule[game.tick] == nil then global.schedule[game.tick] = {} end
 		for id,arr in pairs(global.schedule[TICK_ASAP]) do
-			info("scheduled entity "..id.." for now. "..serpent.block(arr))
+			info("scheduled entity "..id.." for now.")
 			global.schedule[game.tick][id] = arr
 		end
 		global.schedule[TICK_ASAP] = nil

@@ -51,3 +51,14 @@ script.on_event(defines.events.on_robot_built_entity, function(event)
 	entities_build(event)
 end)
 
+---------------------------------------------------
+-- Removing entities
+---------------------------------------------------
+script.on_event(defines.events.on_robot_pre_mined, function(event)
+	entities_pre_mined(event)
+end)
+
+script.on_event(defines.events.on_preplayer_mined_item, function(event)
+	entities_pre_mined(event)
+end)
+
