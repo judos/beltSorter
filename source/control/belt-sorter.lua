@@ -138,6 +138,11 @@ end
 
 function beltSorterRefreshGui(player,entity)
 	local data = global.entityData[idOfEntity(entity)]
+	if not data then
+		err("no data found for beltSorter "..idOfEntity(entity)..". Remove it and place it again!")
+		gui["belt-sorter-v2"].close(player)
+		return
+	end
 	if data.guiFilter == nil then return end
 	for row = 1,4 do
 		for slot = 1,4 do
@@ -181,6 +186,10 @@ end
 ---------------------------------------------------
 
 beltSorter.tick = function(beltSorter,data)
+	if not data then
+		err("Error occured with beltSorter: "..idOfEntity(beltSorter))
+		return 0,nil
+	end
 	if data.condition == nil or data.nextConditionUpdate == nil or data.nextConditionUpdate <= game.tick then
 		beltSorterUpdateCircuitCondition(beltSorter,data)
 		if data.condition == false then
