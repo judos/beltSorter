@@ -2,13 +2,14 @@ require "libs.entityId"
 require "libs.logging"
 
 -- --------------------------------
--- API V2
+-- API V3
 -- --------------------------------
 
 -- Data used:
 -- global.schedule[tick][idEntity] = { entity = $entity, [noTick = true] }
 -- global.entityData[idEntity] = { name=$name, ... }
 -- global.entities_cleanup_required = boolean(check and remove all old events)
+-- global entityDataVersion = 3
 
 -- Register custom entity build, tick or remove function:
 -- [$entityName] = { build = $function(entity):dataArr,
@@ -36,6 +37,11 @@ TICK_SOON = 1 --game.tick used in cleanup when entity should be schedule randoml
 function entities_init()
 	if global.schedule == nil then global.schedule = {} end
 	if global.entityData == nil then global.entityData = {} end
+	if not global.entityDataVersion then
+		entities_migration_V3()
+		global.entityDataVersion = 3
+	end
+	info("Migrated entity data to v3")
 end
 
 -- -------------------------------------------------
@@ -165,7 +171,7 @@ function entities_pre_mined(event)
 		local data = global.entityData[idOfEntity(entity)]
 		entities[name].premine(entity,data,game.players[event.player_index])
 	end
-	local checkEntity = scheduleAdd(entity,0)
+	local checkEntity = scheduleAdd(entity,TICK_ASAP)
 	checkEntity.noTick = true
 	checkEntity.clearSchedule = true
 end
@@ -235,6 +241,26 @@ end
 -- -------------------------------------------------
 -- Migration
 -- -------------------------------------------------
+
+function entities_migration_V3()
+	-- rebuild entityId:
+	-- global.schedule[tick][idEntity] = { entity = $entity, [noTick = true] }
+	-- global.entityData[idEntity] = { name=$name, ... }
+	local newSchedule = {}
+	local newEntityData = {}
+	for tick,scheduleList in pairs(global.schedule) do
+		newSchedule[tick] = {}
+		for oldId,scheduleEntry in pairs(scheduleList) do
+			local data = global.entityData[oldId]
+			local entity = scheduleEntry.entity
+			newSchedule[idOfEntity(entity)] = scheduleEntry
+			newEntityData[idOfEntity(entity)] = data
+		end
+	end
+	global.schedule = newSchedule
+	global.entityData = newEntityData
+end
+
 function entities_migration_V2()
 	for tick,arr in pairs(global.schedule) do
 		for id,entity in pairs(arr) do
