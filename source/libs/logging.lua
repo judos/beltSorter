@@ -19,6 +19,10 @@ function err(message)
 	if debug_level<=3 then _debug(message,"ERROR") end
 end
 
+function assert2(value,message)
+	assert(value,message.."\n"..debug.traceback())
+end
+
 function _debug(message,level)
 	if not level then level="ANY" end
 	if debug_master then
@@ -28,6 +32,9 @@ function _debug(message,level)
 		local str = level.." "..fullModName..": "..message
 		if stack_trace then
 			str = str.."\nIn:"..debug.traceback()
+		end
+		if level == "ERROR" then
+			PlayerPrint(str)
 		end
 		print(str)
 	end
