@@ -20,12 +20,15 @@ script.on_init(function()
 
 	entities_init()
 	gui_init()
-	info("global after init: "..serpent.block(global))
 end)
 
 script.on_configuration_changed(function()
 	local bs = global.beltSorter
-	info("Previous global data version: "..bs.version)
+	info("Previous beltSorter version: "..bs.version)
+	if bs.version < "0.2.2" then
+		entities_init() --does migration
+		bs.version = "0.2.2"
+	end
 	info("Migrated to version "..bs.version)
 end)
 
