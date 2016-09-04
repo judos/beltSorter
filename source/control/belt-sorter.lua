@@ -251,23 +251,33 @@ function beltSorterDistributeItems(beltSorter,data)
 			for itemName,_ in pairs(inputAccess:get_contents()) do
 				local sideList = data.filter[itemName]
 				if sideList then
-					for _,side in pairs(sideList) do
-						local outputAccess = data.output[side]
-						if outputAccess then
-							if not outputAccess:isValid() then
-								data.output[side] = nil
-							else
-								if outputAccess:can_insert_at_back() then
-									local itemStack = {name=itemName,count=1}
-									local result = inputAccess:remove_item(itemStack)
-									if result>0 then
-										outputAccess:insert_at_back(itemStack)
-									else
-										break -- check other items
-									end
-								end
-							end
-						end
+					distributeItemToSides(data,inputAccess,itemName,sideList)
+				else -- item can go nowhere, check rest filter
+					sideList = data.filter["belt-sorter-everythingelse"]
+					if sideList then
+						distributeItemToSides(data,inputAccess,itemName,sideList)
+					end
+				end
+			end
+		end
+	end
+end
+
+
+function distributeItemToSides(data,inputAccess,itemName,sideList)
+	for _,side in pairs(sideList) do
+		local outputAccess = data.output[side]
+		if outputAccess then
+			if not outputAccess:isValid() then
+				data.output[side] = nil
+			else
+				if outputAccess:can_insert_at_back() then
+					local itemStack = {name=itemName,count=1}
+					local result = inputAccess:remove_item(itemStack)
+					if result>0 then
+						outputAccess:insert_at_back(itemStack)
+					else
+						break -- check other items
 					end
 				end
 			end

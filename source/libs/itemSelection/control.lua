@@ -31,7 +31,8 @@ local function initGuiForPlayerName(playerName)
 end
 
 local function checkBoxForItem(itemName)
-	local tip = game.item_prototypes[itemName].localised_name
+	local item = game.item_prototypes[itemName]
+	local tip = item.localised_name
 	return {
 		type = "sprite-button",
 		name = "itemSelection.item."..itemName,
@@ -118,6 +119,11 @@ itemSelection_open = function(player,method)
 			frame.recent.items.add(checkBoxForItem(itemName))
 		end
 	end
+		
+	frame.add{type="table",name="special",colspan=2}
+	frame.special.add{type="label",name="title",caption={"",{"special"},":"}}
+	frame.special.add{type="table",name="items",colspan=1}
+	frame.special.items.add(checkBoxForItem("belt-sorter-everythingelse"))
 
 	frame.add{type="table",name="search",colspan=2}
 	frame.search.add{type="label",name="title",caption={"",{"search"},":"}}

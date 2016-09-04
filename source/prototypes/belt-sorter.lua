@@ -80,7 +80,6 @@ overwriteContent(beltSorterLamp, {
 		shift = {0, 0}
 	}
 })
-
 data:extend({	beltSorterLamp })
 
 -- Technology
