@@ -13,7 +13,7 @@ function entityOfId(id,searchName)
 	local position = split(id,"_")
 	local surfaceIndex = tonumber(position[1])
 	local point = {tonumber(position[2]),tonumber(position[3])}
-	local entities = surfaceForIndex(surfaceIndex).find_entities{point,point}
+	local entities = surfaceWithIndex(surfaceIndex).find_entities{point,point}
 	if entities == nil or #entities ==0 then
 		err("No entity found for id provided: "..id)
 		return nil
@@ -55,7 +55,7 @@ function entityOfId_v21(id,searchName)
 	end
 	local position = split(id,"_")
 	local point = {tonumber(position[1]),tonumber(position[2])}
-	local entities = game.surfaces.nauvis.find_entities{point,point}
+	local entities = game.surfaces.nauvis.find_entities_filtered{position=point}
 	if entities == nil or #entities ==0 then
 		err("No entity found for id provided: "..id)
 		return nil
