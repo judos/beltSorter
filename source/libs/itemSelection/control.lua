@@ -64,24 +64,26 @@ end
 
 local function rebuildItemList(player)
 	local frame = player.gui.left.itemSelection.main
-	if frame.items then
-		frame.items.destroy()
+	if frame.itemsScrollPane then
+		frame.itemsScrollPane.destroy()
 	end
 
+	local scroll = frame.add{type="scroll-pane", name="itemsScrollPane"}
+	--scroll.style.maximal_width=450  --Needed to produce horizontal scroll bars
+	scroll.style.maximal_height=180 --Needed to produce vertical scroll bars
+	scroll.horizontal_scroll_policy = "never"
+	scroll.vertical_scroll_policy = "auto"
+	local items = scroll.add{type="table",name="items",colspan=mainMaxEntries}
+	
 	local filter = frame.search["itemSelection.field"].text
-	frame.add{type="table",name="items",colspan=mainMaxEntries}
-	local index = 1
 	for name,prototype in pairs(game.item_prototypes) do
 		if not prototype.has_flag("hidden") and (filter == "" or string.find(name,filter)) then
 			local checkbox = checkBoxForItem(name)
-			local status, err = pcall(function() frame.items.add(checkbox) end)
+			local status, err = pcall(function() items.add(checkbox) end)
 			if not status then
 				warn("Error occured with item: "..name..". The style is missing probably because item was registered in data-final-fixes.lua instead of before. The item will not be displayed in the list.")
 				warn(err)
 			end
-
-			index = index + 1
-			if index > mainMaxRows*mainMaxEntries then break end
 		end
 	end
 end
@@ -119,7 +121,7 @@ itemSelection_open = function(player,method)
 			frame.recent.items.add(checkBoxForItem(itemName))
 		end
 	end
-		
+
 	frame.add{type="table",name="special",colspan=2}
 	frame.special.add{type="label",name="title",caption={"",{"special"},":"}}
 	frame.special.add{type="table",name="items",colspan=1}
@@ -159,5 +161,6 @@ itemSelection_gui_event = function(guiEvent,player)
 		warn("Unknown fieldName for itemSelection_gui_event: "..tostring(fieldName))
 	end
 end
+
 
 
