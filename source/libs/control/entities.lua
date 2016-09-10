@@ -253,7 +253,7 @@ function entities_migration_V3()
 		for oldId,scheduleEntry in pairs(scheduleList) do
 			local data = global.entityData[oldId]
 			local entity = scheduleEntry.entity
-			newSchedule[idOfEntity(entity)] = scheduleEntry
+			newSchedule[tick][idOfEntity(entity)] = scheduleEntry
 			newEntityData[idOfEntity(entity)] = data
 		end
 	end

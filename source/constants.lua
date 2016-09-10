@@ -1,5 +1,5 @@
 
-modVersion = "0.2.2"
+modVersion = "0.3.0"
 modName = "beltSorter" -- required prefix for all ui name components which can be clicked
 fullModName = "beltSorter" -- required for logging and prototypes
 
