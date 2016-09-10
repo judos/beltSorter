@@ -24,10 +24,14 @@ end)
 
 script.on_configuration_changed(function()
 	local bs = global.beltSorter
-	info("Previous beltSorter version: "..bs.version)
+	info("Previous version: "..bs.version)
 	if bs.version < "0.2.2" then
 		entities_init() --does migration
 		bs.version = "0.2.2"
+	end
+	if bs.version < "0.3.0" then
+		bs.version = "0.3.0"
+		entities_init() --does migration
 	end
 	info("Migrated to version "..bs.version)
 end)

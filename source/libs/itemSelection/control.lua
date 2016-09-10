@@ -72,7 +72,7 @@ local function rebuildItemList(player)
 	frame.add{type="table",name="items",colspan=mainMaxEntries}
 	local index = 1
 	for name,prototype in pairs(game.item_prototypes) do
-		if filter == "" or string.find(name,filter) then
+		if not prototype.has_flag("hidden") and (filter == "" or string.find(name,filter)) then
 			local checkbox = checkBoxForItem(name)
 			local status, err = pcall(function() frame.items.add(checkbox) end)
 			if not status then
