@@ -204,6 +204,7 @@ beltSorter.tick = function(beltSorter,data)
 	else
 		nextUpdate = math.floor(8 / energyPercentage)
 		beltSorterSearchInputOutput(beltSorter,data)
+		beltSorterUpdateBeltConnection(beltSorter,data)
 		beltSorterDistributeItems(beltSorter,data)
 		data.input = nil
 		data.output = nil
@@ -282,6 +283,30 @@ function distributeItemToSides(data,inputAccess,itemName,sideList)
 				end
 			end
 		end
+	end
+end
+
+function beltSorterUpdateBeltConnection(beltSorter,data)
+	if not data.outputBelts then data.outputBelts = {} end
+	if #data.outputBelts > 0 then
+		for _,belt in pairs(data.outputBelts) do
+			belt.destroy()
+		end
+		data.outputBelts = {}
+	end
+
+	for rowIndex, _ in pairs(data.output) do
+		info("Spawn belt for "..tostring(rowIndex))
+		local belt = beltSorter.surface.create_entity{
+			name = "beltSorter-connection-belt", 
+			direction = rowIndexToDirection[rowIndex], 
+			position = beltSorter.position, 
+			force = beltSorter.force,
+			particle = nil
+		}
+		belt.active = false
+		info("spawned enttiy: "..tostring(belt))
+		table.insert(data.outputBelts,belt)
 	end
 end
 
