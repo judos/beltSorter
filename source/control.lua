@@ -6,6 +6,7 @@ require "libs.control.controlFunctions"
 require "libs.control.functions"
 
 require "control.belt-sorter"
+require "control.belt-sorter-advanced"
 
 -- global data used:
 -- beltSorter.version = $version

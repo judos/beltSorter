@@ -3,7 +3,7 @@ require "libs.itemSelection.control"
 
 -- Registering entity into system
 local beltSorter = {}
-entities["belt-sorter-v2"] = beltSorter
+entities["belt-sorter-advanced"] = beltSorter
 
 -- Constants
 local searchPriority = {{0,-1},{-1,0},{1,0},{0,1}}
@@ -13,8 +13,8 @@ local rowIndexToDirection = {
 	[3]=defines.direction.east,
 	[4]=defines.direction.south
 }
-
-local m = {}
+local guiSlotsAvailable = 2
+local m = {} --methods
 
 ---------------------------------------------------
 -- entityData
@@ -44,7 +44,7 @@ beltSorter.build = function(entity)
 
 	local pos = {x = entity.position.x, y=entity.position.y}
 	
-	local lamp = entity.surface.create_entity({name="belt-sorter-lamp",position=pos,force=entity.force})
+	local lamp = entity.surface.create_entity({name="belt-sorter-advanced-lamp",position=pos,force=entity.force})
 	lamp.operable = false
 	lamp.minable = false
 	lamp.destructible = false
@@ -82,16 +82,19 @@ end
 -- gui actions
 ---------------------------------------------------
 
-gui["belt-sorter-v2"]={}
-gui["belt-sorter-v2"].open = function(player,entity)
+gui["belt-sorter-advanced"]={}
+gui["belt-sorter-advanced"].open = function(player,entity)
 	local frame = player.gui.left.add{type="frame",name="beltSorterGui",direction="vertical",caption={"belt-sorter-title"}}	
 	frame.add{type="table",name="table",colspan=5}	
 
 	local labels={"north","west","east","south"}
 	for i,label in pairs(labels) do
 		frame.table.add{type="label",name="title"..i,caption={"",{label},":"}}
-		for j=1,4 do
+		for j=1,guiSlotsAvailable do
 			frame.table.add{type="sprite-button",name="beltSorter.slot."..i.."."..j,style="slot_button_style",sprite=""}
+			local sides = frame.table.add{type="table",name="sides."..i.."."..j,colspan=1}
+			sides.add{type="checkbox",name="left."..i.."."..j,caption={"left"},state=false}
+			sides.add{type="checkbox",name="right."..i.."."..j,caption={"right"},state=false}
 		end
 	end
 	frame.add{type="table",name="settings",colspan=2}
@@ -100,14 +103,14 @@ gui["belt-sorter-v2"].open = function(player,entity)
 	m.beltSorterRefreshGui(player,entity)
 end
 
-gui["belt-sorter-v2"].close = function(player)
+gui["belt-sorter-advanced"].close = function(player)
 	if player.gui.left.beltSorterGui then
 		player.gui.left.beltSorterGui.destroy()
 	end
 	itemSelection_close(player)
 end
 
-gui["belt-sorter-v2"].click = function(nameArr,player,entity)
+gui["belt-sorter-advanced"].click = function(nameArr,player,entity)
 	local fieldName = table.remove(nameArr,1)
 	if fieldName == "slot" then
 		local box = player.gui.left.beltSorterGui.table["beltSorter.slot."..nameArr[1].."."..nameArr[2]]
@@ -142,12 +145,12 @@ m.beltSorterRefreshGui = function(player,entity)
 	local data = global.entityData[idOfEntity(entity)]
 	if not data then
 		err("no data found for beltSorter "..idOfEntity(entity)..". Remove it and place it again!")
-		gui["belt-sorter-v2"].close(player)
+		gui["belt-sorter-advanced"].close(player)
 		return
 	end
 	if data.guiFilter == nil then return end
 	for row = 1,4 do
-		for slot = 1,4 do
+		for slot = 1,guiSlotsAvailable do
 			local itemName = data.guiFilter[row.."."..slot]
 			local element = player.gui.left.beltSorterGui.table["beltSorter.slot."..row.."."..slot]
 			
@@ -173,7 +176,7 @@ end
 m.beltSorterRebuildFilterFromGui = function(data)
 	data.filter = {}
 	for row = 1,4 do
-		for slot = 1,4 do
+		for slot = 1,guiSlotsAvailable do
 			local itemName = data.guiFilter[row.."."..slot]
 			if itemName then
 				if data.filter[itemName] == nil then data.filter[itemName] = {} end
@@ -213,7 +216,7 @@ beltSorter.tick = function(beltSorter,data)
 	return nextUpdate,nil
 end
 
-m.beltSorterUpdateCircuitCondition = function (beltSorter,data)
+m.beltSorterUpdateCircuitCondition = function(beltSorter,data)
 	-- check circuit
 	local behavior = beltSorter.get_or_create_control_behavior()
 	local conditionTable = behavior.circuit_condition
@@ -244,7 +247,7 @@ m.beltSorterUpdateCircuitCondition = function (beltSorter,data)
 	data.nextConditionUpdate = game.tick + 60
 end
 
-m.beltSorterDistributeItems = function (beltSorter,data)
+m.beltSorterDistributeItems = function(beltSorter,data)
 	-- Search for input (only loop if items available), mostly only 1 input
 	for inputSide,inputAccess in pairs(data.input) do
 		if not inputAccess:isValid() then
@@ -273,13 +276,15 @@ m.distributeItemToSides = function(data,inputAccess,itemName,sideList)
 			if not outputAccess:isValid() then
 				data.output[side] = nil
 			else
-				if outputAccess:can_insert_at_back() then
+				local curPos = 0
+				while outputAccess:can_insert_at(curPos) do
 					local itemStack = {name=itemName,count=1}
 					local result = inputAccess:remove_item(itemStack)
 					if result>0 then
-						outputAccess:insert_at_back(itemStack)
+						outputAccess:insert_at(curPos,itemStack)
+						curPos = curPos + 0.28
 					else
-						break -- check other items
+						return -- check other items
 					end
 				end
 			end
