@@ -270,26 +270,32 @@ end
 
 
 m.distributeItemToSides = function(data,inputAccess,itemName,sideList)
+	local itemStack = {name=itemName,count=1}
 	for _,side in pairs(sideList) do
 		local outputAccess = data.output[side]
 		if outputAccess then
 			if not outputAccess:isValid() then
 				data.output[side] = nil
 			else
-				local curPos = 0
-				while outputAccess:can_insert_at(curPos) do
-					local itemStack = {name=itemName,count=1}
-					local result = inputAccess:remove_item(itemStack)
-					if result>0 then
-						outputAccess:insert_at(curPos,itemStack)
-						curPos = curPos + 0.28
-					else
-						return -- check other items
-					end
-				end
+				m.insertAsManyAsPossible(inputAccess,outputAccess,itemStack,false)
+				m.insertAsManyAsPossible(inputAccess,outputAccess,itemStack,true)
 			end
 		end
 	end
+end
+
+m.insertAsManyAsPossible = function(inputAccess,outputAccess,itemStack,line)
+	local curPos = 0.16
+	while outputAccess:can_insert_on_at(line,curPos) and curPos <= 1 do
+		local result = inputAccess:remove_item(itemStack)
+		if result == 0 then
+			info("couldn't remove any")
+			return -- check other items
+		end
+		outputAccess:insert_on_at(line,curPos,itemStack)
+		curPos = curPos + 0.29
+	end
+	info("couldn't insert "..curPos)
 end
 
 m.beltSorterSearchInputOutput = function(beltSorter,data)

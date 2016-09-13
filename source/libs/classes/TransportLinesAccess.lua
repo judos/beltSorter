@@ -57,6 +57,20 @@ function TransportLinesAccess:insert_at(position,itemStack)
 	return self.line2.insert_at(position,itemStack)
 end
 
+function TransportLinesAccess:can_insert_on_at(line,position)
+	if not line then
+		return self.line1.can_insert_at(position)
+	end
+	return self.line2.can_insert_at(position)
+end
+
+function TransportLinesAccess:insert_on_at(line,position,itemStack)
+	if not line then
+		return self.line1.insert_at(position, itemStack)
+	end
+	return self.line2.insert_at(position,itemStack)
+end
+
 -- returns the direction on which side the belt is located relative to x,y, assuming they are neighbors
 function TransportLinesAccess:getSide()
 	local dx = self.accessTarget.x - self.accessFrom.x
