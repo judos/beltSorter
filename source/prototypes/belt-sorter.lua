@@ -19,8 +19,8 @@ data:extend({
 		enabled = false,
 		ingredients = {
 			{"steel-chest", 1},
-			{"steel-plate", 10},
-			{"advanced-circuit", 10}
+			{"steel-plate", 5},
+			{"advanced-circuit", 4}
 		},
 		result = "belt-sorter"
 	}

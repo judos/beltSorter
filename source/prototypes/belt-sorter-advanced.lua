@@ -18,8 +18,8 @@ data:extend({
 		enabled = false,
 		ingredients = {
 			{"steel-chest", 1},
-			{"steel-plate", 5},
-			{"processing-unit", 3}
+			{"steel-plate", 10},
+			{"advanced-circuit", 10}
 		},
 		result = "belt-sorter-advanced"
 	}
