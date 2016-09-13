@@ -1,9 +1,9 @@
 
-require "constants"
-
 require "libs.functions"
 require "libs.control.controlFunctions"
 require "libs.control.functions"
+
+require "constants"
 
 require "control.belt-sorter"
 require "control.belt-sorter-advanced"

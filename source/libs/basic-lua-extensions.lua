@@ -48,6 +48,23 @@ function split(str,divider) -- credit: http://richard.warburton.it
   return arr
 end
 
+-- e.g. formatWith("%time - %msg",{time = "10pm", msg = "Hello"} -> "10pm - Hello"
+function formatWith(string,parameters)
+	if not parameters then
+		print("ERROR: missing parameters for formatWith in libs.basic-lua-extensions")
+		parameters = {}
+	end
+	repeat
+		local before = string
+		local tag = string:match("%%(%a+)")
+		if tag then
+			if not parameters[tag] then parameters[tag]=tag end
+			string = string:gsub("%%"..tag, parameters[tag])
+		end
+	until tag == nil or before == string
+	return string
+end
+
 function deepcopy(orig)
 	local orig_type = type(orig)
 	local copy
