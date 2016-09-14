@@ -14,6 +14,8 @@ local rowIndexToDirection = {
 	[4]=defines.direction.south
 }
 local guiSlotsAvailable = 2
+local minimalUpdateTicks = 80
+
 local m = {} --methods
 
 ---------------------------------------------------
@@ -76,6 +78,7 @@ beltSorter.copy = function(source,srcData,target,targetData)
 	for _,player in pairs(playerWithGuiOfTarget) do
 		m.beltSorterRefreshGui(player,target)
 	end
+	info("Copy occured!")
 end
 
 ---------------------------------------------------
@@ -87,7 +90,7 @@ gui["belt-sorter-advanced"].open = function(player,entity)
 	local frame = player.gui.left.add{type="frame",name="beltSorterGui",direction="vertical",caption={"belt-sorter-title"}}	
 	frame.add{type="table",name="table",colspan=5}	
 
-	local labels={"north","west","east","south"}
+	local labels={"up","left","right","down"}
 	for i,label in pairs(labels) do
 		frame.table.add{type="label",name="title"..i,caption={"",{label},":"}}
 		for j=1,guiSlotsAvailable do
@@ -128,6 +131,7 @@ gui["belt-sorter-advanced"].click = function(nameArr,player,entity)
 	elseif fieldName == "side" then
 		local data = global.entityData[idOfEntity(entity)]
 		local key = nameArr[1].."."..nameArr[2]..".sides"
+		if not data.guiFilter[key] then data.guiFilter[key] = {} end
 		local side = tonumber(nameArr[3])
 		data.guiFilter[key][side] = not data.guiFilter[key][side]
 		m.beltSorterRefreshGui(player,entity)
@@ -143,8 +147,8 @@ gui["belt-sorter-advanced"].click = function(nameArr,player,entity)
 			m.beltSorterRefreshGui(player,entity)
 			m.beltSorterRebuildFilterFromGui(data)
 		end
-	else
-		info("unknown gui clicked: "..nameArr)
+--	else --may happen if you click a table or some button which is not defined yet
+--		info("unknown gui clicked: "..nameArr)
 	end
 end
 
@@ -216,16 +220,16 @@ beltSorter.tick = function(beltSorter,data)
 	if data.condition == nil or data.nextConditionUpdate == nil or data.nextConditionUpdate <= game.tick then
 		m.beltSorterUpdateCircuitCondition(beltSorter,data)
 		if data.condition == false then
-			return 60,nil
+			return minimalUpdateTicks,nil
 		end
 	end
 
-	local energyPercentage = math.min(beltSorter.energy,800) / 800
+	local energyPercentage = math.min(beltSorter.energy,2666) / 2666
 	local nextUpdate
-	if energyPercentage < 0.1 then
-		nextUpdate = 80
+	if energyPercentage < 12/minimalUpdateTicks then
+		nextUpdate = minimalUpdateTicks
 	else
-		nextUpdate = math.floor(8 / energyPercentage)
+		nextUpdate = math.floor(12 / energyPercentage)
 		m.beltSorterSearchInputOutput(beltSorter,data)
 		m.beltSorterDistributeItems(beltSorter,data)
 		data.input = nil
@@ -307,7 +311,8 @@ m.distributeItemToSides = function(data,inputAccess,itemName,sideList)
 end
 
 m.insertAsManyAsPossible = function(inputAccess,outputAccess,itemStack,line)
-	local curPos = 0.16
+	local curPos = 0.13
+	if not outputAccess:can_insert_at(curPos) then curPos = 1 end
 	while outputAccess:can_insert_on_at(line,curPos) and curPos <= 1 do
 		local result = inputAccess:remove_item(itemStack)
 		if result == 0 then
@@ -316,6 +321,7 @@ m.insertAsManyAsPossible = function(inputAccess,outputAccess,itemStack,line)
 		outputAccess:insert_on_at(line,curPos,itemStack)
 		curPos = curPos + 0.29
 	end
+	
 end
 
 m.beltSorterSearchInputOutput = function(beltSorter,data)

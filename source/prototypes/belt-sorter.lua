@@ -57,7 +57,7 @@ overwriteContent(beltSorter, {
 beltSorter.minable.result = "belt-sorter"
 data:extend({	beltSorter })
 
--- fake lamp for wire connection
+-- Entity: fake lamp for wire connection
 local beltSorterLamp = deepcopy(data.raw["lamp"]["small-lamp"])
 overwriteContent(beltSorterLamp, {
 	name = "belt-sorter-lamp",
