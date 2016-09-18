@@ -58,9 +58,16 @@ beltSorter.build = function(entity)
 		}
 	}
 	entity.connect_neighbour{wire=defines.wire_type.green,target_entity=lamp}
-
+	
+	local config = entity.surface.create_entity({
+		name = "belt-sorter-config-combinator",
+		position = {pos.x+1,pos.y},
+		force = entity.force
+	})
+	
 	return {
 		lamp = lamp,
+		config = config,
 		filter = {}
 	}
 end
@@ -68,6 +75,9 @@ end
 beltSorter.remove = function(data)
 	if data.lamp and data.lamp.valid then
 		data.lamp.destroy()
+	end
+	if data.config and data.config.valid then
+		data.config.destroy()
 	end
 end
 
@@ -134,6 +144,7 @@ gui["belt-sorter-advanced"].click = function(nameArr,player,entity)
 		if not data.guiFilter[key] then data.guiFilter[key] = {} end
 		local side = tonumber(nameArr[3])
 		data.guiFilter[key][side] = not data.guiFilter[key][side]
+		m.beltSorterRebuildFilterFromGui(data)
 		m.beltSorterRefreshGui(player,entity)
 	elseif fieldName == "copy" then
 		if global.gui.playerData[player.name] == nil then global.gui.playerData[player.name] = {} end
@@ -206,6 +217,25 @@ m.beltSorterRebuildFilterFromGui = function(data)
 			end
 		end
 	end
+	m.storeConfigToCombinator(data)
+end
+
+m.storeConfigToCombinator = function(data)
+	local behavior = data.config.get_or_create_control_behavior()
+	local param = behavior.parameters
+	for row = 1,4 do
+		for slot = 1,guiSlotsAvailable do
+			local index = (row-1)*guiSlotsAvailable + slot
+			local sides = data.guiFilter[row.."."..slot..".sides"]
+			local slotConfig = { count = 0, index = index, signal = {type="item"}}
+			slotConfig.signal.name = data.guiFilter[row.."."..slot]
+			if sides then
+				slotConfig.count = (sides[1] and 1 or 0) + (sides[2] and 2 or 0)
+			end
+			param.parameters[index] = slotConfig
+		end
+	end
+	behavior.parameters = param
 end
 
 ---------------------------------------------------

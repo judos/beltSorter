@@ -13,3 +13,7 @@ check timeout on ghost -> no more timeouts in the game?
       }
 			
 	on build beltSorter, check for requester chest ghost -> load settings and revive
+	
+	 and parameters={parameters={{index=1,count=1,signal={...}}}}
+	 
+	 /c game.player.print(serpent.block(table.remove(game.player.selected.get_or_create_control_behavior().parameters.parameters,1)))

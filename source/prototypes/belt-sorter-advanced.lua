@@ -38,11 +38,25 @@ beltSorter.minable.result = "belt-sorter-advanced"
 data:extend({	beltSorter })
 
 
--- fake lamp for wire connection
+
+
+-- Item: fake lamp
+local beltSorterConfigFakeItem = deepcopy(data.raw["item"]["wooden-chest"])
+overwriteContent(beltSorterConfigFakeItem, {
+	name = "belt-sorter-advanced-lamp",
+	order = "z[belt-sorter]",
+	subgroup = "inserter",
+	place_result = "belt-sorter-advanced-lamp",
+	icon = "__beltSorter__/graphics/icons/belt-sorter.png",
+	fuel_value = "0MJ",
+	flags = {"goes-to-main-inventory"}
+})
+data:extend({	beltSorterConfigFakeItem })
+
+-- Entity: fake lamp for wire connection
 local beltSorterLamp = deepcopy(data.raw["lamp"]["belt-sorter-lamp"])
 overwriteContent(beltSorterLamp, {
 	name = "belt-sorter-advanced-lamp",
-	icon = "__beltSorter__/graphics/icons/belt-sorter-advanced.png"
 })
 beltSorterLamp.picture_on.filename = "__beltSorter__/graphics/entity/belt-sorter-advanced-on.png"
 data:extend({	beltSorterLamp })
