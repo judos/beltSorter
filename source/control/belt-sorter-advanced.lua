@@ -43,6 +43,7 @@ local m = {} --methods
 
 beltSorter.build = function(entity)
 	scheduleAdd(entity, TICK_ASAP)
+	local data = {}
 
 	local pos = {x = entity.position.x, y=entity.position.y}
 	
@@ -59,17 +60,31 @@ beltSorter.build = function(entity)
 	}
 	entity.connect_neighbour{wire=defines.wire_type.green,target_entity=lamp}
 	
-	local config = entity.surface.create_entity({
-		name = "belt-sorter-config-combinator",
-		position = {pos.x+1,pos.y},
-		force = entity.force
-	})
+	-- find config combinator and load it's config
+	local entities = entity.surface.find_entities_filtered{position={pos.x+1,pos.y}, name="entity-ghost", force=entity.force}
+	local config = nil
+	for i = 1,#entities do
+		if entities[i].ghost_name == "belt-sorter-config-combinator" then
+			config = entities[i]
+			break
+		end
+	end
+	if config then
+		_,data.config = config.revive()
+		m.loadFilterFromConfig(data)
+	else
+		data.config = entity.surface.create_entity({
+			name = "belt-sorter-config-combinator",
+			position = {pos.x+1,pos.y},
+			force = entity.force
+		})
+	end
 	
-	return {
+	overwriteContent(data,{
 		lamp = lamp,
-		config = config,
 		filter = {}
-	}
+	})
+	return data
 end
 
 beltSorter.remove = function(data)
@@ -197,6 +212,10 @@ m.beltSorterRefreshGui = function(player,entity)
 	end
 end
 
+---------------------------------------------------
+-- data handling
+---------------------------------------------------
+
 m.beltSorterSetSlotFilter = function(entity,nameArr,itemName,sides)
 	local data = global.entityData[idOfEntity(entity)]
 	if data.guiFilter == nil then data.guiFilter = {} end
@@ -236,6 +255,23 @@ m.storeConfigToCombinator = function(data)
 		end
 	end
 	behavior.parameters = param
+end
+
+m.loadFilterFromConfig = function(data)
+	local params = data.config.get_or_create_control_behavior().parameters.parameters
+	if not data.guiFilter then data.guiFilter = {} end
+	for row = 1,4 do
+		for slot = 1,guiSlotsAvailable do
+			local index = (row-1)*guiSlotsAvailable + slot
+			data.guiFilter[row.."."..slot] = params[index].signal.name
+			local count = params[index].count
+			if params[index].signal.name == nil then
+				count = 0
+			end
+			data.guiFilter[row.."."..slot..".sides"] = { bit.band(count,1)>0, bit.band(count,2)>0}
+		end
+	end
+	m.beltSorterRebuildFilterFromGui(data)
 end
 
 ---------------------------------------------------

@@ -50,7 +50,7 @@ end)
 -- Building Entities
 ---------------------------------------------------
 script.on_event(defines.events.on_built_entity, function(event)
-	info(event.created_entity.type)
+	--info(event.created_entity.type)
 	entities_build(event)
 end)
 script.on_event(defines.events.on_robot_built_entity, function(event)
