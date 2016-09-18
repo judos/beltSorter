@@ -118,7 +118,8 @@ end
 
 gui["belt-sorter-advanced"]={}
 gui["belt-sorter-advanced"].open = function(player,entity)
-	local frame = player.gui.left.add{type="frame",name="beltSorterGui",direction="vertical",caption={"belt-sorter-title"}}	
+	local frame = player.gui.left.add{type="frame",name="beltSorterGui",direction="vertical",caption={"belt-sorter-title"}}
+	frame.add{type="label",name="description",caption={"belt-sorter-advanced-description"}}	
 	frame.add{type="table",name="table",colspan=5}	
 
 	local labels={"up","left","right","down"}
