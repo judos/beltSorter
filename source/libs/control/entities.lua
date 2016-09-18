@@ -27,11 +27,14 @@ require "libs.logging"
 																			
 		premine = function(entity,data,player):manuallyHandle
 				if manuallyHandle is true entity will not be added to schedule (tick for removal)
+		
+		orderDeconstruct = function(entity,data,player)
 				
 		remove = function(data),
 				clean up any additional entities from your custom data
 				
 		copy = function(source,srcData,target,targetData)
+				coppy settings when shift+rightclick -> shift+leftclick
 	}
 
 
@@ -39,6 +42,8 @@ require "libs.logging"
 	entities_build(event)
 	entities_tick()
 	entities_pre_mined(event)
+	entities_settings_pasted(event)
+	entities_marked_for_deconstruction(event)
 ]]--
 	                   
 entities = {}
@@ -65,7 +70,7 @@ end
 -- Copying settings
 -- -------------------------------------------------
 
-script.on_event(defines.events.on_entity_settings_pasted, function(event)
+function entities_settings_pasted(event)
 	local source = event.source
 	local target = event.destination
 	local name = source.name
@@ -76,7 +81,7 @@ script.on_event(defines.events.on_entity_settings_pasted, function(event)
 			entities[name].copy(source,srcData,target,targetData)
 		end
 	end
-end)
+end
 
 -- -------------------------------------------------
 -- Updating Entities
@@ -176,7 +181,7 @@ function entities_build(event)
 end
 
 -- -------------------------------------------------
--- Premining
+-- Premining / deconstruction
 -- -------------------------------------------------
 
 function entities_pre_mined(event)
@@ -193,6 +198,16 @@ function entities_pre_mined(event)
 		local checkEntity = scheduleAdd(entity,TICK_ASAP)
 		checkEntity.noTick = true
 		checkEntity.clearSchedule = true
+	end
+end
+
+function entities_marked_for_deconstruction(event)
+	local entity = event.entity
+	local name = entity.name
+	if entities[name] == nil then return end
+	if entities[name].orderDeconstruct then
+		local data = global.entityData[idOfEntity(entity)]
+		entities[name].orderDeconstruct(entity,data,game.players[event.player_index])
 	end
 end
 

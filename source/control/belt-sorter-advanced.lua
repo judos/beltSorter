@@ -61,7 +61,11 @@ beltSorter.build = function(entity)
 	entity.connect_neighbour{wire=defines.wire_type.green,target_entity=lamp}
 	
 	-- find config combinator and load it's config
-	local entities = entity.surface.find_entities_filtered{position={pos.x+1,pos.y}, name="entity-ghost", force=entity.force}
+	local entities = entity.surface.find_entities_filtered{
+		area={{pos.x-0.05,pos.y+0.15},{pos.x+0.05,pos.y+0.25}}, 
+		name="entity-ghost", 
+		force=entity.force
+	}
 	local config = nil
 	for i = 1,#entities do
 		if entities[i].ghost_name == "belt-sorter-config-combinator" then
@@ -75,9 +79,12 @@ beltSorter.build = function(entity)
 	else
 		data.config = entity.surface.create_entity({
 			name = "belt-sorter-config-combinator",
-			position = {pos.x+1,pos.y},
+			position = {pos.x,pos.y+0.2},
 			force = entity.force
 		})
+		data.operable = false
+		data.minable = false
+		data.destructible = false
 	end
 	
 	overwriteContent(data,{

@@ -26,7 +26,7 @@ script.on_init(function()
 end)
 
 script.on_load(function()
-	info(global)
+	--info(global)
 end)
 
 script.on_configuration_changed(function()
@@ -72,5 +72,17 @@ end)
 
 script.on_event(defines.events.on_preplayer_mined_item, function(event)
 	entities_pre_mined(event)
+end)
+
+---------------------------------------------------
+-- Removing entities
+---------------------------------------------------
+
+script.on_event(defines.events.on_entity_settings_pasted, function(event)
+	entities_settings_pasted(event)
+end)
+
+script.on_event(defines.events.on_marked_for_deconstruction, function(event)
+	entities_marked_for_deconstruction(event)
 end)
 

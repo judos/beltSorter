@@ -2,18 +2,22 @@
 local minimalUpdateTicks = 60
 
 -- Registering entity into system
+local ghost = {}
+entities["entity-ghost"] = ghost
+
 local config = {}
-entities["entity-ghost"] = config
+entities["belt-sorter-config-combinator"] = config
 
-
-config.premine = function(entity,data,player)
+ghost.premine = function(entity,data,player)
 	if entity.ghost_name == "belt-sorter-advanced" then
 		local pos = entity.position
 		local entities = entity.surface.find_entities_filtered{
-			position={pos.x+1,pos.y}, 
+			area={{pos.x-0.05,pos.y+0.15},{pos.x+0.05,pos.y+0.25}}, 
 			name="entity-ghost",
 			force=entity.force
 		}
+		info("found entities: "..#entities)
+		
 		for i=1,#entities do
 			if entities[i].ghost_name == "belt-sorter-config-combinator" then
 				entities[i].destroy()
@@ -22,4 +26,9 @@ config.premine = function(entity,data,player)
 		end
 	end
 	return true
+end
+
+
+config.orderDeconstruct = function(entity,data,player)
+	entity.cancel_deconstruction(player.force)
 end
