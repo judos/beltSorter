@@ -82,9 +82,9 @@ beltSorter.build = function(entity)
 			position = {pos.x,pos.y+0.2},
 			force = entity.force
 		})
-		data.operable = false
-		data.minable = false
-		data.destructible = false
+		data.config.operable = false
+		data.config.minable = false
+		data.config.destructible = false
 	end
 	
 	overwriteContent(data,{

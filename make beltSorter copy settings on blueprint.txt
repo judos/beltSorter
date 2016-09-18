@@ -17,3 +17,12 @@ check timeout on ghost -> no more timeouts in the game?
 	 and parameters={parameters={{index=1,count=1,signal={...}}}}
 	 
 	 /c game.player.print(serpent.block(table.remove(game.player.selected.get_or_create_control_behavior().parameters.parameters,1)))
+	 
+	 
+	 
+	 use cases:
+	 build: manually, on blueprint, robot on blueprint
+	 
+	 remove: manually, deconstruct with robots
+	 
+	 ghost: remove part only?

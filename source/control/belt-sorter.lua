@@ -87,7 +87,7 @@ gui["belt-sorter-v2"].open = function(player,entity)
 	local frame = player.gui.left.add{type="frame",name="beltSorterGui",direction="vertical",caption={"belt-sorter-title"}}	
 	frame.add{type="table",name="table",colspan=5}	
 
-	local labels={"up","left","right","downs"}
+	local labels={"up","left","right","down"}
 	for i,label in pairs(labels) do
 		frame.table.add{type="label",name="title"..i,caption={"",{label},":"}}
 		for j=1,4 do

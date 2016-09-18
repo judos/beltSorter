@@ -26,7 +26,7 @@ script.on_init(function()
 end)
 
 script.on_load(function()
-	--info(global)
+	info(global)
 end)
 
 script.on_configuration_changed(function()

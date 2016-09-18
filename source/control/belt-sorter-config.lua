@@ -5,10 +5,6 @@ local minimalUpdateTicks = 60
 local ghost = {}
 entities["entity-ghost"] = ghost
 
-local config = {}
-entities["belt-sorter-config-combinator"] = config
-
-
 ghost.build = function(entity)
 	if entity.ghost_name == "belt-sorter-config-combinator" then
 		scheduleAdd(entity,TICK_SOON)
@@ -58,9 +54,4 @@ ghost.premine = function(entity,data,player)
 		end
 	end
 	return true
-end
-
-
-config.orderDeconstruct = function(entity,data,player)
-	entity.cancel_deconstruction(player.force)
 end
