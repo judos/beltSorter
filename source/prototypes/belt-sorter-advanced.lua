@@ -42,6 +42,7 @@ data:extend({	beltSorter })
 local beltSorterLamp = deepcopy(data.raw["lamp"]["belt-sorter-lamp"])
 overwriteContent(beltSorterLamp, {
 	name = "belt-sorter-advanced-lamp",
+	icon = "__beltSorter__/graphics/icons/belt-sorter-advanced.png",
 })
 beltSorterLamp.picture_on.filename = "__beltSorter__/graphics/entity/belt-sorter-advanced-on.png"
 data:extend({	beltSorterLamp })
