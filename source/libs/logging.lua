@@ -82,7 +82,9 @@ function log.traceback()
 end
 
 function log.gameTime()
-	local s = math.floor(game.tick/60)
+	local tick = 0
+	if game then tick = game.tick end
+	local s = math.floor(tick/60)
 	local h = math.floor(s/3600)
 	local m = math.floor(s/60) - h*60
 	local s = s % 60
@@ -94,7 +96,6 @@ end
 
 function log.PlayerPrint(message)
 	if not game then
-		_debug(message)
 		return
 	end
 	for _,player in pairs(game.players) do

@@ -103,7 +103,6 @@ beltSorter.copy = function(source,srcData,target,targetData)
 	for _,player in pairs(playerWithGuiOfTarget) do
 		m.beltSorterRefreshGui(player,target)
 	end
-	info("Copy occured!")
 end
 
 ---------------------------------------------------

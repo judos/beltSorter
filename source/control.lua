@@ -7,6 +7,7 @@ require "constants"
 
 require "control.belt-sorter"
 require "control.belt-sorter-advanced"
+require "control.belt-sorter-config"
 
 -- global data used:
 -- beltSorter.version = $version
@@ -18,9 +19,14 @@ script.on_init(function()
 	if not global.beltSorter then global.beltSorter = {} end
 	local bs = global.beltSorter
 	if not bs.version then bs.version = modVersion end
-
+	
 	entities_init()
 	gui_init()
+	
+end)
+
+script.on_load(function()
+	info(global)
 end)
 
 script.on_configuration_changed(function()

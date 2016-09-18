@@ -5,26 +5,43 @@ require "libs.logging"
 -- API V3
 -- --------------------------------
 
--- Data used:
--- global.schedule[tick][idEntity] = { entity = $entity, [noTick = true] }
--- global.entityData[idEntity] = { name=$name, ... }
--- global.entities_cleanup_required = boolean(check and remove all old events)
--- global entityDataVersion = 3
+--[[
+ Data used:
+	global.schedule[tick][idEntity] = {
+		entity = $entity, 
+		[noTick = true],									-- used when entity is premined (to update asap)
+		[clearSchedule = true], 					-- used when entity is premined (to clear out of ordinary schedule)
+	}
+	global.entityData[idEntity] = { name=$name, ... }
+	global.entities_cleanup_required = boolean(check and remove all old events)
+	global entityDataVersion = 3
 
--- Register custom entity build, tick or remove function:
--- [$entityName] = { build = $function(entity):dataArr,
---                   tick = $function(entity,data):(nextTick,reason),
---                   remove = $function(data),
---                   copy = $function(source,srcData,target,targetData) }
+
+ Register custom entity build, tick or remove function:
+	[$entityName] = { 
+		build = function(entity):dataArr,	
+				if returned arr is nil no data is registered (no remove will be called later)
+				Note: tick your entity with scheduleAdd(entity,TICK_SOON)
+																		 
+		tick = function(entity,data):(nextTick,reason),
+																			
+		premine = function(entity,data,player):manuallyHandle
+				if manuallyHandle is true entity will not be added to schedule (tick for removal)
+				
+		remove = function(data),
+				clean up any additional entities from your custom data
+				
+		copy = function(source,srcData,target,targetData)
+	}
+
+
+ Required calls in control:
+	entities_build(event)
+	entities_tick()
+	entities_pre_mined(event)
+]]--
+	                   
 entities = {}
-
--- Required calls in control:
--- entities_build(event)
--- entities_tick()
--- entities_pre_mined(event)
-
--- --------------------------------
--- --------------------------------
 
 -- Constants:
 TICK_ASAP = 0 --game.tick used in migration when game variable is not available yet
@@ -70,7 +87,7 @@ function entities_tick()
 	if global.schedule[TICK_ASAP] ~= nil then
 		if global.schedule[game.tick] == nil then global.schedule[game.tick] = {} end
 		for id,arr in pairs(global.schedule[TICK_ASAP]) do
-			info("scheduled entity "..id.." for now.")
+			--info("scheduled entity "..id.." for now.")
 			global.schedule[game.tick][id] = arr
 		end
 		global.schedule[TICK_ASAP] = nil
@@ -147,15 +164,15 @@ function entities_build(event)
 	local entity = event.created_entity
 	local name = entity.name
 	if entities[name] == nil then return false end
-	global.entityData[idOfEntity(entity)] = { ["name"] = name }
 	if entities[name].build then
 		local data = entities[name].build(entity)
 		if data then
-			-- info("storing data table for entity "..entity.name.." with id "..idOfEntity(entity)..": "..serpent.block(data))
-			table.addTable(global.entityData[idOfEntity(entity)],data)
+			data.name = name
+			global.entityData[idOfEntity(entity)] = data
+			return true
 		end
 	end
-	return true
+	return false
 end
 
 -- -------------------------------------------------
@@ -167,13 +184,16 @@ function entities_pre_mined(event)
 	local entity = event.entity
 	local name = entity.name
 	if entities[name] == nil then return end
+	local manuallyHandle = false
 	if entities[name].premine then
 		local data = global.entityData[idOfEntity(entity)]
-		entities[name].premine(entity,data,game.players[event.player_index])
+		manuallyHandle = entities[name].premine(entity,data,game.players[event.player_index])
 	end
-	local checkEntity = scheduleAdd(entity,TICK_ASAP)
-	checkEntity.noTick = true
-	checkEntity.clearSchedule = true
+	if not manuallyHandle then
+		local checkEntity = scheduleAdd(entity,TICK_ASAP)
+		checkEntity.noTick = true
+		checkEntity.clearSchedule = true
+	end
 end
 
 -- -------------------------------------------------
@@ -184,7 +204,7 @@ function scheduleAdd(entity, nextTick)
 	if global.schedule[nextTick] == nil then
 		global.schedule[nextTick] = {}
 	end
-	--	info("schedule added for entity "..entity.name.." "..idOfEntity(entity).." at tick: "..nextTick)
+	--info("schedule added for entity "..entity.name.." "..idOfEntity(entity).." at tick: "..nextTick)
 	local update = { entity = entity }
 	global.schedule[nextTick][idOfEntity(entity)] = update
 	return update
@@ -194,6 +214,7 @@ function entities_remove(entityId)
 	local data = global.entityData[entityId]
 	if not data then return end
 	local name = data.name
+	--info("removing entity: "..name.." at: "..entityId.." with data: "..serpent.block(data))
 	if entities[name] ~= nil then
 		if entities[name].remove ~= nil then
 			entities[name].remove(data)
