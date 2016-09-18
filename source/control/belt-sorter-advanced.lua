@@ -372,26 +372,25 @@ m.distributeItemToSides = function(data,inputAccess,itemName,sideList)
 			if not outputAccess:isValid() then
 				data.output[side] = nil
 			else
-				if outputOnLanes[1] then
-					m.insertAsManyAsPossible(inputAccess,outputAccess,itemStack,false)
-				end
-				if outputOnLanes[2] then
-					m.insertAsManyAsPossible(inputAccess,outputAccess,itemStack,true)
-				end
+				m.insertAsManyAsPossible(inputAccess,outputAccess,itemStack,outputOnLanes)
 			end
 		end
 	end
 end
 
-m.insertAsManyAsPossible = function(inputAccess,outputAccess,itemStack,line)
+m.insertAsManyAsPossible = function(inputAccess,outputAccess,itemStack,outputOnLanes)
 	local curPos = 0.13
-	if not outputAccess:can_insert_at(curPos) then curPos = 1 end
-	while outputAccess:can_insert_on_at(line,curPos) and curPos <= 1 do
-		local result = inputAccess:remove_item(itemStack)
-		if result == 0 then
-			return -- check other items
+	while curPos <= 1 do
+		if outputOnLanes[1] and outputAccess:can_insert_on_at(false,curPos) then
+			local result = inputAccess:remove_item(itemStack)
+			if result == 0 then	return end
+			outputAccess:insert_on_at(false,curPos,itemStack)
 		end
-		outputAccess:insert_on_at(line,curPos,itemStack)
+		if outputOnLanes[2] and outputAccess:can_insert_on_at(true,curPos) then
+			local result = inputAccess:remove_item(itemStack)
+			if result == 0 then	return end
+			outputAccess:insert_on_at(true,curPos,itemStack)
+		end
 		curPos = curPos + 0.29
 	end
 	
