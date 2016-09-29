@@ -89,7 +89,8 @@ beltSorter.build = function(entity)
 	
 	overwriteContent(data,{
 		lamp = lamp,
-		filter = {}
+		filter = {},
+		guiFilter = {}
 	})
 	return data
 end
