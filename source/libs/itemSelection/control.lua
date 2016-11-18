@@ -140,6 +140,7 @@ itemSelection_open = function(player,method)
 end
 
 itemSelection_gui_event = function(guiEvent,player)
+	initGuiForPlayerName(player.name)
 	local fieldName = guiEvent[1]
 	local playerData = global.itemSelection[player.name]
 	if playerData == nil then return end
