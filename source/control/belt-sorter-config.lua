@@ -1,5 +1,5 @@
 
-local minimalUpdateTicks = 60
+local minimalUpdateTicks = 20
 
 -- Registering entity into system
 local ghost = {}
@@ -38,7 +38,7 @@ ghost.tick = function(entity,data)
 		entity.destroy()
 		return nil,nil
 	end
-	return 1,nil
+	return minimalUpdateTicks,nil
 end
 
 
