@@ -1,2 +1,3 @@
 - add animation of belt-sorter
 - logistics belt hub
+- 2x2 late game machine which allows a lot more options of sorting
