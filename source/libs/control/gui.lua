@@ -20,6 +20,7 @@ gui = {} -- [$entityName] = { open = $function(player,entity),
 
 -- Helper functions:
 -- gui_playersWithOpenGuiOf(entity) : {x:LuaPlayer, ...}
+-- gui_scheduleEvent($uiComponentIdentifier,$player)
 
 --------------------------------------------------
 -- Global data
@@ -56,7 +57,7 @@ local function handleEvent(uiComponentIdentifier,player)
 		return true
 	else
 		-- gui event might be from other mods
-		--info("unknown gui event occured: "..serpent.block(uiComponentIdentifier))
+		info("unknown gui event occured: "..serpent.block(uiComponentIdentifier))
 	end
 end
 
@@ -124,6 +125,11 @@ end
 --------------------------------------------------
 
 script.on_event(defines.events.on_gui_click, function(event)
+	if event.element.style and event.element.style.name then
+		if event.element.style.name:starts("item-") then
+			event.element.state = true
+		end
+	end
 	local player = game.players[event.player_index]
 	local uiComponentIdentifier = event.element.name
 	return handleEvent(uiComponentIdentifier,player)

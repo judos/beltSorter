@@ -4,4 +4,5 @@ modName = "beltSorter" -- required prefix for all ui name components which can b
 fullModName = "beltSorter" -- required for logging and prototypes
 
 
-beltSorterLog.testing = false -- enables player printing of every log, sets log level to info
+libLog.testing = true -- enables player printing of every log, sets log level to info
+libLog.debug_level = 2 --warn

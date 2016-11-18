@@ -1,64 +1,65 @@
-beltSorterLog = {}
+libLog = {}
 
 require "constants"
 
-if beltSorterLog.debug_master == nil then
-	beltSorterLog.debug_master = true -- Master switch for debugging, prints debug stuff into the shell where factorio was started from
+if libLog.debug_master == nil then
+	-- Master switch for debugging, prints debug stuff into the shell where factorio was started from
+	libLog.debug_master = true
 end
-if beltSorterLog.debug_level == nil then
-	beltSorterLog.debug_level = 2
+if libLog.debug_level == nil then
+	libLog.debug_level = 2
 end
-if beltSorterLog.testing then
--- Master switch for debugging, prints debug stuff into the shell where factorio was started from
-	beltSorterLog.debug_master = beltSorterLog.debug_master or true 
+if libLog.testing then
+	-- Master switch for debugging, prints debug stuff into the shell where factorio was started from
+	libLog.debug_master = true 
 	-- 1=info 2=warning 3=error
-	beltSorterLog.debug_level = beltSorterLog.debug_level or 1
-	beltSorterLog.always_player_print = true
+	libLog.debug_level = libLog.debug_level or 1
+	libLog.always_player_print = true
 end
 
-beltSorterLog.stack_trace = true
+libLog.stack_trace = true
 
 
 function info(message)
-	if beltSorterLog.debug_level<=1 then beltSorterLog.debug(message,"INFO") end
+	if libLog.debug_level<=1 then libLog.debug(message,"INFO") end
 end
 function warn(message)
-	if beltSorterLog.debug_level<=2 then beltSorterLog.debug(message,"WARN") end
+	if libLog.debug_level<=2 then libLog.debug(message,"WARN") end
 end
 function err(message)
-	if beltSorterLog.debug_level<=3 then beltSorterLog.debug(message,"ERROR") end
+	if libLog.debug_level<=3 then libLog.debug(message,"ERROR") end
 end
 
 function assert2(value,message)
 	assert(value,message.."\n"..debug.traceback())
 end
 
-function beltSorterLog.debug(message,level)
+function libLog.debug(message,level)
 	if not level then level="ANY" end
-	if beltSorterLog.debug_master then
+	if libLog.debug_master then
 		if type(message) ~= "string" then
 			message = serpent.block(message)
 		end
 		local data = {
-			time = beltSorterLog.gameTime(),
+			time = libLog.gameTime(),
 			level = level,
 			name = fullModName,
-			caller = beltSorterLog.caller(),
+			caller = libLog.caller(),
 			message = message
 		}
-		--local str = .." [ "..level.." "..fullModName.." ] "..beltSorterLog.caller()..": "..message
-		if level == "ERROR" or beltSorterLog.always_player_print then
-			beltSorterLog.PlayerPrint(formatWith("[%name - %caller]: %message",data))
+		--local str = .." [ "..level.." "..fullModName.." ] "..libLog.caller()..": "..message
+		if level == "ERROR" or libLog.always_player_print then
+			libLog.PlayerPrint(formatWith("[%name - %caller]: %message",data))
 		end
 		local str = formatWith("%time [ %level %name - %caller]: %message",data)
-		if beltSorterLog.stack_trace then
-			str = str.."\n"..beltSorterLog.traceback()
+		if libLog.stack_trace then
+			str = str.."\n"..libLog.traceback()
 		end
 		print(str)
 	end
 end
 
-function beltSorterLog.caller()
+function libLog.caller()
 	local s = debug.traceback()
 	local lines = split(s,"\n")
 	table.remove(lines,1) -- removes the "Stacktrace:" line
@@ -70,7 +71,7 @@ function beltSorterLog.caller()
 	return file..appendix
 end
 
-function beltSorterLog.traceback()
+function libLog.traceback()
 	local s = debug.traceback()
 	local lines = split(s,"\n")
 	table.remove(lines,1) -- removes the "Stacktrace:" line
@@ -83,7 +84,7 @@ function beltSorterLog.traceback()
 	return table.concat(lines,"\n")
 end
 
-function beltSorterLog.gameTime()
+function libLog.gameTime()
 	local tick = 0
 	if game then tick = game.tick end
 	local s = math.floor(tick/60)
@@ -96,7 +97,7 @@ function beltSorterLog.gameTime()
 	return h..":"..m..":"..s
 end
 
-function beltSorterLog.PlayerPrint(message)
+function libLog.PlayerPrint(message)
 	if not game then
 		return
 	end
