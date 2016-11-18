@@ -81,7 +81,7 @@ beltSorter.build = function(entity)
 		info("built belt-sorter but no config was found")
 		data.config = entity.surface.create_entity({
 			name = "belt-sorter-config-combinator",
-			position = {pos.x,pos.y},
+			position = {pos.x,pos.y+0.2},
 			force = entity.force
 		})
 		data.config.operable = false

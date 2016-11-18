@@ -9,8 +9,6 @@ require "control.belt-sorter"
 require "control.belt-sorter-advanced"
 require "control.belt-sorter-config"
 
-require "control.migration_v0_3_4"
-
 -- global data used:
 -- beltSorter.version = $version
 
@@ -43,7 +41,7 @@ script.on_configuration_changed(function()
 		entities_init() --does migration
 	end
 	if bs.version < "0.3.4" then
-		migration_v0_3_4()
+		bs.version = "0.3.4"
 	end
 	if bs.version ~= previousVersion then
 		info("Previous version: "..previousVersion.." migrated to "..bs.version)
