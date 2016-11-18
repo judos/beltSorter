@@ -24,10 +24,10 @@ local m = {} --methods
 
 -- Used data:
 -- {
---   lamp = LuaEntity(fake lamp)
+--   lamp = LuaEntity(fake lamp),
+--	 config = LuaEntity(fake constant combinator to store settings)
 --   filter[$itemName] = { $row1, $row2, ... }
 --   guiFilter[$row.."."..$slot] = $itemName
---   nextSearchDir = $index (which direction to search next)
 -- }
 
 --------------------------------------------------
@@ -74,9 +74,11 @@ beltSorter.build = function(entity)
 		end
 	end
 	if config then
+		info("built belt-sorter and found config for it")
 		_,data.config = config.revive()
 		m.loadFilterFromConfig(data)
 	else
+		info("built belt-sorter but no config was found")
 		data.config = entity.surface.create_entity({
 			name = "belt-sorter-config-combinator",
 			position = {pos.x,pos.y+0.2},
@@ -88,9 +90,10 @@ beltSorter.build = function(entity)
 	end
 	
 	overwriteContent(data,{
+		config = data.config,
 		lamp = lamp,
-		filter = {},
-		guiFilter = {}
+		filter = data.filter or {},
+		guiFilter = data.guiFilter or {}
 	})
 	return data
 end
@@ -158,7 +161,7 @@ gui["belt-sorter-advanced"].click = function(nameArr,player,entity)
 				m.beltSorterRefreshGui(player,entity)
 			end)
 		else
-			m.beltSorterSetSlotFilter(entity,nameArr,nil,{false,false})
+			m.beltSorterSetSlotFilter(entity,nameArr,nil,nil)
 			m.beltSorterRefreshGui(player,entity)
 		end
 	elseif fieldName == "side" then
@@ -244,6 +247,7 @@ m.beltSorterRebuildFilterFromGui = function(data)
 			end
 		end
 	end
+	info(data.filter)
 	m.storeConfigToCombinator(data)
 end
 
@@ -267,16 +271,21 @@ end
 
 m.loadFilterFromConfig = function(data)
 	local params = data.config.get_or_create_control_behavior().parameters.parameters
+	info(params)
 	if not data.guiFilter then data.guiFilter = {} end
 	for row = 1,4 do
 		for slot = 1,guiSlotsAvailable do
 			local index = (row-1)*guiSlotsAvailable + slot
-			data.guiFilter[row.."."..slot] = params[index].signal.name
-			local count = params[index].count
-			if params[index].signal.name == nil then
-				count = 0
+			if params[index].signal.name then
+				data.guiFilter[row.."."..slot] = params[index].signal.name
+				info(tostring(index).." "..tostring(params[index].signal.name))
+				local count = params[index].count
+				if params[index].signal.name == nil then
+					count = 0
+				end
+				data.guiFilter[row.."."..slot..".sides"] = { bit.band(count,1)>0, bit.band(count,2)>0}
+				info(data.guiFilter[row.."."..slot..".sides"])
 			end
-			data.guiFilter[row.."."..slot..".sides"] = { bit.band(count,1)>0, bit.band(count,2)>0}
 		end
 	end
 	m.beltSorterRebuildFilterFromGui(data)
@@ -421,5 +430,4 @@ m.beltSorterSearchInputOutput = function(beltSorter,data)
 			end
 		end
 	end
-	data.nextSearchDir = nil
 end
