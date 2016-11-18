@@ -9,8 +9,10 @@ if beltSorterLog.debug_level == nil then
 	beltSorterLog.debug_level = 2
 end
 if beltSorterLog.testing then
-	beltSorterLog.debug_master = true -- Master switch for debugging, prints debug stuff into the shell where factorio was started from
-	beltSorterLog.debug_level = 1 -- 1=info 2=warning 3=error
+-- Master switch for debugging, prints debug stuff into the shell where factorio was started from
+	beltSorterLog.debug_master = beltSorterLog.debug_master or true 
+	-- 1=info 2=warning 3=error
+	beltSorterLog.debug_level = beltSorterLog.debug_level or 1
 	beltSorterLog.always_player_print = true
 end
 

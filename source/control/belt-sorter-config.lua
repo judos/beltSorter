@@ -19,7 +19,7 @@ ghost.tick = function(entity,data)
 	if not data.beltSorter then
 		local pos = entity.position
 		local entities = entity.surface.find_entities_filtered{
-			area={{pos.x-0.05,pos.y-0.25},{pos.x+0.05,pos.y-0.15}}, 
+			area={{pos.x-0.5,pos.y-0.5},{pos.x+0.5,pos.y+0.5}}, 
 			name="entity-ghost",
 			force=entity.force
 		}
@@ -47,7 +47,7 @@ ghost.premine = function(entity,data,player)
 		info("removed belt-sorter ghost")
 		local pos = entity.position
 		local entities = entity.surface.find_entities_filtered{
-			area={{pos.x-0.05,pos.y+0.15},{pos.x+0.05,pos.y+0.25}}, 
+			area={{pos.x-0.5,pos.y-0.5},{pos.x+0.5,pos.y+0.5}}, 
 			name="entity-ghost",
 			force=entity.force
 		}
