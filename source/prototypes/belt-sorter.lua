@@ -20,7 +20,7 @@ data:extend({
 		ingredients = {
 			{"steel-chest", 1},
 			{"steel-plate", 5},
-			{"advanced-circuit", 4}
+			{"electronic-circuit", 4}
 		},
 		result = "belt-sorter"
 	}

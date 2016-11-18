@@ -17,9 +17,9 @@ data:extend({
 		name = "belt-sorter-advanced",
 		enabled = false,
 		ingredients = {
-			{"steel-chest", 1},
-			{"steel-plate", 10},
-			{"advanced-circuit", 10}
+			{"belt-sorter", 2},
+			{"steel-plate", 4},
+			{"electronic-circuit", 4}
 		},
 		result = "belt-sorter-advanced"
 	}
