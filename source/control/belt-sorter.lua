@@ -173,6 +173,7 @@ end
 
 m.beltSorterRebuildFilterFromGui = function(data)
 	data.filter = {}
+	if not data.guiFilter then return end
 	for row = 1,4 do
 		for slot = 1,4 do
 			local itemName = data.guiFilter[row.."."..slot]
