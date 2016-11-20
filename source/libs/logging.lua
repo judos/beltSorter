@@ -19,6 +19,9 @@ end
 
 libLog.stack_trace = true
 
+function x(object)
+	return serpent.block(object)
+end
 
 function info(message)
 	if libLog.debug_level<=1 then libLog.debug(message,"INFO") end

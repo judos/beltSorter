@@ -70,10 +70,15 @@ beltSorter.remove = function(data)
 end
 
 beltSorter.copy = function(source,srcData,target,targetData)
+	if target.name ~= "belt-sorter-v2" and target.name ~= "belt-sorter-advanced" then
+		return
+	end
+	info("Copy entity: "..x(srcData).." target: "..x(targetData))
+	
 	targetData.guiFilter = deepcopy(srcData.guiFilter)
 	m.beltSorterRebuildFilterFromGui(targetData)
-	local playerWithGuiOfTarget = gui_playersWithOpenGuiOf(target)
-	for _,player in pairs(playerWithGuiOfTarget) do
+	local playersWithGuiOfTarget = gui_playersWithOpenGuiOf(target)
+	for _,player in pairs(playersWithGuiOfTarget) do
 		m.beltSorterRefreshGui(player,target)
 	end
 end
