@@ -1,6 +1,6 @@
 
-require "libs.functions"
-require "libs.control.controlFunctions"
+require "libs.all"
+require "libs.prototypes.all"
 require "libs.control.functions"
 
 require "constants"
