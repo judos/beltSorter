@@ -1,0 +1,1 @@
+mklink /j "mods/beltSorter_0.3.6" "D:\modding\factorio\beltSorter\source"
