@@ -73,7 +73,7 @@ local function rebuildItemList(player)
 	scroll.style.maximal_height=180 --Needed to produce vertical scroll bars
 	scroll.horizontal_scroll_policy = "never"
 	scroll.vertical_scroll_policy = "auto"
-	local items = scroll.add{type="table",name="items",colspan=mainMaxEntries}
+	local items = scroll.add{type="table",name="itemsX",colspan=mainMaxEntries}
 	
 	local filter = frame.search["itemSelection.field"].text
 	for name,prototype in pairs(game.item_prototypes) do
@@ -116,16 +116,16 @@ itemSelection_open = function(player,method)
 	if #playerData.recent > 0 then
 		frame.add{type="table",name="recent",colspan=2}
 		frame.recent.add{type="label",name="title",caption={"",{"recent"},":"}}
-		frame.recent.add{type="table",name="items",colspan=#playerData.recent}
+		local items = frame.recent.add{type="table",name="itemsX",colspan=#playerData.recent}
 		for _,itemName in pairs(playerData.recent) do
-			frame.recent.items.add(checkBoxForItem(itemName))
+			items.add(checkBoxForItem(itemName))
 		end
 	end
 
 	frame.add{type="table",name="special",colspan=2}
 	frame.special.add{type="label",name="title",caption={"",{"special"},":"}}
-	frame.special.add{type="table",name="items",colspan=1}
-	frame.special.items.add(checkBoxForItem("belt-sorter-everythingelse"))
+	frame.special.add{type="table",name="itemsX",colspan=1}
+	frame.special.itemsX.add(checkBoxForItem("belt-sorter-everythingelse"))
 
 	frame.add{type="table",name="search",colspan=2}
 	frame.search.add{type="label",name="title",caption={"",{"search"},":"}}
