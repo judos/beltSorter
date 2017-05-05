@@ -1,3 +1,10 @@
+2.7 config: add entity methods for fetching entities from a category
+	add method to change property of entities in prototype
+	moved many classes, imports might be broken now, use the all.lua to import the files (in libs, libs/prototype)
+	removed controlFunctions
+	removed basic-lua-extensions.lua -> See libs.lua.{x}
+	technologyChangeIngredientsAmountByFactor -> automatically rounds values
+	
 2.6 beltSorter: improve logging (use configs default log level)
 	rewrite entityId function, easier to read
 	improve caller function for logging

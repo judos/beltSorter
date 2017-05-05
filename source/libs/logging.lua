@@ -2,25 +2,17 @@ libLog = {}
 
 require "constants"
 
-if libLog.debug_master == nil then
-	-- Master switch for debugging, prints debug stuff into the shell where factorio was started from
-	libLog.debug_master = true
-end
-if libLog.debug_level == nil then
-	libLog.debug_level = 2
+-- libLog.debug_master -- Must be set to true for logging to be active
+if libLog.debug_master then
+	libLog.debug_level = libLog.debug_level or 2
 end
 if libLog.testing then
 	-- Master switch for debugging, prints debug stuff into the shell where factorio was started from
-	libLog.debug_master = true 
 	-- 1=info 2=warning 3=error
+	libLog.debug_master = true
 	libLog.debug_level = libLog.debug_level or 1
 	libLog.always_player_print = true
-end
-
-libLog.stack_trace = true
-
-function x(object)
-	return serpent.block(object)
+	libLog.stack_trace = (libLog.stack_trace == nil) and true or libLog.stack_trace;
 end
 
 function info(message)
@@ -39,27 +31,26 @@ end
 
 function libLog.debug(message,level)
 	if not level then level="ANY" end
-	if libLog.debug_master then
-		if type(message) ~= "string" then
-			message = serpent.block(message)
-		end
-		local data = {
-			time = libLog.gameTime(),
-			level = level,
-			name = fullModName,
-			caller = libLog.caller(),
-			message = message
-		}
-		--local str = .." [ "..level.." "..fullModName.." ] "..libLog.caller()..": "..message
-		if level == "ERROR" or libLog.always_player_print then
-			libLog.PlayerPrint(formatWith("[%name - %caller]: %message",data))
-		end
-		local str = formatWith("%time [ %level %name - %caller]: %message",data)
-		if libLog.stack_trace then
-			str = str.."\n"..libLog.traceback()
-		end
-		print(str)
+	if not libLog.debug_master then return end
+	if type(message) ~= "string" then
+		message = serpent.block(message)
 	end
+	local data = {
+		time = libLog.gameTime(),
+		level = level,
+		name = fullModName,
+		caller = libLog.caller(),
+		message = message
+	}
+	--local str = .." [ "..level.." "..fullModName.." ] "..libLog.caller()..": "..message
+	if level == "ERROR" or libLog.always_player_print then
+		libLog.PlayerPrint(formatWith("[%name - %caller]: %message",data))
+	end
+	local str = formatWith("%time [ %level %name - %caller]: %message",data)
+	if libLog.stack_trace then
+		str = str.."\n"..libLog.traceback()
+	end
+	print(str)
 end
 
 function libLog.caller()
