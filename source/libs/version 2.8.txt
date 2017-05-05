@@ -1,3 +1,6 @@
+2.8 beltSorter: correct wrong imports in control.entity system
+	add default init for logging
+
 2.7 config: add entity methods for fetching entities from a category
 	add method to change property of entities in prototype
 	moved many classes, imports might be broken now, use the all.lua to import the files (in libs, libs/prototype)

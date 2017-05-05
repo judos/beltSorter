@@ -3,9 +3,7 @@ libLog = {}
 require "constants"
 
 -- libLog.debug_master -- Must be set to true for logging to be active
-if libLog.debug_master then
-	libLog.debug_level = libLog.debug_level or 2
-end
+
 if libLog.testing then
 	-- Master switch for debugging, prints debug stuff into the shell where factorio was started from
 	-- 1=info 2=warning 3=error
@@ -14,6 +12,9 @@ if libLog.testing then
 	libLog.always_player_print = true
 	libLog.stack_trace = (libLog.stack_trace == nil) and true or libLog.stack_trace;
 end
+
+libLog.debug_level = libLog.debug_level or 2
+
 
 function info(message)
 	if libLog.debug_level<=1 then libLog.debug(message,"INFO") end
@@ -27,6 +28,10 @@ end
 
 function assert2(value,message)
 	assert(value,message.."\n"..debug.traceback())
+end
+
+function x(object)
+	return serpent.block(object)
 end
 
 function libLog.debug(message,level)
