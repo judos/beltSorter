@@ -1,3 +1,4 @@
+require "libs.prototypes.all"
 
 -- Item
 local beltSorter = deepcopy(data.raw["item"]["wooden-chest"])

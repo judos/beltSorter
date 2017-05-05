@@ -1,4 +1,4 @@
-require "libs.functions"
+require "libs.all"
 
 require "prototypes.belt-sorter"
 require "prototypes.everything-else-filter-item"

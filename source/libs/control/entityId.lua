@@ -1,4 +1,4 @@
-require "libs.surfaces"
+require "libs.control.surfaces"
 
 function idOfEntity(entity)
 	assert2(entity,"entity provided must not be nil")

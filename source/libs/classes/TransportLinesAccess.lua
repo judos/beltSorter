@@ -1,4 +1,4 @@
-require "libs.inventory"
+require "libs.control.inventory"
 
 
 TransportLinesAccess = {}

@@ -1,4 +1,4 @@
-require "libs.entityId"
+require "libs.control.entityId"
 require "libs.logging"
 
 -- --------------------------------
