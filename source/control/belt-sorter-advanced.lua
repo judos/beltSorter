@@ -160,7 +160,7 @@ gui["belt-sorter-advanced"].close = function(player)
 	itemSelection_close(player)
 end
 
-gui["belt-sorter-advanced"].click = function(nameArr,player,entity)
+gui["belt-sorter-advanced"].click = function(nameArr,player,entity,button)
 	local fieldName = table.remove(nameArr,1)
 	if fieldName == "slot" then
 		local box = player.gui.left.beltSorterGui.table["beltSorter.slot."..nameArr[1].."."..nameArr[2]]
@@ -177,8 +177,14 @@ gui["belt-sorter-advanced"].click = function(nameArr,player,entity)
 		local data = global.entityData[idOfEntity(entity)]
 		local key = nameArr[1].."."..nameArr[2]..".priority"
 		if not data.guiFilter[key] then data.guiFilter[key] = tonumber(nameArr[1]) end
-		data.guiFilter[key] = data.guiFilter[key] + 1
-		if data.guiFilter[key] == 9 then data.guiFilter[key] = 1 end
+		--change depending on button
+		if button == defines.mouse_button_type.left then
+			data.guiFilter[key] = data.guiFilter[key] + 1
+			if data.guiFilter[key] == 9 then data.guiFilter[key] = 1 end
+		elseif button == defines.mouse_button_type.right then
+			data.guiFilter[key] = data.guiFilter[key] - 1
+			if data.guiFilter[key] == 0 then data.guiFilter[key] = 8 end
+		end
 		m.beltSorterRebuildFilterFromGui(data)
 		m.beltSorterRefreshGui(player,entity)
 	elseif fieldName == "side" then

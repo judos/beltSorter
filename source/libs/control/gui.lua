@@ -35,7 +35,7 @@ gui = {} -- [$entityName] = { open = $function(player,entity),
 -- Implementation
 --------------------------------------------------
 
-local function handleEvent(uiComponentIdentifier,player)
+local function handleEvent(uiComponentIdentifier,player,button)
 	local guiEvent = split(uiComponentIdentifier,".")
 	local eventIsForMod = table.remove(guiEvent,1)
 	if eventIsForMod == "itemSelection" then
@@ -46,7 +46,7 @@ local function handleEvent(uiComponentIdentifier,player)
 		if entityName and gui[entityName] then
 			if gui[entityName].click ~= nil then
 				local entity = global.gui.playerData[player.name].openEntity
-				gui[entityName].click(guiEvent,player,entity)
+				gui[entityName].click(guiEvent,player,entity,button)
 			end
 		elseif entityName == nil then
 			warn("No entityName found for player "..player.name)
@@ -98,7 +98,7 @@ function gui_tick()
 	if global.gui.events ~= nil then
 		if #global.gui.events > 0 then
 			for _,event in pairs(global.gui.events) do
-				handleEvent(event.uiComponentIdentifier, event.player)
+				handleEvent(event.uiComponentIdentifier, event.player, event.button)
 			end
 		end
 		global.gui.event = {}
@@ -132,7 +132,7 @@ script.on_event(defines.events.on_gui_click, function(event)
 	end
 	local player = game.players[event.player_index]
 	local uiComponentIdentifier = event.element.name
-	return handleEvent(uiComponentIdentifier,player)
+	return handleEvent(uiComponentIdentifier,player,event.button)
 end)
 
 --------------------------------------------------
