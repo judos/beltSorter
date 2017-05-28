@@ -90,7 +90,7 @@ data:extend({
 		name = "belt-sorter",
 		icon = "__beltSorter__/graphics/technology/belt-sorter.png",
 		icon_size = 128,
-		prerequisites = {"circuit-network","advanced-electronics" },
+		prerequisites = {"electronics"},
 		effects = {},
 		unit = {
 			count = 50,

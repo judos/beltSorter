@@ -21,7 +21,7 @@ data:extend({
 		ingredients = {
 			{"belt-sorter", 2},
 			{"steel-plate", 4},
-			{"electronic-circuit", 4}
+			{"advanced-circuit", 2}
 		},
 		result = "belt-sorter-advanced"
 	}
@@ -57,7 +57,7 @@ data:extend({
 		name = "belt-sorter-2",
 		icon = "__beltSorter__/graphics/technology/belt-sorter.png",
 		icon_size = 128,
-		prerequisites = {"belt-sorter" },
+		prerequisites = {"belt-sorter", "advanced-electronics" },
 		effects = {},
 		unit = {
 			count = 20,
