@@ -46,7 +46,7 @@ beltSorter.build = function(entity)
 	local data = {}
 
 	local pos = {x = entity.position.x, y=entity.position.y}
-	
+
 	local lamp = entity.surface.create_entity({name="belt-sorter-advanced-lamp",position=pos,force=entity.force})
 	lamp.operable = false
 	lamp.minable = false
@@ -59,11 +59,11 @@ beltSorter.build = function(entity)
 		}
 	}
 	entity.connect_neighbour{wire=defines.wire_type.green,target_entity=lamp}
-	
+
 	-- find config combinator and load it's config
 	local entities = entity.surface.find_entities_filtered{
-		area={{pos.x-0.5,pos.y-0.5},{pos.x+0.5,pos.y+0.5}}, 
-		name="entity-ghost", 
+		area={{pos.x-0.5,pos.y-0.5},{pos.x+0.5,pos.y+0.5}},
+		name="entity-ghost",
 		force=entity.force
 	}
 	local config = nil
@@ -88,7 +88,7 @@ beltSorter.build = function(entity)
 		data.config.minable = false
 		data.config.destructible = false
 	end
-	
+
 	overwriteContent(data,{
 		config = data.config,
 		lamp = lamp,
@@ -128,8 +128,8 @@ end
 gui["belt-sorter-advanced"]={}
 gui["belt-sorter-advanced"].open = function(player,entity)
 	local frame = player.gui.left.add{type="frame",name="beltSorterGui",direction="vertical",caption={"belt-sorter-title"}}
-	frame.add{type="label",name="description",caption={"belt-sorter-advanced-description"}}	
-	frame.add{type="table",name="table",colspan=5}	
+	frame.add{type="label",name="description",caption={"belt-sorter-advanced-description"}}
+	frame.add{type="table",name="table",colspan=7}
 
 	local labels={"up","left","right","down"}
 	for i,label in pairs(labels) do
@@ -141,6 +141,10 @@ gui["belt-sorter-advanced"].open = function(player,entity)
 			for side = 1,2 do
 				sides.add{type="checkbox",name="beltSorter.side."..i.."."..j.."."..side,caption={caption[side]},state=false}
 			end
+
+			--add priority field
+			local prioritycaption = {"priority"}
+			frame.table.add{type="button",name="beltSorter.priority."..i.."."..j,caption={prioritycaption},state=false,caption=i}
 		end
 	end
 	frame.add{type="table",name="settings",colspan=2}
@@ -156,7 +160,7 @@ gui["belt-sorter-advanced"].close = function(player)
 	itemSelection_close(player)
 end
 
-gui["belt-sorter-advanced"].click = function(nameArr,player,entity)
+gui["belt-sorter-advanced"].click = function(nameArr,player,entity,button)
 	local fieldName = table.remove(nameArr,1)
 	if fieldName == "slot" then
 		local box = player.gui.left.beltSorterGui.table["beltSorter.slot."..nameArr[1].."."..nameArr[2]]
@@ -169,6 +173,20 @@ gui["belt-sorter-advanced"].click = function(nameArr,player,entity)
 			m.beltSorterSetSlotFilter(entity,nameArr,nil,nil)
 			m.beltSorterRefreshGui(player,entity)
 		end
+	elseif fieldName == "priority" then
+		local data = global.entityData[idOfEntity(entity)]
+		local key = nameArr[1].."."..nameArr[2]..".priority"
+		if not data.guiFilter[key] then data.guiFilter[key] = tonumber(nameArr[1]) end
+		--change depending on button
+		if button == defines.mouse_button_type.left then
+			data.guiFilter[key] = data.guiFilter[key] + 1
+			if data.guiFilter[key] == 9 then data.guiFilter[key] = 1 end
+		elseif button == defines.mouse_button_type.right then
+			data.guiFilter[key] = data.guiFilter[key] - 1
+			if data.guiFilter[key] == 0 then data.guiFilter[key] = 8 end
+		end
+		m.beltSorterRebuildFilterFromGui(data)
+		m.beltSorterRefreshGui(player,entity)
 	elseif fieldName == "side" then
 		local data = global.entityData[idOfEntity(entity)]
 		local key = nameArr[1].."."..nameArr[2]..".sides"
@@ -224,6 +242,11 @@ m.beltSorterRefreshGui = function(player,entity)
 					element.state = false
 				end
 			end
+
+			--priority
+			element = frame.table["beltSorter.priority."..row.."."..slot]
+			if data.guiFilter[row.."."..slot..".priority"] == nil then data.guiFilter[row.."."..slot..".priority"] = row end
+			element.caption = data.guiFilter[row.."."..slot..".priority"]
 		end
 	end
 end
@@ -249,6 +272,10 @@ m.beltSorterRebuildFilterFromGui = function(data)
 			if itemName then
 				if data.filter[itemName] == nil then data.filter[itemName] = {} end
 				local sides = data.guiFilter[row.."."..slot..".sides"]
+				--add in priority
+				if data.guiFilter[row.."."..slot..".priority"] == nil then data.guiFilter[row.."."..slot..".priority"] = row end
+				local priority = data.guiFilter[row.."."..slot..".priority"]
+				sides[guiSlotsAvailable+1]=priority
 				data.filter[itemName][row] = sides
 			end
 		end
@@ -271,6 +298,9 @@ m.storeConfigToCombinator = function(data)
 			if sides then
 				slotConfig.count = (sides[1] and 1 or 0) + (sides[2] and 2 or 0)
 			end
+			--store priority
+			local priority = bit.lshift(data.guiFilter[row.."."..slot..".priority"], 4)
+			slotConfig.count = slotConfig.count + priority
 			param.parameters[index] = slotConfig
 		end
 	end
@@ -293,6 +323,14 @@ m.loadFilterFromConfig = function(data)
 				end
 				data.guiFilter[row.."."..slot..".sides"] = { bit.band(count,1)>0, bit.band(count,2)>0}
 				info(data.guiFilter[row.."."..slot..".sides"])
+
+				--set priority
+				local priority = bit.rshift(bit.band(count,4))
+				if count < 16 then priority = row end
+				data.guiFilter[row.."."..slot..".priority"] = count
+				info(data.guiFilter[row.."."..slot..".priority"])
+			else
+				data.guiFilter[row.."."..slot..".priority"] = row
 			end
 		end
 	end
@@ -338,7 +376,7 @@ m.beltSorterUpdateCircuitCondition = function(beltSorter,data)
 	else
 		data.condition = true
 	end
-	
+
 	-- check logistic condition
 	if data.condition and behavior.connect_to_logistic_network then
 		conditionTable = behavior.logistic_condition
@@ -348,7 +386,7 @@ m.beltSorterUpdateCircuitCondition = function(beltSorter,data)
 			data.condition = true
 		end
 	end
-	
+
 	local lampCondition = {
 		condition = {
 			comparator= (data.condition and "=" or ">"),
@@ -384,13 +422,38 @@ end
 
 m.distributeItemToSides = function(data,inputAccess,itemName,sideList)
 	local itemStack = {name=itemName,count=1}
+
+	local sides = {}
 	for side,outputOnLanes in pairs(sideList) do
+		--sort sides by priority (stored in outputOnLanes's last item)
+		local priority = outputOnLanes[guiSlotsAvailable+1]
+
+		for row=1,8 do
+			if priority == nil then priority = row end
+			if sides[row] == nil then
+				sides[row] = {}
+				sides[row]["priority"]=priority
+				sides[row]["side"]=side
+				sides[row]["outputOnLanes"]=outputOnLanes
+				break
+			elseif priority < sides[row]["priority"] then
+				--insert above
+				table.insert(sides,row,{priority=priority,side=side,outputOnLanes=outputOnLanes})
+				break
+			end
+		end
+	end
+
+	for row=1,8 do
+	--for side,outputOnLanes in pairs(sides) do
+		if sides[row] == nil then return end --none left to process
+		local side = sides[row]["side"]
 		local outputAccess = data.output[side]
 		if outputAccess then
 			if not outputAccess:isValid() then
 				data.output[side] = nil
 			else
-				m.insertAsManyAsPossible(inputAccess,outputAccess,itemStack,outputOnLanes)
+				m.insertAsManyAsPossible(inputAccess,outputAccess,itemStack,sides[row]["outputOnLanes"])
 			end
 		end
 	end
@@ -411,7 +474,7 @@ m.insertAsManyAsPossible = function(inputAccess,outputAccess,itemStack,outputOnL
 		end
 		curPos = curPos + 0.29
 	end
-	
+
 end
 
 m.beltSorterSearchInputOutput = function(beltSorter,data)
