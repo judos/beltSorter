@@ -161,8 +161,8 @@ gui["belt-sorter-advanced"].click = function(nameArr,player,entity)
 	if fieldName == "slot" then
 		local box = player.gui.left.beltSorterGui.table["beltSorter.slot."..nameArr[1].."."..nameArr[2]]
 		if box.sprite == "" then
-			itemSelection_open(player,function(itemName)
-				m.beltSorterSetSlotFilter(entity,nameArr,itemName,{true,true})
+			itemSelection_open(player,{TYPE_ITEM},function(selected)
+				m.beltSorterSetSlotFilter(entity,nameArr,selected.name,{true,true})
 				m.beltSorterRefreshGui(player,entity)
 			end)
 		else

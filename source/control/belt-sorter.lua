@@ -118,11 +118,11 @@ gui["belt-sorter-v2"].click = function(nameArr,player,entity)
 	if fieldName == "slot" then
 		local box = player.gui.left.beltSorterGui.table["beltSorter.slot."..nameArr[1].."."..nameArr[2]]
 		if box.sprite == "" then
-			itemSelection_open(player,function(itemName)
-				local tip = game.item_prototypes[itemName].localised_name
-				box.sprite = "item/"..itemName
+			itemSelection_open(player,{TYPE_ITEM},function(selected)
+				local tip = selected.prototype.localised_name
+				box.sprite = selected.type.."/"..selected.name
 				box.tooltip = tip
-				m.beltSorterSetSlotFilter(entity,nameArr,itemName)
+				m.beltSorterSetSlotFilter(entity,nameArr,selected.name)
 			end)
 		else
 			box.sprite = ""

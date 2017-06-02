@@ -43,6 +43,10 @@ script.on_configuration_changed(function()
 	if bs.version < "0.3.4" then
 		bs.version = "0.3.4"
 	end
+	if bs.version < "0.3.7" then
+		itemSelection_migration_2_9()
+		bs.version = "0.3.7"
+	end
 	if bs.version ~= previousVersion then
 		info("Previous version: "..previousVersion.." migrated to "..bs.version)
 	end

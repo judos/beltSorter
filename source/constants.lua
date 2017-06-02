@@ -1,5 +1,5 @@
 
-modVersion = "0.3.4" --version of control data, only updated when control.lua changes
+modVersion = "0.3.7" --version of control data, only updated when control.lua changes
 modName = "beltSorter" -- required prefix for all ui name components which can be clicked
 fullModName = "beltSorter" -- required for logging and prototypes
 
