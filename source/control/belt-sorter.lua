@@ -1,5 +1,4 @@
 require "libs.classes.BeltFactory"
-require "libs.itemSelection.control"
 
 -- Registering entity into system
 local beltSorter = {}

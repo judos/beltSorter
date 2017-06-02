@@ -1,5 +1,4 @@
 require "libs.classes.BeltFactory"
-require "libs.itemSelection.control"
 
 -- Registering entity into system
 local beltSorter = {}
@@ -124,9 +123,9 @@ end
 ---------------------------------------------------
 -- gui actions
 ---------------------------------------------------
-
-gui["belt-sorter-advanced"]={}
-gui["belt-sorter-advanced"].open = function(player,entity)
+local beltSorterGui = {}
+gui["belt-sorter-advanced"]=beltSorterGui
+beltSorterGui.open = function(player,entity)
 	local frame = player.gui.left.add{type="frame",name="beltSorterGui",direction="vertical",caption={"belt-sorter-title"}}
 	frame.add{type="label",name="description",caption={"belt-sorter-advanced-description"}}	
 	frame.add{type="table",name="table",colspan=5}	
@@ -135,7 +134,7 @@ gui["belt-sorter-advanced"].open = function(player,entity)
 	for i,label in pairs(labels) do
 		frame.table.add{type="label",name="title"..i,caption={"",{label},":"}}
 		for j=1,guiSlotsAvailable do
-			frame.table.add{type="sprite-button",name="beltSorter.slot."..i.."."..j,style="slot_button_style",sprite=""}
+			frame.table.add{type="choose-elem-button",name="beltSorter.slot."..i.."."..j,elem_type="item"}
 			local sides = frame.table.add{type="table",name="sides."..i.."."..j,colspan=1}
 			local caption = {"left","right"}
 			for side = 1,2 do
@@ -149,26 +148,19 @@ gui["belt-sorter-advanced"].open = function(player,entity)
 	m.beltSorterRefreshGui(player,entity)
 end
 
-gui["belt-sorter-advanced"].close = function(player)
+beltSorterGui.close = function(player)
 	if player.gui.left.beltSorterGui then
 		player.gui.left.beltSorterGui.destroy()
 	end
-	itemSelection_close(player)
 end
 
-gui["belt-sorter-advanced"].click = function(nameArr,player,entity)
+beltSorterGui.click = function(nameArr,player,entity)
 	local fieldName = table.remove(nameArr,1)
 	if fieldName == "slot" then
 		local box = player.gui.left.beltSorterGui.table["beltSorter.slot."..nameArr[1].."."..nameArr[2]]
-		if box.sprite == "" then
-			itemSelection_open(player,{TYPE_ITEM},function(selected)
-				m.beltSorterSetSlotFilter(entity,nameArr,selected.name,{true,true})
-				m.beltSorterRefreshGui(player,entity)
-			end)
-		else
-			m.beltSorterSetSlotFilter(entity,nameArr,nil,nil)
-			m.beltSorterRefreshGui(player,entity)
-		end
+		local itemName = box.elem_value
+		m.beltSorterSetSlotFilter(entity,nameArr,itemName,{false,false})
+		m.beltSorterRefreshGui(player,entity)
 	elseif fieldName == "side" then
 		local data = global.entityData[idOfEntity(entity)]
 		local key = nameArr[1].."."..nameArr[2]..".sides"
@@ -209,10 +201,10 @@ m.beltSorterRefreshGui = function(player,entity)
 			local element = frame.table["beltSorter.slot."..row.."."..slot]
 			if itemName then
 				local tip = game.item_prototypes[itemName].localised_name
-				element.sprite = "item/"..itemName
+				element.elem_value = itemName
 				element.tooltip = tip
 			else
-				element.sprite = ""
+				element.elem_value = nil
 				element.tooltip = ""
 			end
 			for side = 1,2 do
@@ -253,7 +245,6 @@ m.beltSorterRebuildFilterFromGui = function(data)
 			end
 		end
 	end
-	info(data.filter)
 	if data.config then
 		m.storeConfigToCombinator(data)
 	end

@@ -9,12 +9,12 @@ require "libs.logging"
  Data used:
 	global.schedule[tick][idEntity] = {
 		entity = $entity, 
-		[noTick = true],									-- used when entity is premined (to update asap)
+		[noTick = true],									-- no entity update - used when entity is premined (to remove asap)
 		[clearSchedule = true], 					-- used when entity is premined (to clear out of ordinary schedule)
 	}
 	global.entityData[idEntity] = { name=$name, ... }
 	global.entities_cleanup_required = boolean(check and remove all old events)
-	global entityDataVersion = 3
+	global.entityDataVersion = 3
 
 
  Register custom entity build, tick or remove function:
@@ -57,13 +57,20 @@ TICK_SOON = 1 --game.tick used in cleanup when entity should be schedule randoml
 -- -------------------------------------------------
 
 function entities_init()
-	if global.schedule == nil then global.schedule = {} end
-	if global.entityData == nil then global.entityData = {} end
+	if global.schedule == nil then 
+		global.schedule = {}
+		global.entityData = {}
+		global.entityDataVersion = 3
+	end
+	entities_migration()
+end
+
+function entities_migration()
 	if not global.entityDataVersion then
 		entities_migration_V3()
 		global.entityDataVersion = 3
+		info("Migrated entity data to v3")
 	end
-	info("Migrated entity data to v3")
 end
 
 -- -------------------------------------------------

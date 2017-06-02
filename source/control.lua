@@ -15,42 +15,30 @@ require "control.belt-sorter-config"
 ---------------------------------------------------
 -- Init
 ---------------------------------------------------
-script.on_init(function()
+
+local function migration()
+	local bs = global.beltSorter
+	local previousVersion = bs.version
+	if bs.version < "0.3.7" then
+		bs.version = "0.3.7"
+	end
+	if bs.version ~= previousVersion then
+		info("Previous version: "..previousVersion.." migrated to "..bs.version)
+	end
+end
+
+local function init()
 	if not global.beltSorter then global.beltSorter = {} end
 	local bs = global.beltSorter
 	if not bs.version then bs.version = modVersion end
 	
 	entities_init()
 	gui_init()
-	
-end)
+	migration()
+end
 
-script.on_load(function()
-	info(global)
-end)
-
-script.on_configuration_changed(function()
-	local bs = global.beltSorter
-	local previousVersion = bs.version
-	if bs.version < "0.2.2" then
-		entities_init() --does migration
-		bs.version = "0.2.2"
-	end
-	if bs.version < "0.3.0" then
-		bs.version = "0.3.0"
-		entities_init() --does migration
-	end
-	if bs.version < "0.3.4" then
-		bs.version = "0.3.4"
-	end
-	if bs.version < "0.3.7" then
-		itemSelection_migration_2_9()
-		bs.version = "0.3.7"
-	end
-	if bs.version ~= previousVersion then
-		info("Previous version: "..previousVersion.." migrated to "..bs.version)
-	end
-end)
+script.on_init(init)
+script.on_configuration_changed(init)
 
 
 ---------------------------------------------------

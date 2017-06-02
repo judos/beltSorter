@@ -1,4 +1,3 @@
-require "libs.itemSelection.control"
 
 -- Constants:
 local guiUpdateEveryTicks = 5
@@ -31,19 +30,36 @@ gui = {} -- [$entityName] = { open = $function(player,entity),
 -- This helper file uses the following global data variables:
 -- global.gui.playerData[$playerName].openGui = $(name of opened entity)
 --                                   .openEntity = $(reference of LuaEntity)
---            events[$tick] = { {$uiComponentIdentifier, $player}, ... }
+--     "      events[$tick] = { {$uiComponentIdentifier, $player}, ... }
+--     "      version = $number
 
 --------------------------------------------------
 -- Implementation
 --------------------------------------------------
 
+
+function gui_init()
+	if global.gui == nil then
+		global.gui = {
+			playerData = {},
+			events = {},
+			version = 1
+		}
+	end
+	local prevGui = global.gui.version
+	if not global.gui.version then
+		global.gui.version = 1
+		global.itemSelection = nil
+	end
+	if global.gui.version ~= prevGui then
+		info("Migrated gui version to "..tostring(global.gui.version))
+	end
+end
+
 local function handleEvent(uiComponentIdentifier,player)
 	local guiEvent = split(uiComponentIdentifier,".")
 	local eventIsForMod = table.remove(guiEvent,1)
-	if eventIsForMod == "itemSelection" then
-		itemSelection_gui_event(guiEvent,player)
-		return false
-	elseif eventIsForMod == modName then
+	if eventIsForMod == modName then
 		local entityName = global.gui.playerData[player.name].openGui
 		if entityName and gui[entityName] then
 			if gui[entityName].click ~= nil then
@@ -66,16 +82,6 @@ end
 function gui_scheduleEvent(uiComponentIdentifier,player)
 	global.gui.events = global.gui.events or {}
 	table.insert(global.gui.events,{uiComponentIdentifier=uiComponentIdentifier,player=player})
-end
-
-
-function gui_init()
-	if global.gui == nil then
-		global.gui = {
-			playerData = {},
-			events = {}
-		}
-	end
 end
 
 local function playerCloseGui(player,playerData,openGui)
@@ -123,21 +129,20 @@ function gui_tick()
 	end
 end
 
+
 --------------------------------------------------
 -- Event registration
 --------------------------------------------------
 
-script.on_event(defines.events.on_gui_click, function(event)
+local function handleGuiEvent(event)
 	local player = game.players[event.player_index]
 	local uiComponentIdentifier = event.element.name
 	return handleEvent(uiComponentIdentifier,player)
-end)
+end
 
-script.on_event(defines.events.on_gui_text_changed, function(event)
-	local player = game.players[event.player_index]
-	local uiComponentIdentifier = event.element.name
-	return handleEvent(uiComponentIdentifier,player)
-end)
+script.on_event(defines.events.on_gui_click,handleGuiEvent)
+script.on_event(defines.events.on_gui_text_changed,handleGuiEvent)
+script.on_event(defines.events.on_gui_elem_changed,handleGuiEvent)
 
 --------------------------------------------------
 -- Helper functions
