@@ -1,5 +1,15 @@
 require "constants"
 
+function emptyImage()
+	return {
+		filename = "__"..fullModName.."__/graphics/empty.png",
+		priority = "low",
+		width = 1,
+		height = 1,
+		shift = {0,0}
+  }
+end
+
 function addItem(itemName, subgroup, order, stackSize)
 	data:extend({
 		{

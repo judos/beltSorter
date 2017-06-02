@@ -1,5 +1,7 @@
+require "libs.itemSelection.control"
+
 -- Constants:
-local guiUpdateEveryTicks = 15
+local guiUpdateEveryTicks = 5
 
 --------------------------------------------------
 -- API
@@ -62,7 +64,7 @@ local function handleEvent(uiComponentIdentifier,player)
 end
 
 function gui_scheduleEvent(uiComponentIdentifier,player)
-	global.gui.events = {}
+	global.gui.events = global.gui.events or {}
 	table.insert(global.gui.events,{uiComponentIdentifier=uiComponentIdentifier,player=player})
 end
 
@@ -96,12 +98,13 @@ end
 function gui_tick()
 	if game.tick % guiUpdateEveryTicks ~= 0 then return end
 	if global.gui.events ~= nil then
-		if #global.gui.events > 0 then
-			for _,event in pairs(global.gui.events) do
+		local events = global.gui.events
+		global.gui.events = nil
+		if #events > 0 then
+			for _,event in pairs(events) do
 				handleEvent(event.uiComponentIdentifier, event.player)
 			end
 		end
-		global.gui.event = {}
 	end
 	for _,player in pairs(game.players) do
 		if player.connected then
@@ -125,11 +128,12 @@ end
 --------------------------------------------------
 
 script.on_event(defines.events.on_gui_click, function(event)
-	if event.element.style and event.element.style.name then
-		if event.element.style.name:starts("item-") then
-			event.element.state = true
-		end
-	end
+	local player = game.players[event.player_index]
+	local uiComponentIdentifier = event.element.name
+	return handleEvent(uiComponentIdentifier,player)
+end)
+
+script.on_event(defines.events.on_gui_text_changed, function(event)
 	local player = game.players[event.player_index]
 	local uiComponentIdentifier = event.element.name
 	return handleEvent(uiComponentIdentifier,player)

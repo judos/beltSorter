@@ -1,11 +1,15 @@
 
-function overwriteContent(originalTable,newContent)
+function overwriteContent(originalTable,newContent,removeRef)
 	if originalTable == nil then
 		err("could not overwrite content of nil with new content: "..serpent.block(newContent))
 		return
 	end
 	for k,d in pairs(newContent) do
-		originalTable[k]=d
+		if d == removeRef then
+			originalTable[k]=nil
+		else
+			originalTable[k]=d
+		end
 	end
 end
 
