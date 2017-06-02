@@ -6,7 +6,7 @@ require "libs.control.functions"
 require "constants"
 
 require "control.belt-sorter"
-require "control.belt-sorter-advanced"
+require "control.belt-sorter-gui"
 require "control.belt-sorter-config"
 
 -- global data used:
@@ -53,7 +53,6 @@ end)
 -- Building Entities
 ---------------------------------------------------
 script.on_event(defines.events.on_built_entity, function(event)
-	--info(event.created_entity.type)
 	entities_build(event)
 end)
 script.on_event(defines.events.on_robot_built_entity, function(event)
@@ -72,7 +71,7 @@ script.on_event(defines.events.on_preplayer_mined_item, function(event)
 end)
 
 ---------------------------------------------------
--- Removing entities
+-- Others
 ---------------------------------------------------
 
 script.on_event(defines.events.on_entity_settings_pasted, function(event)
