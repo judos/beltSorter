@@ -13,7 +13,7 @@ local function picture(lvl,mode)
 		height = 64,
 		shift = {0, 0},
 		hr_version = {
-			filename="__beltSorter__/graphics/entity/belt-sorter"..lvl.."hr"..mode..".png",
+			filename="__beltSorter__/graphics/entity/belt-sorter"..lvl.."-hr-"..mode..".png",
 			width = 128,
 			height = 128,
 			scale = 0.5
@@ -35,7 +35,7 @@ for i=1,3 do
 		picture_off = picture(i,"off"),
 		picture_on = picture(i,"on")
 	})
-	beltSorter.minable.result = "belt-sorter"
+	beltSorter.minable.result = "belt-sorter"..i
 	data:extend({	beltSorter })
 
 	-- Entity: fake lamp for wire connection
