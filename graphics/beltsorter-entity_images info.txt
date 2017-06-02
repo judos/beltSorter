@@ -1,0 +1,1 @@
+use technology image and rescale as 79x79. Then move by {1,4} to mach the overlays
