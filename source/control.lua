@@ -6,7 +6,6 @@ require "libs.control.functions"
 require "constants"
 
 require "control.belt-sorter"
-require "control.belt-sorter-gui"
 require "control.belt-sorter-config"
 
 -- global data used:
@@ -20,6 +19,7 @@ local function migration()
 	local bs = global.beltSorter
 	local previousVersion = bs.version
 	if bs.version < "0.3.7" then
+		beltSorter.migrateData()
 		bs.version = "0.3.7"
 	end
 	if bs.version ~= previousVersion then

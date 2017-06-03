@@ -1,10 +1,12 @@
 require "libs.classes.BeltFactory"
+require "control.belt-sorter-gui"
 
 -- Registering entity into system
-local beltSorter = {}
-entities["belt-sorter1"] = beltSorter
-entities["belt-sorter2"] = beltSorter
-entities["belt-sorter3"] = beltSorter
+local beltSorterEntity = {}
+entities["belt-sorter1"] = beltSorterEntity
+entities["belt-sorter2"] = beltSorterEntity
+entities["belt-sorter3"] = beltSorterEntity
+beltSorter = {} -- methods of beltSorter
 
 -- Constants
 local searchPriority = {{0,-1},{-1,0},{1,0},{0,1}}
@@ -25,8 +27,12 @@ local minimalUpdateTicks = 80
 -- {
 --   lamp = LuaEntity(fake lamp),
 --	 config = LuaEntity(fake constant combinator to store settings)
---   filter[$itemName] = { $row1, $row2, ... }
+--   filter[$itemName][$row] = { $bool, $bool }
 --   guiFilter[$row.."."..$slot] = $itemName
+--            [$row.."."..$slot..".sides"] = { $bool, $bool } (on which belt lane should itmes go)
+--   lvl = $number (1=basic,2=average,3=advanced)
+--   condition = $bool (whether circuit condition allows entity to work
+--   nextConditionUpdate = int(tick) (when next check of circuit condition is done)
 -- }
 
 --------------------------------------------------
@@ -36,15 +42,50 @@ local minimalUpdateTicks = 80
 -- This helper file uses the following global data variables:
 -- global.gui.playerData[$playerName].beltSorterGuiCopy = $guiFilter
 
+--------------------------------------------------
+-- Migration
+--------------------------------------------------
+--
+
+beltSorter.migrateData = function()
+	for id,data in pairs(global.entityData) do
+		if data.name=="belt-sorter-v2" then
+			data.name = "belt-sorter1"
+			data.lvl = 1
+			
+			-- extend guiFilter with beltLane sides arr
+			local newKeys={}
+			for slotIndex,_ in pairs(data.guiFilter) do
+				newKeys[slotIndex..".sides"] = {true,true}
+			end
+			for k,v in pairs(newKeys) do data.guiFilter[k] = v end
+			beltSorterGui.rebuildFilterFromGui(data)
+			
+			local entity = entityOfId(id,"belt-sorter1")
+			beltSorter.createConfig(data,entity)
+		elseif data.name=="belt-sorter-advanced" then
+			data.name = "belt-sorter2"
+			data.lvl = 2
+		end
+	end
+end
+
+beltSorter.log = function(data)
+	local toLog = deepcopy(data)
+	toLog.input = nil
+	toLog.output = nil
+	return toLog
+end
+
 ---------------------------------------------------
 -- build and remove
 ---------------------------------------------------
 
-beltSorter.build = function(entity)
+beltSorterEntity.build = function(entity)
 	scheduleAdd(entity, TICK_ASAP)
 	local data = {}
 
-	local pos = {x = entity.position.x, y=entity.position.y}
+	local pos = entity.position
 	local lvl = tonumber(entity.name:sub(-1))
 	local lamp = entity.surface.create_entity({name="belt-sorter-lamp"..lvl,position=pos,force=entity.force})
 	lamp.operable = false
@@ -73,31 +114,34 @@ beltSorter.build = function(entity)
 		end
 	end
 	if config then
-		info("built belt-sorter and found config for it")
 		_,data.config = config.revive()
-		beltSorter_LoadFilterFromConfig(data)
+		beltSorter.loadFilterFromConfig(data)
 	else
-		info("built belt-sorter but no config was found")
-		data.config = entity.surface.create_entity({
-			name = "belt-sorter-config-combinator",
-			position = {pos.x,pos.y+0.2},
-			force = entity.force
-		})
-		data.config.operable = false
-		data.config.minable = false
-		data.config.destructible = false
+		
 	end
 	
 	overwriteContent(data,{
 		config = data.config,
 		lamp = lamp,
 		filter = data.filter or {},
-		guiFilter = data.guiFilter or {}
+		guiFilter = data.guiFilter or {},
+		lvl = tonumber(entity.name:sub(-1))
 	})
 	return data
 end
 
-beltSorter.remove = function(data)
+beltSorter.createConfig = function(data,entity)
+	data.config = entity.surface.create_entity({
+		name = "belt-sorter-config-combinator",
+		position = {entity.position.x,entity.position.y+0.2},
+		force = entity.force
+	})
+	data.config.operable = false
+	data.config.minable = false
+	data.config.destructible = false
+end
+
+beltSorterEntity.remove = function(data)
 	if data.lamp and data.lamp.valid then
 		data.lamp.destroy()
 	end
@@ -106,7 +150,7 @@ beltSorter.remove = function(data)
 	end
 end
 
-beltSorter.copy = function(source,srcData,target,targetData)
+beltSorterEntity.copy = function(source,srcData,target,targetData)
 	info(target.name:sub(1,11))
 	if not target.name:sub(1,11) == "belt-sorter" then
 		return
@@ -114,34 +158,37 @@ beltSorter.copy = function(source,srcData,target,targetData)
 	info("adv Copy entity: "..serpent.block(srcData).." target: "..serpent.block(targetData))
 
 	targetData.guiFilter = deepcopy(srcData.guiFilter)
-	beltSorter_RebuildFilterFromGui(targetData)
+	beltSorter.rebuildFilterFromGui(targetData)
 	local playersWithGuiOfTarget = gui_playersWithOpenGuiOf(target)
 	for _,player in pairs(playersWithGuiOfTarget) do
-		beltSorter_RefreshGui(player,target)
+		beltSorter.refreshGui(player,target)
 	end
 end
 
 
-beltSorter.tick = function(beltSorter,data)
+beltSorterEntity.tick = function(entity,data)
+	if true then
+		return nextUpdate,nil
+	end
 	if not data then
-		err("Error occured with beltSorter: "..idOfEntity(beltSorter))
+		err("Error occured with beltSorter: "..idOfEntity(entity))
 		return 0,nil
 	end
 	if data.condition == nil or data.nextConditionUpdate == nil or data.nextConditionUpdate <= game.tick then
-		beltSorter_UpdateCircuitCondition(beltSorter,data)
+		beltSorter.updateCircuitCondition(entity,data)
 		if data.condition == false then
 			return minimalUpdateTicks,nil
 		end
 	end
 
-	local energyPercentage = math.min(beltSorter.energy,2666) / 2666
+	local energyPercentage = math.min(entity.energy,2666) / 2666
 	local nextUpdate
 	if energyPercentage < 12/minimalUpdateTicks then
 		nextUpdate = minimalUpdateTicks
 	else
 		nextUpdate = math.floor(12 / energyPercentage)
-		beltSorter_SearchInputOutput(beltSorter,data)
-		beltSorter_DistributeItems(beltSorter,data)
+		beltSorter.searchInputOutput(entity,data)
+		beltSorter.distributeItems(entity,data)
 		data.input = nil
 		data.output = nil
 	end
@@ -154,7 +201,7 @@ end
 ---------------------------------------------------
 
 
-beltSorter_UpdateCircuitCondition = function(beltSorter,data)
+beltSorter.updateCircuitCondition = function(beltSorter,data)
 	-- check circuit
 	local behavior = beltSorter.get_or_create_control_behavior()
 	local conditionTable = behavior.circuit_condition
@@ -185,7 +232,7 @@ beltSorter_UpdateCircuitCondition = function(beltSorter,data)
 	data.nextConditionUpdate = game.tick + 60
 end
 
-beltSorter_DistributeItems = function(beltSorter,data)
+beltSorter.distributeItems = function(entity,data)
 	-- Search for input (only loop if items available), mostly only 1 input
 	for inputSide,inputAccess in pairs(data.input) do
 		if not inputAccess:isValid() then
@@ -194,11 +241,11 @@ beltSorter_DistributeItems = function(beltSorter,data)
 			for itemName,_ in pairs(inputAccess:get_contents()) do
 				local sideList = data.filter[itemName]
 				if sideList then
-					beltSorter_DistributeItemToSides(data,inputAccess,itemName,sideList)
+					beltSorter.distributeItemToSides(data,inputAccess,itemName,sideList)
 				else -- item can go nowhere, check rest filter
 					sideList = data.filter["belt-sorter-everythingelse"]
 					if sideList then
-						beltSorter_DistributeItemToSides(data,inputAccess,itemName,sideList)
+						beltSorter.distributeItemToSides(data,inputAccess,itemName,sideList)
 					end
 				end
 			end
@@ -207,7 +254,7 @@ beltSorter_DistributeItems = function(beltSorter,data)
 end
 
 
-beltSorter_DistributeItemToSides = function(data,inputAccess,itemName,sideList)
+beltSorter.distributeItemToSides = function(data,inputAccess,itemName,sideList)
 	local itemStack = {name=itemName,count=1}
 	for side,outputOnLanes in pairs(sideList) do
 		local outputAccess = data.output[side]
@@ -215,13 +262,13 @@ beltSorter_DistributeItemToSides = function(data,inputAccess,itemName,sideList)
 			if not outputAccess:isValid() then
 				data.output[side] = nil
 			else
-				beltSorter_InsertAsManyAsPossible(inputAccess,outputAccess,itemStack,outputOnLanes)
+				beltSorter.insertAsManyAsPossible(inputAccess,outputAccess,itemStack,outputOnLanes)
 			end
 		end
 	end
 end
 
-beltSorter_InsertAsManyAsPossible = function(inputAccess,outputAccess,itemStack,outputOnLanes)
+beltSorter.insertAsManyAsPossible = function(inputAccess,outputAccess,itemStack,outputOnLanes)
 	local curPos = 0.13
 	while curPos <= 1 do
 		if outputOnLanes[1] and outputAccess:can_insert_on_at(false,curPos) then
@@ -239,7 +286,7 @@ beltSorter_InsertAsManyAsPossible = function(inputAccess,outputAccess,itemStack,
 	
 end
 
-beltSorter_SearchInputOutput = function(beltSorter,data)
+beltSorter.searchInputOutput = function(beltSorter,data)
 	local surface = beltSorter.surface
 	local x = beltSorter.position.x
 	local y = beltSorter.position.y

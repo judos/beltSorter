@@ -6,7 +6,7 @@ local guiColspans = {3,7,10}
 -- Initialize and register
 ---------------------------------------------------
 
-local beltSorterGui = {}
+beltSorterGui = {}
 gui["belt-sorter1"]=beltSorterGui
 gui["belt-sorter2"]=beltSorterGui
 gui["belt-sorter3"]=beltSorterGui
@@ -44,7 +44,7 @@ beltSorterGui.open = function(player,entity)
 	frame.add{type="table",name="settings",colspan=2}
 	frame.settings.add{type="button",name="beltSorter.copy",caption={"copy"}}
 	frame.settings.add{type="button",name="beltSorter.paste",caption={"paste"}}
-	beltSorter_RefreshGui(player,entity,lvl)
+	beltSorterGui.refreshGui(player,entity)
 end
 
 beltSorterGui.close = function(player)
@@ -54,34 +54,31 @@ beltSorterGui.close = function(player)
 end
 
 beltSorterGui.click = function(nameArr,player,entity)
-	local lvl = tonumber(entity.name:sub(-1))
+	local data = global.entityData[idOfEntity(entity)]
 	local fieldName = table.remove(nameArr,1)
 	if fieldName == "slot" then
 		local box = player.gui.left.beltSorterGui.table["beltSorter.slot."..nameArr[1].."."..nameArr[2]]
 		local itemName = box.elem_value
 		local activeBeltLanes = {false,false}
-		if lvl == 1 then activeBeltLanes = {true,true} end
-		beltSorter_SetSlotFilter(entity,nameArr,itemName,activeBeltLanes)
-		beltSorter_RefreshGui(player,entity,lvl)
+		if data.lvl == 1 then activeBeltLanes = {true,true} end
+		beltSorterGui.setSlotFilter(entity,nameArr,itemName,activeBeltLanes)
+		beltSorterGui.refreshGui(player,entity)
 	elseif fieldName == "side" then
-		local data = global.entityData[idOfEntity(entity)]
 		local key = nameArr[1].."."..nameArr[2]..".sides"
 		if not data.guiFilter[key] then data.guiFilter[key] = {} end
 		local side = tonumber(nameArr[3])
 		data.guiFilter[key][side] = not data.guiFilter[key][side]
-		beltSorter_RebuildFilterFromGui(data)
-		beltSorter_RefreshGui(player,entity,lvl)
+		beltSorterGui.rebuildFilterFromGui(data)
+		beltSorterGui.refreshGui(player,entity)
 	elseif fieldName == "copy" then
 		if global.gui.playerData[player.name] == nil then global.gui.playerData[player.name] = {} end
-		local data = global.entityData[idOfEntity(entity)]
 		global.gui.playerData[player.name].beltSorterGuiCopy = deepcopy(data.guiFilter)
 	elseif fieldName == "paste" then
 		local playerData = global.gui.playerData[player.name]
 		if playerData ~= nil and playerData.beltSorterGuiCopy ~= nil then
-			local data = global.entityData[idOfEntity(entity)]
 			data.guiFilter = playerData.beltSorterGuiCopy
-			beltSorter_RefreshGui(player,entity,lvl)
-			beltSorter_RebuildFilterFromGui(data)
+			beltSorterGui.refreshGui(player,entity)
+			beltSorterGui.rebuildFilterFromGui(data)
 		end
 --	else --may happen if you click a table or some button which is not defined yet
 --		info("unknown gui clicked: "..nameArr)
@@ -92,17 +89,17 @@ end
 -- Methods
 ---------------------------------------------------
 
-beltSorter_RefreshGui = function(player,entity,lvl)
+beltSorterGui.refreshGui = function(player,entity)
 	local data = global.entityData[idOfEntity(entity)]
 	if not data then
 		err("no data found for "..entity.name.." id:"..idOfEntity(entity)..". Remove it and place it again!")
-		gui["belt-sorter"..lvl].close(player)
+		gui[entity.name].close(player)
 		return
 	end
 	if data.guiFilter == nil then return end
 	local frame = player.gui.left.beltSorterGui
 	for row = 1,4 do
-		for slot = 1,guiSlotsAvailable[lvl] do
+		for slot = 1,guiSlotsAvailable[data.lvl] do
 			local itemName = data.guiFilter[row.."."..slot]
 			local element = frame.table["beltSorter.slot."..row.."."..slot]
 			if itemName then
@@ -113,7 +110,7 @@ beltSorter_RefreshGui = function(player,entity,lvl)
 				element.elem_value = nil
 				element.tooltip = ""
 			end
-			if lvl>1 then
+			if data.lvl>1 then
 				for side = 1,2 do
 					element = frame.table["sides."..row.."."..slot]["beltSorter.side."..row.."."..slot.."."..side]
 					local sideFilter = data.guiFilter[row.."."..slot..".sides"]
@@ -132,19 +129,19 @@ end
 -- data handling
 ---------------------------------------------------
 
-beltSorter_SetSlotFilter = function(entity,nameArr,itemName,sides)
+beltSorterGui.setSlotFilter = function(entity,nameArr,itemName,sides)
 	local data = global.entityData[idOfEntity(entity)]
 	if data.guiFilter == nil then data.guiFilter = {} end
 	data.guiFilter[nameArr[1].."."..nameArr[2]] = itemName
 	data.guiFilter[nameArr[1].."."..nameArr[2]..".sides"] = sides
-	beltSorter_RebuildFilterFromGui(data)
+	beltSorterGui.rebuildFilterFromGui(data)
 end
 
-beltSorter_RebuildFilterFromGui = function(data)
+beltSorterGui.rebuildFilterFromGui = function(data)
 	data.filter = {}
 	if not data.guiFilter then return end
 	for row = 1,4 do
-		for slot = 1,guiSlotsAvailable do
+		for slot = 1,guiSlotsAvailable[data.lvl] do
 			local itemName = data.guiFilter[row.."."..slot]
 			if itemName then
 				if data.filter[itemName] == nil then data.filter[itemName] = {} end
@@ -154,16 +151,16 @@ beltSorter_RebuildFilterFromGui = function(data)
 		end
 	end
 	if data.config then
-		beltSorter_StoreConfigToCombinator(data)
+		beltSorterGui.storeConfigToCombinator(data)
 	end
 end
 
-function beltSorter_StoreConfigToCombinator(data)
+beltSorterGui.storeConfigToCombinator = function(data)
 	local behavior = data.config.get_or_create_control_behavior()
 	local param = behavior.parameters
 	for row = 1,4 do
-		for slot = 1,guiSlotsAvailable do
-			local index = (row-1)*guiSlotsAvailable + slot
+		for slot = 1,guiSlotsAvailable[data.lvl] do
+			local index = (row-1)*guiSlotsAvailable[data.lvl] + slot
 			local sides = data.guiFilter[row.."."..slot..".sides"]
 			local slotConfig = { count = 0, index = index, signal = {type="item"}}
 			slotConfig.signal.name = data.guiFilter[row.."."..slot]
@@ -176,13 +173,13 @@ function beltSorter_StoreConfigToCombinator(data)
 	behavior.parameters = param
 end
 
-function beltSorter_LoadFilterFromConfig(data)
+beltSorterGui.loadFilterFromConfig = function(data)
 	local params = data.config.get_or_create_control_behavior().parameters.parameters
 	info(params)
 	if not data.guiFilter then data.guiFilter = {} end
 	for row = 1,4 do
-		for slot = 1,guiSlotsAvailable do
-			local index = (row-1)*guiSlotsAvailable + slot
+		for slot = 1,guiSlotsAvailable[data.lvl] do
+			local index = (row-1)*guiSlotsAvailable[data.lvl] + slot
 			if params[index].signal.name then
 				data.guiFilter[row.."."..slot] = params[index].signal.name
 				info(tostring(index).." "..tostring(params[index].signal.name))
@@ -195,5 +192,5 @@ function beltSorter_LoadFilterFromConfig(data)
 			end
 		end
 	end
-	beltSorter_RebuildFilterFromGui(data)
+	beltSorterGui.rebuildFilterFromGui(data)
 end
