@@ -16,7 +16,10 @@ local rowIndexToDirection = {
 	[3]=defines.direction.east,
 	[4]=defines.direction.south
 }
-local minimalUpdateTicks = 80
+local minimalUpdateTicks = 60
+local energy = {25,50,100} --kW
+local energyFactor = 17.7777
+local maxUpdateTicks = {36,18,12}
 
 
 ---------------------------------------------------
@@ -158,18 +161,15 @@ beltSorterEntity.copy = function(source,srcData,target,targetData)
 	info("adv Copy entity: "..serpent.block(srcData).." target: "..serpent.block(targetData))
 
 	targetData.guiFilter = deepcopy(srcData.guiFilter)
-	beltSorter.rebuildFilterFromGui(targetData)
+	beltSorterGui.rebuildFilterFromGui(targetData)
 	local playersWithGuiOfTarget = gui_playersWithOpenGuiOf(target)
 	for _,player in pairs(playersWithGuiOfTarget) do
-		beltSorter.refreshGui(player,target)
+		beltSorterGui.refreshGui(player,target)
 	end
 end
 
 
 beltSorterEntity.tick = function(entity,data)
-	if true then
-		return nextUpdate,nil
-	end
 	if not data then
 		err("Error occured with beltSorter: "..idOfEntity(entity))
 		return 0,nil
@@ -181,12 +181,12 @@ beltSorterEntity.tick = function(entity,data)
 		end
 	end
 
-	local energyPercentage = math.min(entity.energy,2666) / 2666
-	local nextUpdate
-	if energyPercentage < 12/minimalUpdateTicks then
+	local maxEnergy = energy[data.lvl] * energyFactor
+	local energyPercentage = math.min(entity.energy,maxEnergy) / maxEnergy
+	local nextUpdate= math.floor(maxUpdateTicks[data.lvl] / energyPercentage)
+	if nextUpdate>minimalUpdateTicks then
 		nextUpdate = minimalUpdateTicks
 	else
-		nextUpdate = math.floor(12 / energyPercentage)
 		beltSorter.searchInputOutput(entity,data)
 		beltSorter.distributeItems(entity,data)
 		data.input = nil
