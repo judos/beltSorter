@@ -158,13 +158,33 @@ beltSorterEntity.copy = function(source,srcData,target,targetData)
 	if not target.name:sub(1,11) == "belt-sorter" then
 		return
 	end
-	info("adv Copy entity: "..serpent.block(srcData).." target: "..serpent.block(targetData))
+	beltSorter.replaceFilter(target,targetData,srcData.guiFilter)
+end
 
-	targetData.guiFilter = deepcopy(srcData.guiFilter)
-	beltSorterGui.rebuildFilterFromGui(targetData)
-	local playersWithGuiOfTarget = gui_playersWithOpenGuiOf(target)
+beltSorter.replaceFilter = function(entity,data,newGuiFilter)
+	data.guiFilter = deepcopy(newGuiFilter)
+	beltSorter.sanityCheckFilter(data)
+	info("Copy entity data. filter after sanity checks: "..serpent.block(data.guiFilter))
+
+	beltSorterGui.rebuildFilterFromGui(data)
+	local playersWithGuiOfTarget = gui_playersWithOpenGuiOf(entity)
 	for _,player in pairs(playersWithGuiOfTarget) do
-		beltSorterGui.refreshGui(player,target)
+		beltSorterGui.refreshGui(player,entity)
+	end
+end
+
+beltSorter.sanityCheckFilter = function(data)
+	if data.lvl < 2 then
+		local newFilter = {}
+		for side=1,4 do
+			for slot=1,beltSorterGui.slotsAvailable[1] do
+				if data.guiFilter[side.."."..slot] then
+					newFilter[side.."."..slot] = data.guiFilter[side.."."..slot]
+					newFilter[side.."."..slot..".sides"] = {true,true}
+				end
+			end
+		end
+		data.guiFilter = newFilter
 	end
 end
 

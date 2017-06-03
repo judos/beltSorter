@@ -1,12 +1,12 @@
 
-local guiSlotsAvailable = {2,3,4} -- basic/average/advanced version
-local guiColspans = {3,7,10}
-
 ---------------------------------------------------
 -- Initialize and register
 ---------------------------------------------------
 
-beltSorterGui = {}
+beltSorterGui = {
+	slotsAvailable = {2,3,4} -- basic/average/advanced version
+}
+
 gui["belt-sorter1"]=beltSorterGui
 gui["belt-sorter2"]=beltSorterGui
 gui["belt-sorter3"]=beltSorterGui
@@ -18,13 +18,14 @@ gui["belt-sorter3"]=beltSorterGui
 beltSorterGui.open = function(player,entity)
 	local lvl = tonumber(entity.name:sub(-1))
 	local frame = player.gui.left.add{type="frame",name="beltSorterGui",direction="vertical",caption={"belt-sorter-title"}}
-	frame.add{type="label",name="description",caption={"belt-sorter-advanced-description"}}	
-	frame.add{type="table",name="table",colspan=guiColspans[lvl]}	
+	frame.add{type="label",name="description",caption={"belt-sorter-advanced-description"}}
+	local colspans = {3,7,10}	
+	frame.add{type="table",name="table",colspan=colspans[lvl]}	
 
 	local labels={"up","left","right","down"}
 	for i,label in pairs(labels) do
 		frame.table.add{type="label",name="title"..i,caption={"",{label},":"}}
-		for j=1,guiSlotsAvailable[lvl] do
+		for j=1,beltSorterGui.slotsAvailable[lvl] do
 			frame.table.add{type="choose-elem-button",name="beltSorter.slot."..i.."."..j,elem_type="item"}
 			if lvl>1 then
 				local sides = frame.table.add{type="table",name="sides."..i.."."..j,colspan=1}
@@ -76,9 +77,7 @@ beltSorterGui.click = function(nameArr,player,entity)
 	elseif fieldName == "paste" then
 		local playerData = global.gui.playerData[player.name]
 		if playerData ~= nil and playerData.beltSorterGuiCopy ~= nil then
-			data.guiFilter = playerData.beltSorterGuiCopy
-			beltSorterGui.refreshGui(player,entity)
-			beltSorterGui.rebuildFilterFromGui(data)
+			beltSorter.replaceFilter(entity,data,playerData.beltSorterGuiCopy)
 		end
 --	else --may happen if you click a table or some button which is not defined yet
 --		info("unknown gui clicked: "..nameArr)
@@ -99,7 +98,7 @@ beltSorterGui.refreshGui = function(player,entity)
 	if data.guiFilter == nil then return end
 	local frame = player.gui.left.beltSorterGui
 	for row = 1,4 do
-		for slot = 1,guiSlotsAvailable[data.lvl] do
+		for slot = 1,beltSorterGui.slotsAvailable[data.lvl] do
 			local itemName = data.guiFilter[row.."."..slot]
 			local element = frame.table["beltSorter.slot."..row.."."..slot]
 			if itemName then
@@ -141,7 +140,7 @@ beltSorterGui.rebuildFilterFromGui = function(data)
 	data.filter = {}
 	if not data.guiFilter then return end
 	for row = 1,4 do
-		for slot = 1,guiSlotsAvailable[data.lvl] do
+		for slot = 1,beltSorterGui.slotsAvailable[data.lvl] do
 			local itemName = data.guiFilter[row.."."..slot]
 			if itemName then
 				if data.filter[itemName] == nil then data.filter[itemName] = {} end
@@ -159,8 +158,8 @@ beltSorterGui.storeConfigToCombinator = function(data)
 	local behavior = data.config.get_or_create_control_behavior()
 	local param = behavior.parameters
 	for row = 1,4 do
-		for slot = 1,guiSlotsAvailable[data.lvl] do
-			local index = (row-1)*guiSlotsAvailable[data.lvl] + slot
+		for slot = 1,beltSorterGui.slotsAvailable[data.lvl] do
+			local index = (row-1)*beltSorterGui.slotsAvailable[data.lvl] + slot
 			local sides = data.guiFilter[row.."."..slot..".sides"]
 			local slotConfig = { count = 0, index = index, signal = {type="item"}}
 			slotConfig.signal.name = data.guiFilter[row.."."..slot]
@@ -178,8 +177,8 @@ beltSorterGui.loadFilterFromConfig = function(data)
 	info(params)
 	if not data.guiFilter then data.guiFilter = {} end
 	for row = 1,4 do
-		for slot = 1,guiSlotsAvailable[data.lvl] do
-			local index = (row-1)*guiSlotsAvailable[data.lvl] + slot
+		for slot = 1,beltSorterGui.slotsAvailable[data.lvl] do
+			local index = (row-1)*beltSorterGui.slotsAvailable[data.lvl] + slot
 			if params[index].signal.name then
 				data.guiFilter[row.."."..slot] = params[index].signal.name
 				info(tostring(index).." "..tostring(params[index].signal.name))
