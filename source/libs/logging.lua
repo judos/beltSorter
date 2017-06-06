@@ -49,7 +49,7 @@ function libLog.debug(message,level)
 	}
 	--local str = .." [ "..level.." "..fullModName.." ] "..libLog.caller()..": "..message
 	if level == "ERROR" or libLog.always_player_print then
-		libLog.PlayerPrint(formatWith("[%name - %caller]: %message",data))
+		game.print(formatWith("[%name - %caller]: %message",data))
 	end
 	local str = formatWith("%time [ %level %name - %caller]: %message",data)
 	if libLog.stack_trace then
@@ -97,11 +97,3 @@ function libLog.gameTime()
 	return h..":"..m..":"..s
 end
 
-function libLog.PlayerPrint(message)
-	if not game then
-		return
-	end
-	for _,player in pairs(game.players) do
-		player.print(message)
-	end
-end

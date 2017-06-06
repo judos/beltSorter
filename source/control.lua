@@ -18,7 +18,7 @@ require "control.belt-sorter-config"
 local function migration()
 	local bs = global.beltSorter
 	local previousVersion = bs.version
-	info("Previous version: "..previousVersion)
+	--info("Previous version: "..previousVersion)
 	if bs.version < "0.3.7" then
 		beltSorter.migrateData37()
 		bs.version = "0.3.7"

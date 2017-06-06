@@ -149,7 +149,7 @@ function entities_tick()
 				end
 			end
 		elseif entityId == "text" then
-			PlayerPrint(entity)
+			game.print(entity)
 		else
 			-- if entity was removed, remove it from memory
 			entities_remove(entityId)

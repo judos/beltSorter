@@ -65,7 +65,6 @@ beltSorter.migrateData37 = function()
 				newKeys[slotIndex..".sides"] = {true,true}
 			end
 			for k,v in pairs(newKeys) do data.guiFilter[k] = v end
-			--beltSorterGui.rebuildFilterFromGui(data)
 			
 			local entity = entityOfId(id,"belt-sorter1")
 			beltSorter.createConfig(data,entity)
@@ -77,13 +76,32 @@ beltSorter.migrateData37 = function()
 end
 
 beltSorter.migrateData40 = function()
+	local intro=false
 	for id,data in pairs(global.entityData) do
 		for row = 1,4 do
 			data.guiFilter[row] = row
 		end
+		if data.lvl == 1 then
+			local problem = ""
+			local side = {"up","left","right","down"}
+			for row=1,4 do
+				for slot=3,4 do --old slots no longer available
+					if data.guiFilter[row.."."..slot] ~= nil then
+						problem = problem .. data.guiFilter[row.."."..slot].."("..side[row]..") ,"
+					end
+				end
+			end
+			if problem then
+				if not intro then
+					game.print("[BeltSorter] Due to a change in the slot amounts of the normal BeltSorter some problem occured:")
+					game.print("[BeltSorter] (coordinates are printed in the format: surface_x_y)")
+					intro = true
+				end
+				game.print("[BeltSorter] at "..id.." some filter was removed: "..problem.." please check!")
+			end
+		end
 		beltSorterGui.rebuildFilterFromGui(data)
 	end
-	info("updated to 0.4.0")
 end
 	
 beltSorter.log = function(data)

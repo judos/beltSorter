@@ -2,6 +2,7 @@
 	remove itemSelection dialog
 	MIGRATION:
 		- call gui_init(), entities_init() in on_init/on_configuration_changed
+		- remove calls to libLog.PlayerPrint (use game.print instead)
 
 2.9 integratedCircuitry: 	
 	prototypes: add emptyImage function to 
