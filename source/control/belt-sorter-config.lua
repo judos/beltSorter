@@ -25,7 +25,8 @@ ghost.tick = function(entity,data)
 		}
 		local beltSorter
 		for i=1,#entities do
-			if entities[i].ghost_name == "belt-sorter-advanced" then
+			local entityName = entities[i].ghost_name:sub(1,11)
+			if entityName == "belt-sorter" then
 				data.beltSorter = entities[i]
 				info("found belt-sorter")
 				break
@@ -43,7 +44,8 @@ end
 
 
 ghost.premine = function(entity,data,player)
-	if entity.ghost_name == "belt-sorter-advanced" then
+	local entityName = entity.ghost_name:sub(1,11)	
+	if entityName == "belt-sorter" then
 		info("removed belt-sorter ghost")
 		local pos = entity.position
 		local entities = entity.surface.find_entities_filtered{
