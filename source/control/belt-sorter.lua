@@ -117,11 +117,12 @@ end
 
 beltSorterEntity.build = function(entity)
 	scheduleAdd(entity, TICK_ASAP)
-	local data = {}
+	local data = {
+		lvl = tonumber(entity.name:sub(-1))
+	}
 
 	local pos = entity.position
-	local lvl = tonumber(entity.name:sub(-1))
-	local lamp = entity.surface.create_entity({name="belt-sorter-lamp"..lvl,position=pos,force=entity.force})
+	local lamp = entity.surface.create_entity({name="belt-sorter-lamp"..data.lvl,position=pos,force=entity.force})
 	lamp.operable = false
 	lamp.minable = false
 	lamp.destructible = false
@@ -149,7 +150,7 @@ beltSorterEntity.build = function(entity)
 	end
 	if config then
 		_,data.config = config.revive()
-		beltSorter.loadFilterFromConfig(data)
+		beltSorterGui.loadFilterFromConfig(data)
 	else
 		beltSorter.createConfig(data,entity)
 	end
@@ -163,7 +164,6 @@ beltSorterEntity.build = function(entity)
 		guiFilter = data.guiFilter or {
 			[1]=1,[2]=2,[3]=3,[4]=4
 		},
-		lvl = lvl
 	})
 	return data
 end

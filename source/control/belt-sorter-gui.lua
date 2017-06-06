@@ -203,13 +203,17 @@ beltSorterGui.storeConfigToCombinator = function(data)
 			end
 			param.parameters[index] = slotConfig
 		end
+		param.parameters[16+row] = { 
+			index = 16+row, 
+			signal = {type="item", name="belt-sorter-everythingelse"}, 
+			count = data.guiFilter[row]
+		} 
 	end
 	behavior.parameters = param
 end
 
 beltSorterGui.loadFilterFromConfig = function(data)
 	local params = data.config.get_or_create_control_behavior().parameters.parameters
-	info(params)
 	if not data.guiFilter then data.guiFilter = {} end
 	for row = 1,4 do
 		for slot = 1,beltSorterGui.slotsAvailable[data.lvl] do
@@ -225,6 +229,13 @@ beltSorterGui.loadFilterFromConfig = function(data)
 				info(data.guiFilter[row.."."..slot..".sides"])
 			end
 		end
+		if params[row+16] and params[row+16].signal.name then
+			info(params[row+16])
+			data.guiFilter[row] = params[row+16].count --priority of row
+		else
+			data.guiFilter[row] = row
+		end
 	end
+	info(data.guiFilter)
 	beltSorterGui.rebuildFilterFromGui(data)
 end
