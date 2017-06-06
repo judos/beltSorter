@@ -1,3 +1,5 @@
-- add animation of belt-sorter
+
+- performence improvement for input/output search
+- logistics integration on beltSorter
+	(option for advanced sorter: request/provide items)
 - logistics belt hub
-- 2x2 late game machine which allows a lot more options of sorting
