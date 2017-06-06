@@ -151,7 +151,7 @@ beltSorterEntity.build = function(entity)
 		_,data.config = config.revive()
 		beltSorter.loadFilterFromConfig(data)
 	else
-		
+		beltSorter.createConfig(data,entity)
 	end
 	
 	overwriteContent(data,{
@@ -220,6 +220,11 @@ beltSorter.sanityCheckFilter = function(data)
 			end
 		end
 		data.guiFilter = newFilter
+	end
+	if data.lvl < 3 then
+		for side=1,4 do
+			data.guiFilter[side] = side
+		end
 	end
 end
 
