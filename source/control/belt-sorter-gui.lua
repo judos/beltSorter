@@ -19,7 +19,7 @@ beltSorterGui.open = function(player,entity)
 	local lvl = tonumber(entity.name:sub(-1))
 	local frame = player.gui.left.add{type="frame",name="beltSorterGui",direction="vertical",caption={"belt-sorter-title"}}
 	frame.add{type="label",name="description",caption={"belt-sorter-advanced-description"}}
-	local colspans = {3,7,10}	
+	local colspans = {3,7,13}	
 	frame.add{type="table",name="table",colspan=colspans[lvl]}	
 
 	local labels={"up","left","right","down"}
@@ -36,9 +36,9 @@ beltSorterGui.open = function(player,entity)
 			end
 		end
 		if lvl>2 then
-			local prioList = frame.table.add{type="table",name="priority"..i,colspan=4}
+			--local prioList = frame.table.add{type="table",name="priority"..i,colspan=4}
 			for prio = 1,4 do
-				prioList.add{type="button",name="beltSorter.prio."..i.."."..prio,caption=tostring(prio),state=false}
+				frame.table.add{type="flow",name="flow."..i.."."..prio}
 			end
 		end
 	end
@@ -79,14 +79,34 @@ beltSorterGui.click = function(nameArr,player,entity)
 		if playerData ~= nil and playerData.beltSorterGuiCopy ~= nil then
 			beltSorter.replaceFilter(entity,data,playerData.beltSorterGuiCopy)
 		end
---	else --may happen if you click a table or some button which is not defined yet
---		info("unknown gui clicked: "..nameArr)
+	elseif fieldName == "prio" then
+		beltSorterGui.adjustPriorities(data,tonumber(nameArr[1]),tonumber(nameArr[2]))
+		beltSorterGui.refreshGui(player,entity)
+		beltSorterGui.rebuildFilterFromGui(data)
+	else --may happen if you click a table or some button which is not defined yet
+		info("unknown gui clicked: "..fieldName.." arr: "..serpent.block(nameArr))
 	end
 end
 
 ---------------------------------------------------
 -- Methods
 ---------------------------------------------------
+
+beltSorterGui.adjustPriorities = function(data,setRow,newPrio)
+	local oldPrio = data.guiFilter[setRow]
+	local bigger = (newPrio > oldPrio)
+	
+	for row = 1,4 do
+		local prio = data.guiFilter[row]
+		if bigger and prio<=newPrio and prio>oldPrio then
+			data.guiFilter[row] = prio-1
+		elseif prio>= newPrio and prio<oldPrio then
+			data.guiFilter[row] = prio+1
+		end
+	end
+	data.guiFilter[setRow] = newPrio
+end
+
 
 beltSorterGui.refreshGui = function(player,entity)
 	local data = global.entityData[idOfEntity(entity)]
@@ -121,6 +141,17 @@ beltSorterGui.refreshGui = function(player,entity)
 				end
 			end
 		end
+		if data.lvl>2 then
+			for prio = 1,4 do
+				local flow = frame.table["flow."..row.."."..prio]
+				flow.clear()
+				if data.guiFilter[row] == prio then
+					flow.add{type="label",caption=prio}
+				else
+					flow.add{type="button",name="beltSorter.prio."..row.."."..prio,caption=tostring(prio),state=false}
+				end
+			end
+		end
 	end
 end
 
@@ -140,12 +171,16 @@ beltSorterGui.rebuildFilterFromGui = function(data)
 	data.filter = {}
 	if not data.guiFilter then return end
 	for row = 1,4 do
+		data.filter[data.guiFilter[row]] = row
+	end
+	for prio = 1,4 do
+		local row = data.filter[prio]
 		for slot = 1,beltSorterGui.slotsAvailable[data.lvl] do
 			local itemName = data.guiFilter[row.."."..slot]
 			if itemName then
 				if data.filter[itemName] == nil then data.filter[itemName] = {} end
 				local sides = data.guiFilter[row.."."..slot..".sides"]
-				data.filter[itemName][row] = sides
+				table.insert(data.filter[itemName], {row, sides})
 			end
 		end
 	end

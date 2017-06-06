@@ -18,9 +18,14 @@ require "control.belt-sorter-config"
 local function migration()
 	local bs = global.beltSorter
 	local previousVersion = bs.version
+	info("Previous version: "..previousVersion)
 	if bs.version < "0.3.7" then
-		beltSorter.migrateData()
+		beltSorter.migrateData37()
 		bs.version = "0.3.7"
+	end
+	if bs.version < "0.4.0" then
+		beltSorter.migrateData40()
+		bs.version = "0.4.0"
 	end
 	if bs.version ~= previousVersion then
 		info("Previous version: "..previousVersion.." migrated to "..bs.version)
@@ -31,7 +36,6 @@ local function init()
 	if not global.beltSorter then global.beltSorter = {} end
 	local bs = global.beltSorter
 	if not bs.version then bs.version = modVersion end
-	
 	entities_init()
 	gui_init()
 	migration()

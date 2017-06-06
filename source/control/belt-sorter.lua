@@ -30,9 +30,12 @@ local maxUpdateTicks = {36,18,12}
 -- {
 --   lamp = LuaEntity(fake lamp),
 --	 config = LuaEntity(fake constant combinator to store settings)
---   filter[$itemName][$row] = { $bool, $bool }
+--   filter[$itemName] = { {$int(side), {$bool(putOnLeftLane), $bool(putOnRightLane)}} }
+--                       This is an ordered list to support output priority
+--   filter[$prio] = $rowIndex
 --   guiFilter[$row.."."..$slot] = $itemName
 --            [$row.."."..$slot..".sides"] = { $bool, $bool } (on which belt lane should itmes go)
+--            [$row] = $prio
 --   lvl = $number (1=basic,2=average,3=advanced)
 --   condition = $bool (whether circuit condition allows entity to work
 --   nextConditionUpdate = int(tick) (when next check of circuit condition is done)
@@ -50,7 +53,7 @@ local maxUpdateTicks = {36,18,12}
 --------------------------------------------------
 --
 
-beltSorter.migrateData = function()
+beltSorter.migrateData37 = function()
 	for id,data in pairs(global.entityData) do
 		if data.name=="belt-sorter-v2" then
 			data.name = "belt-sorter1"
@@ -62,7 +65,7 @@ beltSorter.migrateData = function()
 				newKeys[slotIndex..".sides"] = {true,true}
 			end
 			for k,v in pairs(newKeys) do data.guiFilter[k] = v end
-			beltSorterGui.rebuildFilterFromGui(data)
+			--beltSorterGui.rebuildFilterFromGui(data)
 			
 			local entity = entityOfId(id,"belt-sorter1")
 			beltSorter.createConfig(data,entity)
@@ -73,6 +76,16 @@ beltSorter.migrateData = function()
 	end
 end
 
+beltSorter.migrateData40 = function()
+	for id,data in pairs(global.entityData) do
+		for row = 1,4 do
+			data.guiFilter[row] = row
+		end
+		beltSorterGui.rebuildFilterFromGui(data)
+	end
+	info("updated to 0.4.0")
+end
+	
 beltSorter.log = function(data)
 	local toLog = deepcopy(data)
 	toLog.input = nil
@@ -126,9 +139,13 @@ beltSorterEntity.build = function(entity)
 	overwriteContent(data,{
 		config = data.config,
 		lamp = lamp,
-		filter = data.filter or {},
-		guiFilter = data.guiFilter or {},
-		lvl = tonumber(entity.name:sub(-1))
+		filter = data.filter or {
+			[1]=1,[2]=2,[3]=3,[4]=4
+		},
+		guiFilter = data.guiFilter or {
+			[1]=1,[2]=2,[3]=3,[4]=4
+		},
+		lvl = lvl
 	})
 	return data
 end
@@ -254,8 +271,10 @@ end
 
 beltSorter.distributeItems = function(entity,data)
 	-- Search for input (only loop if items available), mostly only 1 input
-	for inputSide,inputAccess in pairs(data.input) do
-		if not inputAccess:isValid() then
+	for prio = 1,4 do
+		local inputSide = data.filter[prio]
+		local inputAccess = data.input[inputSide]
+		if not inputAccess or not inputAccess:isValid() then
 			data.input[inputSide] = nil
 		else
 			for itemName,_ in pairs(inputAccess:get_contents()) do
@@ -276,7 +295,9 @@ end
 
 beltSorter.distributeItemToSides = function(data,inputAccess,itemName,sideList)
 	local itemStack = {name=itemName,count=1}
-	for side,outputOnLanes in pairs(sideList) do
+	for _,arr in pairs(sideList) do
+		local side = arr[1]
+		local outputOnLanes = arr[2]
 		local outputAccess = data.output[side]
 		if outputAccess then
 			if not outputAccess:isValid() then
