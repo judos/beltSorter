@@ -90,11 +90,12 @@ beltSorter.migrateData40 = function()
 			end
 		end
 		if data.lvl == 1 then
-			local problem = ""
+			local problem = nil
 			local side = {"up","left","right","down"}
 			for row=1,4 do
 				for slot=3,4 do --old slots no longer available
 					if data.guiFilter[row.."."..slot] ~= nil then
+						if not problem then problem = "" end
 						problem = problem .. data.guiFilter[row.."."..slot].."("..side[row]..") ,"
 					end
 				end
