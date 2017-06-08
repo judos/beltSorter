@@ -81,6 +81,14 @@ beltSorter.migrateData40 = function()
 		for row = 1,4 do
 			data.guiFilter[row] = row
 		end
+		for row=1,4 do
+			for slot=1,4 do
+				local name = data.guiFilter[row.."."..slot]
+				if name ~= nil and game.item_prototypes[name] == nil then
+					data.guiFilter[row.."."..slot] = nil
+				end
+			end
+		end
 		if data.lvl == 1 then
 			local problem = ""
 			local side = {"up","left","right","down"}
