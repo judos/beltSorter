@@ -1,20 +1,20 @@
 {
 	"item": [
 		["belt-sorter", "belt-sorter1" ],
-		["belt-sorter-advanced", "belt-sorter2" ],
+		["belt-sorter-advanced", "belt-sorter2" ]
 	],
 	"entity": [
 		["belt-sorter-v2", "belt-sorter1" ],
 		["belt-sorter-advanced", "belt-sorter2" ],
 		["belt-sorter-lamp", "belt-sorter-lamp1"],
-		["belt-sorter-advanced-lamp", "belt-sorter-lamp2"],
+		["belt-sorter-advanced-lamp", "belt-sorter-lamp2"]
 	],
 	"technology": [
 		["belt-sorter", "belt-sorter1"],
-		["belt-sorter-2", "belt-sorter2"],
+		["belt-sorter-2", "belt-sorter2"]
 	],
 	"recipe": [
 		["belt-sorter", "belt-sorter1"],
-		["belt-sorter-advanced", "belt-sorter2"],
-	],
+		["belt-sorter-advanced", "belt-sorter2"]
+	]
 }

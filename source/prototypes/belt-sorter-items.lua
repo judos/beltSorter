@@ -7,6 +7,7 @@ for i=1,3 do
 		subgroup = "inserter",
 		place_result = "belt-sorter"..i,
 		icon = "__beltSorter__/graphics/icons/belt-sorter"..i..".png",
+		icon_size = 32,
 		fuel_value = "0MJ"
 	})
 	data:extend({	beltSorter })

@@ -8,7 +8,8 @@ data:extend({
 			{"steel-plate", 5},
 			{"electronic-circuit", 4}
 		},
-		result = "belt-sorter1"
+		result = "belt-sorter1",
+		icon_size = 32
 	},
 	{
 		type = "recipe",
@@ -18,7 +19,8 @@ data:extend({
 			{"belt-sorter1", 1},
 			{"advanced-circuit", 4}
 		},
-		result = "belt-sorter2"
+		result = "belt-sorter2",
+		icon_size = 32
 	},
 	{
 		type = "recipe",
@@ -28,6 +30,7 @@ data:extend({
 			{"belt-sorter2", 1},
 			{"processing-unit", 4}
 		},
-		result = "belt-sorter3"
+		result = "belt-sorter3",
+		icon_size = 32
 	}
 })

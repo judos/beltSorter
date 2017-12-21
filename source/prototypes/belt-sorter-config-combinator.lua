@@ -11,7 +11,8 @@ local entity = deepcopy(data.raw["constant-combinator"]["constant-combinator"])
 overwriteContent(entity,{
 	name = "belt-sorter-config-combinator",
 	item_slot_count = 20,
-	icon = "__beltSorter__/graphics/icons/belt-sorter-config.png",
+  icon = "__beltSorter__/graphics/icons/belt-sorter-config.png",
+  icon_size = 32,
 	minable = {hardness = 10, mining_time = 10, results={}},
 	order = "zzz",
 	collision_box = {{0,0},{0,0}},
@@ -25,7 +26,8 @@ data:extend({entity})
 local item = deepcopy(data.raw["item"]["constant-combinator"])
 overwriteContent(item,{
 	name = "belt-sorter-config-combinator",
-	icon = "__beltSorter__/graphics/icons/belt-sorter-config.png",
+  icon = "__beltSorter__/graphics/icons/belt-sorter-config.png",
+  icon_size = 32,
 	flags = {"goes-to-main-inventory", "hidden"},
 	place_result = "belt-sorter-config-combinator"
 })

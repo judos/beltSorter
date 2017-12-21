@@ -30,6 +30,7 @@ for i=1,3 do
 	overwriteContent(beltSorter, {
 		name = "belt-sorter"..i,
 		icon = "__beltSorter__/graphics/icons/belt-sorter"..i..".png",
+		icon_size = 32,
 		energy_usage_per_tick = tostring(energy[i]).."KW",
 		light = {intensity = 0, size = 0},
 		picture_off = picture(i,"off"),
@@ -43,6 +44,7 @@ for i=1,3 do
 	overwriteContent(beltSorterLamp, {
 		name = "belt-sorter-lamp"..i,
 		icon = "__beltSorter__/graphics/icons/belt-sorter"..i..".png",
+		icon_size = 32,
 		order = "zzz",
 		collision_box = {{0, 0}, {0, 0}},
 		selection_box = {{0, 0}, {0, 0}},
