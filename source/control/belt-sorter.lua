@@ -374,11 +374,13 @@ beltSorter.searchInputOutput = function(beltSorter,data)
 		for _,searchType in pairs(BeltFactory.supportedTypes) do
 			local candidates = surface.find_entities_filtered{position = searchPoint, type= searchType}
 			for _,entity in pairs(candidates) do
-				local access = BeltFactory.accessFor(entity,searchPoint,beltSorter.position)
-				if access:isInput() then
-					data.input[rowIndex] = access
-				else
-					data.output[rowIndex] = access
+				if not entity.to_be_deconstructed(entity.force) then
+					local access = BeltFactory.accessFor(entity,searchPoint,beltSorter.position)
+					if access:isInput() then
+						data.input[rowIndex] = access
+					else
+						data.output[rowIndex] = access
+					end
 				end
 			end
 		end
