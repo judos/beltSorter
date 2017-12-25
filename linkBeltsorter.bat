@@ -1,1 +1,1 @@
-mklink /j "mods/beltSorter_0.3.7" "D:\modding\factorio\beltSorter\source"
+mklink /j "mods/beltSorter_0.5.0" "D:\modding\factorio\beltSorter\source"

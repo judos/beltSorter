@@ -18,6 +18,7 @@ data:extend({
 		type = "item",
 		name = "belt-sorter-everythingelse",
 		order = "z[belt-sprter-everythingelse]",
+		icon_size = 32,
 		icon = "__beltSorter__/graphics/icons/belt-sorter-everythingelse.png",
 		subgroup = "beltSorter-filters",
 		stack_size = 1,
