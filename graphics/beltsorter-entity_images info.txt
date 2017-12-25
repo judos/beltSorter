@@ -1,1 +1,7 @@
 use technology image and rescale as 79x79. Then move by {1,4} to mach the overlays
+
+tints = 
+
+basic:    e1e325 (225,225,37)
+fast:     ca503b (202,80,59)
+express:  3b78ca (59,120,202)

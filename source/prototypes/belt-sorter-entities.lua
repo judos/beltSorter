@@ -36,6 +36,7 @@ for i=1,3 do
 		picture_on = picture(i,"on")
 	})
 	beltSorter.minable.result = "belt-sorter"..i
+	beltSorter.circuit_connector_sprites = nil
 	data:extend({	beltSorter })
 
 	-- Entity: fake lamp for wire connection
@@ -56,5 +57,6 @@ for i=1,3 do
 		picture_off= noPicture,
 		picture_on = picture(i,"on")
 	})
+	beltSorterLamp.circuit_connector_sprites = nil
 	data:extend({	beltSorterLamp })
 end
