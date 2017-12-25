@@ -86,7 +86,7 @@ function recipeChangeCostsByFactor(recipeNameS, factor, roundValues)
 	info("These recipes will cost "..tostring(factor).."x of everything: "..serpent.block(recipeNameS))
 	for _,name in pairs(recipeNameS) do
 		local recipe = data.raw.recipe[name]
-		for _,data in pairs(recipe.ingredients) do
+		for _,data in pairs(recipe.ingredients or recipe.normal.ingredients) do
 			if data.type then
 				data.amount = (data.amount or 1) * factor
 				if roundValues then data.amount = round(data.amount) end
@@ -128,6 +128,7 @@ function ChangeRecipe(Name, Ingredient1, Ingredient2, Amount)
 	error("Use recipeReplaceIngredient function instead")
 end
 
+
 function recipeReplaceIngredient(name, ingredient1, ingredient2, amount)
 	for k, v in pairs(data.raw["recipe"][name].ingredients) do
 		if v[1] == ingredient1 then table.remove(data.raw["recipe"][name].ingredients, k) end
@@ -136,16 +137,42 @@ function recipeReplaceIngredient(name, ingredient1, ingredient2, amount)
 end
 
 
+function recipeReplaceResult(recipeName, result1, result2, newAmount)
+	local recipe = data.raw.recipe[recipeName]
+	if recipe.result == result1 then
+		recipe.result = result2
+		if newAmount then recipe.result_count = newAmount end
+	elseif recipe.results then
+		for _,result in pairs(recipe.results) do
+			if result[1] == result1 then
+				result[1] = result2
+				if newAmount then result[2] = newAmount end
+			elseif result["name"] == result1 then
+				result["name"] = result2
+				if newAmount then result["amount"] = newAmount end
+			end
+		end
+	end
+end
+
+
 function recipeItemAmount(recipe,itemName)
+	if recipe.ingredients == nil then err("ingredient list is nil for recipe: "..serpent.block(recipe)) end
 	for _,tuple in pairs(recipe.ingredients) do
-		if tuple[1] == itemName then 
+		if tuple["name"] == itemName then
+			return tuple["amount"]
+		elseif tuple[1] == itemName then 
 			return tuple[2]
 		end
 	end
 	return 0
 end
 
-function recipeResultsItemAmount(recipe,itemName)
+function recipeResultsItemAmount(recipe,itemName,difficulty)
+	if difficulty == nil then difficulty = "normal" end
+	if recipe.results == nil and recipe.result == nil then
+		return recipeResultsItemAmount(recipe[difficulty],itemName,difficulty)
+	end
 	if recipe.results == nil then
 		if recipe.result == itemName then
 			return recipe.result_count or 1
@@ -153,12 +180,19 @@ function recipeResultsItemAmount(recipe,itemName)
 		return 0
 	end
 	for _,tuple in pairs(recipe.results) do
-		if tuple[1] == itemName then
+		if tuple["name"] == itemName then
+			return tuple["amount"]
+		elseif tuple[1] == itemName then
 			return tuple[2]
 		end
 	end
 	return 0
 end
+
+function recipeResultsContain(recipe,itemName)
+	return recipeResultsItemAmount(recipe,itemName) > 0
+end
+
 
 -- ingredient must be e.g. { type="item", name="stone", amount="1" }
 function recipeAddIngredient(recipe,ingredientNew)

@@ -1,3 +1,22 @@
+3.3 integratedCircuitry
+	added: prototypesForGroup in control.functions
+	removed: idOfEntity_v21, entityOfId_v21
+	added: positionOfId in control.entityId
+	changes:
+		gui - better error message when events can't be routed to a button
+
+3.2 hardCrafting
+	fix logging error when game is nil
+	fix prototypes class not dealing with advanced stack tables
+	fix simple logging doesn't show proper source file name
+	added recipeResultsContain
+	fix a few recipe helper methods not working for recipes which have difficulty table for ingredients/results
+	fix entities_pre_mined error
+
+3.1 robotMiningSite
+	resources: fix error with nil values for resources without probabilities
+	logging: do not enforce player logging when testing flag is set
+
 3.0 beltSorter
 	remove itemSelection dialog
 	MIGRATION:

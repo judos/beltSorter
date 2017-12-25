@@ -75,7 +75,7 @@ local function handleEvent(uiComponentIdentifier,player)
 		return true
 	else
 		-- gui event might be from other mods
-		info("unknown gui event occured: "..serpent.block(uiComponentIdentifier))
+		info("unknown gui event occured: "..serpent.block(uiComponentIdentifier)..". If this component belongs to your mod it should contain \"$modName.\" as the beginning of the component name.")
 	end
 end
 

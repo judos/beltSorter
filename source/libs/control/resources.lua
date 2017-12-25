@@ -7,7 +7,7 @@ function getMiningResultItems(resource)
 	local resultStacks = {}
 	for _,itemDescription in pairs(products) do
 		if itemDescription.type == "item" then
-			local prob = itemDescription.probability
+			local prob = itemDescription.probability or 1
 			local isInfinite = resource.prototype.infinite_resource
 			if isInfinite then
 				--NOTE: The minimum_resource_amount is calculated wrongly and the normal_resource_amount isn't available at all
@@ -19,7 +19,7 @@ function getMiningResultItems(resource)
 			end
 			local randomValue = math.random()
 			if randomValue<prob then
-				local amount = math.random(itemDescription.amount_min, itemDescription.amount_max)
+				local amount = math.random(itemDescription.amount_min or 1, itemDescription.amount_max or 1)
 				table.insert(resultStacks,{name=itemDescription.name, count = amount})
 			elseif isInfinite then
 				table.insert(resultStacks,{name="fake-generated-item", count = 1})
