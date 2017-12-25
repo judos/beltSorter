@@ -15,7 +15,7 @@ ghost.build = function(entity)
 end
 
 ghost.tick = function(entity,data)
-	info("tick ghost entity")
+	info("tick "..entity.ghost_name)
 	if not data.beltSorter then
 		local pos = entity.position
 		local entities = entity.surface.find_entities_filtered{
@@ -25,8 +25,8 @@ ghost.tick = function(entity,data)
 		}
 		local beltSorter
 		for i=1,#entities do
-			local entityName = entities[i].ghost_name:sub(1,11)
-			if entityName == "belt-sorter" then
+			local ghostName = entities[i].ghost_name
+			if ghostName:sub(1,11) == "belt-sorter" and ghostName ~= "belt-sorter-config-combinator" then
 				data.beltSorter = entities[i]
 				info("found belt-sorter")
 				break

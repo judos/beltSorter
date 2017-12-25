@@ -76,19 +76,7 @@ beltSorterEntity.build = function(entity)
 	}
 	entity.connect_neighbour{wire=defines.wire_type.green,target_entity=lamp}
 	
-	-- find config combinator and load it's config
-	local entities = entity.surface.find_entities_filtered{
-		area={{pos.x-0.5,pos.y-0.5},{pos.x+0.5,pos.y+0.5}}, 
-		name="entity-ghost", 
-		force=entity.force
-	}
-	local config = nil
-	for i = 1,#entities do
-		if entities[i].ghost_name == "belt-sorter-config-combinator" then
-			config = entities[i]
-			break
-		end
-	end
+	local config = beltSorter.findConfigGhost(pos,entity)
 	if config then
 		_,data.config = config.revive()
 		beltSorterGui.loadFilterFromConfig(data)
@@ -109,6 +97,20 @@ beltSorterEntity.build = function(entity)
 	return data
 end
 
+beltSorter.findConfigGhost = function(pos,entity)
+	local entities = entity.surface.find_entities_filtered{
+		area={{pos.x-0.5,pos.y-0.5},{pos.x+0.5,pos.y+0.5}}, 
+		name="entity-ghost", 
+		force=entity.force
+	}
+	local config = nil
+	for i = 1,#entities do
+		if entities[i].ghost_name == "belt-sorter-config-combinator" then
+			return entities[i]
+		end
+	end
+end
+
 beltSorter.createConfig = function(data,entity)
 	data.config = entity.surface.create_entity({
 		name = "belt-sorter-config-combinator",
@@ -121,11 +123,14 @@ beltSorter.createConfig = function(data,entity)
 end
 
 beltSorterEntity.remove = function(data)
+	if data.config and data.config.valid then
+		data.config.destructible = true
+		data.config.die(nil)
+		local ghost = beltSorter.findConfigGhost(data.lamp.position,data.lamp)
+		entities_build({created_entity = ghost})
+	end
 	if data.lamp and data.lamp.valid then
 		data.lamp.destroy()
-	end
-	if data.config and data.config.valid then
-		data.config.destroy()
 	end
 end
 
