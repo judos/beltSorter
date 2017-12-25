@@ -20,7 +20,7 @@ beltSorterGui.open = function(player,entity)
 	local frame = player.gui.left.add{type="frame",name="beltSorterGui",direction="vertical",caption={"belt-sorter-title"}}
 	frame.add{type="label",name="description",caption={"belt-sorter-advanced-description"}}
 	local colspans = {3,7,13}	
-	frame.add{type="table",name="table",colspan=colspans[lvl]}	
+	frame.add{type="table",name="table",colspan=colspans[lvl], column_count=3}	
 
 	local labels={"up","left","right","down"}
 	for i,label in pairs(labels) do
@@ -28,7 +28,7 @@ beltSorterGui.open = function(player,entity)
 		for j=1,beltSorterGui.slotsAvailable[lvl] do
 			frame.table.add{type="choose-elem-button",name="beltSorter.slot."..i.."."..j,elem_type="item"}
 			if lvl>1 then
-				local sides = frame.table.add{type="table",name="sides."..i.."."..j,colspan=1}
+				local sides = frame.table.add{type="table",name="sides."..i.."."..j,colspan=1, column_count=3}
 				local caption = {"left","right"}
 				for side = 1,2 do
 					sides.add{type="checkbox",name="beltSorter.side."..i.."."..j.."."..side,caption={caption[side]},state=false}
@@ -42,7 +42,7 @@ beltSorterGui.open = function(player,entity)
 			end
 		end
 	end
-	frame.add{type="table",name="settings",colspan=2}
+	frame.add{type="table",name="settings",colspan=2, column_count=3}
 	frame.settings.add{type="button",name="beltSorter.copy",caption={"copy"}}
 	frame.settings.add{type="button",name="beltSorter.paste",caption={"paste"}}
 	beltSorterGui.refreshGui(player,entity)
