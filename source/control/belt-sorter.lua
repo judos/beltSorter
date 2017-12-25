@@ -342,7 +342,7 @@ beltSorter.distributeItemToSides = function(data,inputAccess,itemName,sideList)
 end
 
 beltSorter.insertAsManyAsPossible = function(inputAccess,outputAccess,itemStack,outputOnLanes)
-	local curPos = 0.13
+	local curPos = 0
 	while curPos <= 1 do
 		if outputOnLanes[1] and outputAccess:can_insert_on_at(false,curPos) then
 			local result = inputAccess:remove_item(itemStack)
@@ -354,7 +354,7 @@ beltSorter.insertAsManyAsPossible = function(inputAccess,outputAccess,itemStack,
 			if result == 0 then	return end
 			outputAccess:insert_on_at(true,curPos,itemStack)
 		end
-		curPos = curPos + 0.29
+		curPos = curPos + 0.2815
 	end
 	
 end
