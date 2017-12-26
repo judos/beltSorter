@@ -2,7 +2,11 @@ require "libs.control.surfaces"
 
 function idOfEntity(entity)
 	assert2(entity,"entity provided must not be nil")
-	return string.format("%i_%g_%g", entity.surface.index, entity.position.x, entity.position.y)
+	return idOfPosition(entity.surface.index, entity.position.x, entity.position.y)
+end
+
+function idOfPosition(surfaceIndex,x,y)
+	return string.format("%i_%g_%g", surfaceIndex, x, y)
 end
 
 function positionOfId(id)

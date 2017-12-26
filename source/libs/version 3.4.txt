@@ -1,3 +1,12 @@
+3.4 beltSorter
+	added:
+		entities: Add support for pickerExtended dolly to move entities
+		  by default if entity does not implement 'move' method it will do nothing
+		entityId: added idOfPosition
+	MIGRATION:
+		control is required to call entities_load() in on_load
+	
+
 3.3 integratedCircuitry
 	added: prototypesForGroup in control.functions
 	removed: idOfEntity_v21, entityOfId_v21

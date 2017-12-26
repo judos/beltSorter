@@ -33,9 +33,13 @@ local function init()
 	migration()
 end
 
+local function onLoad()
+	entities_load()
+end
+
 script.on_init(init)
 script.on_configuration_changed(init)
-
+script.on_load(onLoad)
 
 ---------------------------------------------------
 -- Tick
