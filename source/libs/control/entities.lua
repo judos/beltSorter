@@ -14,7 +14,7 @@ require "libs.logging"
 	}
 	global.entityData[idEntity] = { name=$name, ... }
 	global.entities_cleanup_required = boolean(check and remove all old events)
-	global.entityDataVersion = 3
+	global.entityDataVersion = 4
 
 
  Register custom entity build, tick or remove function:
@@ -68,7 +68,7 @@ function entities_init()
 	if global.schedule == nil then 
 		global.schedule = {}
 		global.entityData = {}
-		global.entityDataVersion = 3
+		global.entityDataVersion = 4
 	end
 	entities_migration()
 end
@@ -78,6 +78,11 @@ function entities_migration()
 		entities_migration_V3()
 		global.entityDataVersion = 3
 		info("Migrated entity data to v3")
+	end
+	if global.entityDataVersion < 4 then
+		entities_migration_V4()
+		global.entityDataVersion = 4
+		info("Migrated entity data to v4")
 	end
 end
 
@@ -101,7 +106,7 @@ function entities_move(event)
 	if entities[name] ~= nil then
 		if entities[name].move ~= nil then
 			local startPos = event.start_pos
-			local oldId = idOfPosition(entity.surface.index,startPos.x,startPos.y)
+			local oldId = idOfPosition(entity.surface.index,startPos.x,startPos.y,entity.name)
 			-- update schedule list
 			for tick,list in pairs(global.schedule) do
 				if list[oldId] ~= nil then
@@ -112,6 +117,7 @@ function entities_move(event)
 			end
 			-- update data
 			local data = global.entityData[oldId]
+			info("data while moving: "..serpent.block(data).." for "..idOfEntity(entity))
 			global.entityData[oldId] = nil
 			global.entityData[idOfEntity(entity)] = data
 			
@@ -224,15 +230,25 @@ end
 
 function entities_build(event)
 	local entity = event.created_entity
+	if entity == nil then
+		warn("can't build nil entity")
+		return false
+	end
 	local name = entity.name
-	if entities[name] == nil then return false end
+	if entities[name] == nil then
+		return false
+	end
 	if entities[name].build then
 		local data = entities[name].build(entity)
-		if data then
+		if data ~= nil then
 			data.name = name
 			global.entityData[idOfEntity(entity)] = data
 			return true
+		else
+			warn("built entity doesn't use data: "..name)
 		end
+	else
+		warn("no build method available for entity "..name)
 	end
 	return false
 end
@@ -273,6 +289,10 @@ end
 -- -------------------------------------------------
 
 function scheduleAdd(entity, nextTick)
+	if entity == nil then
+		err("scheduleAdd can't be called for nil entity")
+		return nil
+	end
 	if global.schedule[nextTick] == nil then
 		global.schedule[nextTick] = {}
 	end
@@ -334,7 +354,23 @@ end
 -- Migration
 -- -------------------------------------------------
 
+function entities_migration_V4()
+	entities_rebuild_entityIds()
+end
+
 function entities_migration_V3()
+	entities_rebuild_entityIds()
+end
+
+function entities_migration_V2()
+	for tick,arr in pairs(global.schedule) do
+		for id,entity in pairs(arr) do
+			arr[id] = { entity = entity }
+		end
+	end
+end
+
+function entities_rebuild_entityIds()
 	-- rebuild entityId:
 	-- global.schedule[tick][idEntity] = { entity = $entity, [noTick = true] }
 	-- global.entityData[idEntity] = { name=$name, ... }
@@ -351,12 +387,4 @@ function entities_migration_V3()
 	end
 	global.schedule = newSchedule
 	global.entityData = newEntityData
-end
-
-function entities_migration_V2()
-	for tick,arr in pairs(global.schedule) do
-		for id,entity in pairs(arr) do
-			arr[id] = { entity = entity }
-		end
-	end
 end

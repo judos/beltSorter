@@ -20,6 +20,7 @@ local minimalUpdateTicks = 60
 local energy = {25,50,100} --kW
 local energyFactor = 17.7777
 local maxUpdateTicks = {36,18,12}
+local configOffsetY = 0.2
 
 
 ---------------------------------------------------
@@ -99,27 +100,28 @@ end
 
 beltSorterEntity.move = function(entity,data,player,start_pos)
 	data.lamp.teleport(entity.position)
-	data.config.teleport(entity.position)
+	data.config.teleport({entity.position.x,entity.position.y+configOffsetY})
 end
 
 beltSorter.findConfigGhost = function(pos,entity)
-	local entities = entity.surface.find_entities_filtered{
+	local entitiesFound = entity.surface.find_entities_filtered{
 		area={{pos.x-0.5,pos.y-0.5},{pos.x+0.5,pos.y+0.5}}, 
 		name="entity-ghost", 
 		force=entity.force
 	}
 	local config = nil
-	for i = 1,#entities do
-		if entities[i].ghost_name == "belt-sorter-config-combinator" then
-			return entities[i]
+	for i = 1,#entitiesFound do
+		if entitiesFound[i].ghost_name == "belt-sorter-config-combinator" then
+			return entitiesFound[i]
 		end
 	end
+	info("no config ghost found when building the beltSorter")
 end
 
 beltSorter.createConfig = function(data,entity)
 	data.config = entity.surface.create_entity({
 		name = "belt-sorter-config-combinator",
-		position = {entity.position.x,entity.position.y+0.2},
+		position = {entity.position.x,entity.position.y+configOffsetY},
 		force = entity.force
 	})
 	data.config.operable = false
@@ -129,9 +131,9 @@ end
 
 beltSorterEntity.remove = function(data)
 	if data.config and data.config.valid then
-		data.config.destructible = true
-		data.config.die(nil)
-		local ghost = beltSorter.findConfigGhost(data.lamp.position,data.lamp)
+		local ghost = data.config.surface.create_entity{name="entity-ghost",inner_name="belt-sorter-config-combinator",expires=false,position=data.config.position,force=data.config.force}
+		ghost.get_or_create_control_behavior().parameters = data.config.get_control_behavior().parameters
+		data.config.destroy()
 		entities_build({created_entity = ghost})
 	end
 	if data.lamp and data.lamp.valid then

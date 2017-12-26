@@ -1,3 +1,9 @@
+3.5 beltSorter
+	fixes:
+		entityId now stores entityName to prevent confusion when multiple entities occupy same space
+	MIGRATION:
+		idOfPosition now requires entityName as 4th parameter
+
 3.4 beltSorter
 	added:
 		entities: Add support for pickerExtended dolly to move entities
@@ -7,6 +13,7 @@
 		logging for player has improved format
 	fixes:
 		gui responds again to checkboxes in 0.16
+		safety check for crash in entities when nil entity is built but is nil
 	MIGRATION:
 		control is required to call entities_load() in on_load
 	

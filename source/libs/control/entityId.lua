@@ -2,11 +2,14 @@ require "libs.control.surfaces"
 
 function idOfEntity(entity)
 	assert2(entity,"entity provided must not be nil")
-	return idOfPosition(entity.surface.index, entity.position.x, entity.position.y)
+	return idOfPosition(entity.surface.index, entity.position.x, entity.position.y, entity.name)
 end
 
-function idOfPosition(surfaceIndex,x,y)
-	return string.format("%i_%g_%g", surfaceIndex, x, y)
+function idOfPosition(surfaceIndex,x,y,entityName)
+	if not entityName then
+		err("Missing parameter 'entityName' for idOfPosition method")
+	end
+	return string.format("%i_%g_%g_%s", surfaceIndex, x, y, entityName)
 end
 
 function positionOfId(id)
@@ -16,13 +19,14 @@ function positionOfId(id)
 	local position = split(id,"_")
 	return {
 		surfaceIndex = tonumber(position[1]),
-		position = {x=tonumber(position[2]),y=tonumber(position[3])}
+		position = {x=tonumber(position[2]),y=tonumber(position[3])},
+		entityName = position[4]
 	}
 end
 
 function entityOfId(id,searchName)
 	local location = positionOfId(id)
-	local entities = surfaceWithIndex(location.surfaceIndex).find_entities_filtered{position=location.position}
+	local entities = surfaceWithIndex(location.surfaceIndex).find_entities_filtered{position=location.position,name=location.entityName}
 	if entities == nil or #entities ==0 then
 		err("No entity found for id provided: "..id)
 		return nil

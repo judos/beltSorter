@@ -8,13 +8,22 @@ entities["entity-ghost"] = ghost
 ghost.build = function(entity)
 	if entity.ghost_name == "belt-sorter-config-combinator" then
 		scheduleAdd(entity,TICK_SOON)
-		info("Added ghost config entity")
 		return {}
 	end
 	return nil
 end
 
 ghost.tick = function(entity,data)
+	if data == nil then
+		if entity.valid then
+			info(global)
+			err("data not found of beltSorter config entity "..serpent.block(entity.position))
+		else
+			err("invalid entity to tick")
+		end
+		entity.destroy()
+		return nil,nil
+	end
 	info("tick "..entity.ghost_name)
 	if not data.beltSorter then
 		local pos = entity.position
