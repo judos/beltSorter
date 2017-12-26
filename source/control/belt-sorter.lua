@@ -142,7 +142,6 @@ beltSorterEntity.remove = function(data)
 end
 
 beltSorterEntity.copy = function(source,srcData,target,targetData)
-	info(target.name:sub(1,11))
 	if not target.name:sub(1,11) == "belt-sorter" then
 		return
 	end
