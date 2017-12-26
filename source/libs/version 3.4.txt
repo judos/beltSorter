@@ -5,6 +5,8 @@
 		entityId: added idOfPosition
 	changes:
 		logging for player has improved format
+	fixes:
+		gui responds again to checkboxes in 0.16
 	MIGRATION:
 		control is required to call entities_load() in on_load
 	
