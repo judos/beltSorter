@@ -1,9 +1,0 @@
-d=0.29 (density for inserting items)
-
-1 (last possible position at back of belt)
-...
-0.13 (first item)
-
-speed per tick: 0.09375 (not correct on 0.14)
-measurements for 26 tiles in ticks: 288 281 282 278
-average speed: 0.09212
