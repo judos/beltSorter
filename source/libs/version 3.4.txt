@@ -3,6 +3,8 @@
 		entities: Add support for pickerExtended dolly to move entities
 		  by default if entity does not implement 'move' method it will do nothing
 		entityId: added idOfPosition
+	changes:
+		logging for player has improved format
 	MIGRATION:
 		control is required to call entities_load() in on_load
 	
