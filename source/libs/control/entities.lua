@@ -245,7 +245,7 @@ function entities_build(event)
 			global.entityData[idOfEntity(entity)] = data
 			return true
 		else
-			warn("built entity doesn't use data: "..name)
+			info("built entity doesn't use data: "..name)
 		end
 	else
 		warn("no build method available for entity "..name)
