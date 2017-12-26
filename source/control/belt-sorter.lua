@@ -97,6 +97,11 @@ beltSorterEntity.build = function(entity)
 	return data
 end
 
+beltSorterEntity.move = function(entity,data,player,start_pos)
+	data.lamp.teleport(entity.position)
+	data.config.teleport(entity.position)
+end
+
 beltSorter.findConfigGhost = function(pos,entity)
 	local entities = entity.surface.find_entities_filtered{
 		area={{pos.x-0.5,pos.y-0.5},{pos.x+0.5,pos.y+0.5}}, 
