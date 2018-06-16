@@ -5,6 +5,6 @@
 	"author": "judos & Cordina",
 	"description": "Adds 3 sorting entities which allows to sort items from belts to belts - recommended for the hardCrafting mod.",
 	"dependencies": ["base >= 0.16.0"],
-	"homepage": "https://github.com/judos/beltSorter",
+	"homepage": "https://github.com/Cordina90/beltSorter",
 	"factorio_version": "0.16"
 }
