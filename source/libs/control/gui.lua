@@ -143,7 +143,7 @@ end
 script.on_event(defines.events.on_gui_click,handleGuiEvent)
 script.on_event(defines.events.on_gui_text_changed,handleGuiEvent)
 script.on_event(defines.events.on_gui_elem_changed,handleGuiEvent)
-script.on_event(defines.events.on_gui_checked_state_changed,handleGuiEvent)
+--script.on_event(defines.events.on_gui_checked_state_changed,handleGuiEvent)
 
 --------------------------------------------------
 -- Helper functions
