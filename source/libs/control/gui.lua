@@ -113,7 +113,7 @@ function gui_tick()
 		end
 	end
 	for _,player in pairs(game.players) do
-		if player.connected then
+		if player.connected and (player.opened_gui_type == defines.gui_type.none or player.opened_gui_type == defines.gui_type.entity) then
 			local openEntity = player.opened
 			local playerName = player.name
 			if global.gui.playerData[playerName] == nil then global.gui.playerData[playerName] = {} end
