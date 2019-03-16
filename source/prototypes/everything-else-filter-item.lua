@@ -22,6 +22,6 @@ data:extend({
 		icon = "__beltSorter__/graphics/icons/belt-sorter-everythingelse.png",
 		subgroup = "beltSorter-filters",
 		stack_size = 1,
-		flags = {"goes-to-main-inventory"}
+		-- flags = {"goes-to-main-inventory"}
 	}
 })

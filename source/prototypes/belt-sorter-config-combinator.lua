@@ -1,8 +1,8 @@
 -- Helpers
 local noPicture = {
 	filename="__beltSorter__/graphics/entity/empty.png",
-	width = 0,
-	height = 0,
+	width = 1,
+	height = 1,
 	shift = {0, 0}
 }
 
@@ -26,7 +26,8 @@ local item = deepcopy(data.raw["item"]["constant-combinator"])
 overwriteContent(item,{
 	name = "belt-sorter-config-combinator",
   	icon = "__beltSorter__/graphics/icons/belt-sorter-config.png",
-	flags = {"goes-to-main-inventory", "hidden"},
+	-- flags = {"goes-to-main-inventory", "hidden"},
+	flags = {"hidden"},
 	place_result = "belt-sorter-config-combinator"
 })
 data:extend({item})

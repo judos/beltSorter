@@ -2,8 +2,8 @@
 -- Pictures helpers
 local noPicture = {
 	filename="__beltSorter__/graphics/entity/empty.png",
-	width = 0,
-	height = 0,
+	width = 1,
+	height = 1,
 	shift = {0, 0}
 }
 local function picture(lvl,mode)
