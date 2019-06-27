@@ -32,6 +32,9 @@ require "libs.logging"
 				
 		remove = function(data),
 			clean up any additional entities from your custom data
+			
+		rotate = function(entity,data),
+			called when an entity is rotated by the player
 				
 		copy = function(source,srcData,target,targetData)
 			coppy settings when shift+rightclick -> shift+leftclick
@@ -50,6 +53,7 @@ require "libs.logging"
 	entities_build(event)
 	entities_tick()
 	entities_pre_mined(event)
+	entities_rotate(event)
 	entities_settings_pasted(event)
 	entities_marked_for_deconstruction(event)
 ]]--
@@ -220,6 +224,18 @@ function entities_tick()
 			for _,id in pairs(entityIdsToClear) do
 				tickSchedule[id] = nil
 			end
+		end
+	end
+end
+
+function entities_rotate(event)
+	local entity = event.entity
+	local name = entity.name
+	if entities[name] ~= nil then
+		if entities[name].rotate ~= nil then
+			local entityId = idOfEntity(entity)
+			local data = global.entityData[entityId]
+			entities[name].rotate(entity,data)
 		end
 	end
 end

@@ -1,3 +1,54 @@
+function recipeGetResults(recipe,difficulty)
+	difficulty = difficulty or "normal"
+	local search = recipe
+	if recipe[difficulty] then search = recipe[difficulty] end
+	local results = search.results
+	if search.result then
+		results = {{
+			type = "item",
+			name = search.result,
+			amount = search.result_count or 1
+		}}
+	end
+	if not results then
+		error("no recipe result found for recipe "..recipe.name)
+	end
+	return results
+end
+
+-- if multiple items are available pass item name!
+function recipeGetResultCount(recipe,item,difficulty)
+	local results = recipeGetResults(recipe,difficulty)
+	if #results == 1 then
+		return results.amount or 1
+	end
+	if #results == 0 then
+		error("no recipe results found for recipe "..recipe.name.." to get result count...")
+	end
+	if not item then
+		error("no item passed but multiple results available for recipe "..recipe.name)
+	end
+	for _,tabl in pairs(results) do
+		if tabl.name == item then
+			return tabl.amount
+		end
+	end
+	error("multiple results for recipe "..recipe.name.." found but searched item "..item.." was not found")
+end
+
+function recipeRemoveResults(recipe)
+	local erase = function(tabl)
+		tabl.result = nil
+		tabl.result_count = nil
+		tabl.results = nil
+	end
+	erase(recipe)
+	if recipe.normal then erase(recipe.normal) end
+	if recipe.expensive then erase(recipe.expensive) end
+end
+
+
+
 function recipeChangeResultsForItemsByFactor(itemNameS, factor, roundValues)
 	if type(itemNameS) == "string" then
 		itemNameS = { itemNameS }

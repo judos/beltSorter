@@ -1,3 +1,37 @@
+TODO 4.0:
+	move lua/various.round to lua/numbers
+  remove lua/string> string.starts
+  MIGRATION
+  	instead of string.starts use string.startsWith
+
+
+3.9 beltSorter
+	gui:116 add check for updating gui state (open/close)
+	gui:146 comment out event on_gui_checked_state_changed
+	
+	
+	
+3.8 export
+	add function argument bindings
+	add lua/indices, lua/numbers
+	added recipe functions
+	add prototype.icons
+	add lua/table.numericAddTable
+	moved deepcopy function (various to table)
+	MIGRATION:
+		fix imports for deepcopy
+	
+
+3.7 hardCrafting
+	added
+		icon_size 32 to addItem, addRecipe, addResources
+
+3.6 actuator
+	added:
+		entities.rotate(entity,data) method
+	MIGRATION:
+		control must now add entities_rotate(event) to script
+
 3.5 beltSorter
 	fixes:
 		entityId now stores entityName to prevent confusion when multiple entities occupy same space
