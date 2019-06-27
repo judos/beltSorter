@@ -1,5 +1,0 @@
-
-- performence improvement for input/output search
-- logistics integration on beltSorter
-	(option for advanced sorter: request/provide items)
-- logistics belt hub
