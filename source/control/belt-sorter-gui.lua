@@ -146,9 +146,12 @@ beltSorterGui.refreshGui = function(player,entity)
 				local flow = frame.table["flow."..row.."."..prio]
 				flow.clear()
 				if data.guiFilter[row] == prio then
-					flow.add{type="label",caption=prio}
+					flow.add{type="label",caption=prio.."."}
 				else
-					flow.add{type="button",name="beltSorter.prio."..row.."."..prio,caption=tostring(prio),state=false}
+					local btn = flow.add{
+						type="button",name="beltSorter.prio."..row.."."..prio,caption={"make-this-priority",tostring(prio)},state=false
+					}
+					btn.style.width = 35
 				end
 			end
 		end
