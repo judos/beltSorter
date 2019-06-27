@@ -1,6 +1,6 @@
-require "constants"
-
 logging = {}
+
+require "constants"
 
 
 function info(message)

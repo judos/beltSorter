@@ -8,7 +8,8 @@ TODO 4.0:
 3.9 beltSorter
 	gui:116 add check for updating gui state (open/close)
 	gui:146 comment out event on_gui_checked_state_changed
-	
+	MIGRATION: 
+		Note logging now requires settings-final-fixes.lua to add logging settings, don't forget to add locales too for logging
 	
 	
 3.8 export
