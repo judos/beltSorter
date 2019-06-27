@@ -93,7 +93,7 @@ local function playerCloseGui(player,playerData,openGui)
 end
 
 local function playerOpenGui(player,playerData,openEntity)
-	local openGui = openEntity.name
+	local openGui = openEntity.name -- TODO #35: LuaEquipmentGrid doesn't contain key name.
 	playerData.openGui = openGui
 	playerData.openEntity = openEntity
 	if gui[openGui] ~= nil and gui[openGui].open ~= nil then
