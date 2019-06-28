@@ -1,6 +1,110 @@
-Version 0.6.0
-Date: March 09. 2019
+Version 0.6.1 (28.Jun 2019)
 
-  Changes:
-	-  Updated to work with Factorio 0.17.x
+- Add thumbnail for the beautiful mod portal
+- Fix priority button width for belt-sorter-3, add label for translation "Make this priority __1__"
 
+Version 0.6.0 (9.Mar 2019)
+
+- Updated to work with Factorio 0.17.x
+
+Version 0.5.4 (26.Dec 2017)
+
+- fix entity system crash when beltSorter is removed.
+
+Version 0.5.3 (26.Dec 2017)
+
+- add russian locale thanks to ProShow
+
+Version 0.5.2 (26.Dec 2017)
+
+- add beltSorter support to pickerDolly (let's you move beltSorters around. See PickerExtended Mod)
+- improved player logging of errors
+- fix replacing destroyed beltSorter does not know it's previous filters
+- beltSorter shall not output on belts marked for deconstruction
+- remove connector sprites of beltSorters (looks nicer when wires connect)
+- update entity graphics to match belt tier colors
+- and of course: Updated to work with Factorio 0.16
+- fix beltSorter compressing belt on 0.16
+- fix no energy symbol blinking in low energy setups in 0.16
+
+Version 0.4.1 (8.Jun 2017)
+
+- fix migration for items which don't exist anymore
+- fix migration problem printed for all beltSorters, even if there was no problem
+
+Version 0.4.0 (6.Jun 2017)
+
+Changes:
+- there are now 3 tiers of beltSorter: basic, average and advanced
+- basic belt sorter only allows setting 2 filter slots, average 3, advanced 4.
+- advanced beltSorter allows setting custom priorities for input+output sides
+- improved technology prerequisites, less requirements to get started
+- hd images for all 3 tiers
+
+Migration:
+- you will be warned for basic beltSorters which had more than 2 filter slots configured but have this removed now
+
+Coding:
+- use native item selection dialog (much faster on multiplayer)
+- refactored control logic of beltSorters, all beltSorters use now the same distribution logic
+
+Version 0.3.6 (6.May 2017)
+
+- migrate to support factorio 0.15.9
+
+Version 0.3.4 (18.Nov 2016)
+
+- fix config not copied in blueprint when blueprint is rotated
+- fix config not loaded when advanced beltsorter is built by blueprint
+- fix potential crash in item selection gui
+- Recipe is a LOT cheaper now - adapted to the much more powerful inserters since factorio 0.14
+
+Version 0.3.3 (29.Sep 2016)
+
+- fix crash when selecting belt side on advanced sorter before an item was selected in any slot.
+
+Version 0.3.2 (20.Sep 2016)
+
+- Fix name collision problem with caused crash with other mods. (Thanks to Lappro)
+
+Version 0.3.1 (18.Sep 2016)
+
+- added advanced belt-sorter
+- new tech for advanced-belt-sorter
+- advanced sorter can set left/right-belt output line only
+- advanced sorter keeps up with express belt throughputs
+- advanced sorter copies settings in blueprints automatically
+- rebalanced recipes (belt sorters are now generally cheaper)
+- added small description to belt-sorter guis
+
+Version 0.3.0 (11.Sep 2016)
+
+- support factorio 0.14
+- hide filter item from default factorio item selection gui
+- hide other hidden items from the beltSorter item selection gui
+- item Selection list in beltSorter is now scrollable
+
+Version 0.2.2 (17.Oct 2016)
+
+- entity system works for multiple surfaces
+- add filter item to sort out all other items
+
+Version 0.2.1 (5.Aug 2016)
+
+Changes:
+- new graphics for belt Sorter (thanks to Arch666Angel)
+
+Fixes:
+- fixed mod not loading with negative belt-sorter-lamp energy usage
+- fixed issue with LuaSurface::find_entities
+- added missing locale messages (just in english) (Thanks to vitorboschi)
+
+Version 0.2.0 (5.Aug 2016)
+Split off mod from hardCrafting. For factorio 0.13.0
+
+Changes:
+- define 4 items as filter for each direction
+- select items to filter from a nice gui (recent history, search function, tooltips for items)
+- use circuit signals or logistics condition to control it (works almost the same as the lamp entity)
+- works also with splitter / underground-belts as input or output
+- reduces speed when not enough energy is available (shuts down entirely when energy below 10%)
