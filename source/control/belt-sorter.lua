@@ -19,7 +19,7 @@ local rowIndexToDirection = {
 local minimalUpdateTicks = 60
 local energy = {25,50,100} --kW
 local energyFactor = 17.7777
-local maxUpdateTicks = {36,18,12}
+local maxUpdateTicks = {32,16,11}
 local configOffsetY = 0.2
 
 
