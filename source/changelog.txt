@@ -1,3 +1,9 @@
+Version 0.6.2 (1.Jul 2019)
+
+- Fix update speed to match new speed of belts (factorio 0.17)
+- Add Turbo and Ultimate BeltSorter with speed of 60-75 Items/s
+- Add migration such that bobs' logistics-4 and ultimateBelts' ultra fast logistics unlock these beltSorter
+
 Version 0.6.1 (28.Jun 2019)
 
 - Add thumbnail for the beautiful mod portal
