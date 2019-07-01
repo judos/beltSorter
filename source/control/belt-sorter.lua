@@ -6,6 +6,8 @@ local beltSorterEntity = {}
 entities["belt-sorter1"] = beltSorterEntity
 entities["belt-sorter2"] = beltSorterEntity
 entities["belt-sorter3"] = beltSorterEntity
+entities["belt-sorter4"] = beltSorterEntity
+entities["belt-sorter5"] = beltSorterEntity
 beltSorter = {} -- methods of beltSorter
 
 -- Constants
@@ -17,9 +19,9 @@ local rowIndexToDirection = {
 	[4]=defines.direction.south
 }
 local minimalUpdateTicks = 60
-local energy = {25,50,100} --kW
+local energy = {25,50,100,175,275} --kW
 local energyFactor = 17.7777
-local maxUpdateTicks = {32,16,11}
+local maxUpdateTicks = {32,16,11,8,6}
 local configOffsetY = 0.2
 
 

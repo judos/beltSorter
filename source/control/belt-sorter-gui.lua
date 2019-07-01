@@ -4,12 +4,14 @@
 ---------------------------------------------------
 
 beltSorterGui = {
-	slotsAvailable = {2,3,4} -- basic/average/advanced version
+	slotsAvailable = {2,3,4,4,4} -- basic/average/advanced/turbo/ultimate version
 }
 
 gui["belt-sorter1"]=beltSorterGui
 gui["belt-sorter2"]=beltSorterGui
 gui["belt-sorter3"]=beltSorterGui
+gui["belt-sorter4"]=beltSorterGui
+gui["belt-sorter5"]=beltSorterGui
 
 ---------------------------------------------------
 -- Gui events
@@ -19,7 +21,7 @@ beltSorterGui.open = function(player,entity)
 	local lvl = tonumber(entity.name:sub(-1))
 	local frame = player.gui.left.add{type="frame",name="beltSorterGui",direction="vertical",caption={"belt-sorter-title"}}
 	frame.add{type="label",name="description",caption={"belt-sorter-advanced-description"}}
-	local colspans = {3,7,13}	
+	local colspans = {3,7,13,13,13}	
 	frame.add{type="table",name="table",column_count=colspans[lvl]}	
 
 	local labels={"up","left","right","down"}
