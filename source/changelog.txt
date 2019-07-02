@@ -1,6 +1,7 @@
 Version 0.6.3 (3.Jul 2019)
 
 - Fix beltSorters didn't use any energy at all (except if condition is set), did you actually notice this earlier? :D
+- Above also fixes an issue with Realistic Power mod making beltSorters not work in general
 
 
 Version 0.6.2 (1.Jul 2019)
@@ -13,6 +14,7 @@ Version 0.6.1 (28.Jun 2019)
 
 - Add thumbnail for the beautiful mod portal
 - Fix priority button width for belt-sorter-3, add label for translation "Make this priority __1__"
+- Add support for loader type entities
 
 Version 0.6.0 (9.Mar 2019)
 
