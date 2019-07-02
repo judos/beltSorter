@@ -1,3 +1,8 @@
+Version 0.6.3 (3.Jul 2019)
+
+- Fix beltSorters didn't use any energy at all (except if condition is set), did you actually notice this earlier? :D
+
+
 Version 0.6.2 (1.Jul 2019)
 
 - Fix update speed to match new speed of belts (factorio 0.17)

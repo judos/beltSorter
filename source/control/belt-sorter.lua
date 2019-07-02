@@ -18,9 +18,7 @@ local rowIndexToDirection = {
 	[3]=defines.direction.east,
 	[4]=defines.direction.south
 }
-local minimalUpdateTicks = 60
-local energy = {25,50,100,175,275} --kW
-local energyFactor = 17.7777
+local minimalUpdateTicks = 120
 local maxUpdateTicks = {32,16,11,8,6}
 local configOffsetY = 0.2
 
@@ -195,9 +193,13 @@ beltSorterEntity.tick = function(entity,data)
 		end
 	end
 
-	local maxEnergy = energy[data.lvl] * energyFactor
+	-- Max energy stored (for 1 tick, e.g. 417J for belt-sorter1)
+	local maxEnergy = game.entity_prototypes['belt-sorter'..data.lvl].max_energy_usage
+	-- entity.energy is usually 6.666% more than used for 1 tick (factorio 0.17.52)
+	-- but that's ok, beltSorter will still run with 100% speed at 93% of energy provided
 	local energyPercentage = math.min(entity.energy,maxEnergy) / maxEnergy
 	local nextUpdate= math.floor(maxUpdateTicks[data.lvl] / energyPercentage)
+	
 	if nextUpdate>minimalUpdateTicks then
 		nextUpdate = minimalUpdateTicks
 	else
@@ -219,10 +221,14 @@ beltSorter.updateCircuitCondition = function(beltSorter,data)
 	-- check circuit
 	local behavior = beltSorter.get_or_create_control_behavior()
 	local conditionTable = behavior.circuit_condition
+	-- this boolean is set if condition would normally evaluate to false
+	-- (empty filter) but the beltSorter should be working by default.
+	local lampOverlay = false 
 	if conditionTable.condition.first_signal.name ~= nil then
 		data.condition = conditionTable.fulfilled
 	else
 		data.condition = true
+		lampOverlay = true
 	end
 	
 	-- check logistic condition
@@ -232,12 +238,13 @@ beltSorter.updateCircuitCondition = function(beltSorter,data)
 			data.condition = conditionTable.fulfilled
 		else
 			data.condition = true
+			lampOverlay = true
 		end
 	end
 	
 	local lampCondition = {
 		condition = {
-			comparator= (data.condition and "=" or ">"),
+			comparator= (lampOverlay and "=" or ">"),
 			first_signal={type="item", name="iron-plate"},
 			second_signal={type="item", name="iron-plate"}
 		}
