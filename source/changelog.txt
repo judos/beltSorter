@@ -2,7 +2,7 @@ Version 0.6.3 (3.Jul 2019)
 
 - Fix beltSorters didn't use any energy at all (except if condition is set), did you actually notice this earlier? :D
 - Above also fixes an issue with Realistic Power mod making beltSorters not work in general
-
+- Add support for krastorio, advanced-logistics unlocks Turbo BeltSorter
 
 Version 0.6.2 (1.Jul 2019)
 
@@ -14,7 +14,8 @@ Version 0.6.1 (28.Jun 2019)
 
 - Add thumbnail for the beautiful mod portal
 - Fix priority button width for belt-sorter-3, add label for translation "Make this priority __1__"
-- Add support for loader type entities
+- Add support for 1x1 sized loader type entities (credits to shanemadden for the change)
+  -> Note: the speed is halfed because loaders only have half a belt, and the beltSorter usually waits for a belt to have filled before transfering items.
 
 Version 0.6.0 (9.Mar 2019)
 

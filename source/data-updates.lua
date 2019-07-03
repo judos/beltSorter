@@ -3,9 +3,10 @@ require "libs.prototypes.all"
 -- check if compat mods are available
 local bobsLogistics = data.raw.item['turbo-transport-belt']~=nil
 local ultimateBelts = data.raw.item['ultra-fast-belt']~=nil
-if bobsLogistics or ultimateBelts then
+local krastorio = data.raw.item['k-transport-belt']~=nil
+if bobsLogistics or ultimateBelts or krastorio then
 
-	print("beltSorter: adding support for bobs/ultimate belts");	
+	print("beltSorter: adding support for bobs/ultimate/krastorio belts");	
 	
 	require "prototypes.belt-sorter-items-bobs"
 	require "prototypes.belt-sorter-recipes-bobs"
@@ -18,6 +19,9 @@ if bobsLogistics or ultimateBelts then
 	if ultimateBelts then
 		addTechnologyUnlocksRecipe("ultra-fast-logistics","belt-sorter4")
 		addTechnologyUnlocksRecipe("ultra-fast-logistics","belt-sorter5")
+	end
+	if krastorio then
+		addTechnologyUnlocksRecipe("k-advanced-logistics","belt-sorter4")
 	end
 
 end
