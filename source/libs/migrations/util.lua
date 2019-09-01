@@ -20,7 +20,9 @@ end
 function migrateAdd(force, technologyName, recipeName)
 	if force.technologies[technologyName] ~= nil then
 		if force.technologies[technologyName].researched then
-			force.recipes[recipeName].enabled = true
+			if force.recipes[recipeName] then
+				force.recipes[recipeName].enabled = true
+			end
 		end
 	end
 end
@@ -28,6 +30,8 @@ end
 -- Force the recipe to be equivalent to technology enabled (one-to-one)
 local function migrateCheck(force, technologyName, recipeName)
 	if force.technologies[technologyName] ~= nil then
-		force.recipes[recipeName].enabled = force.technologies[technologyName].researched
+		if force.recipes[recipeName] then
+			force.recipes[recipeName].enabled = force.technologies[technologyName].researched
+		end
 	end
 end
