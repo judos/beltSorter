@@ -52,10 +52,15 @@ end)
 ---------------------------------------------------
 -- Building Entities
 ---------------------------------------------------
-script.on_event(defines.events.on_built_entity, function(event)
+script.on_event({defines.events.on_built_entity,
+                 defines.events.on_robot_built_entity, 
+                 defines.events.script_raised_built,
+                 defines.events.script_raised_revive}, function(event)
 	entities_build(event)
 end)
-script.on_event(defines.events.on_robot_built_entity, function(event)
+
+script.on_event(defines.events.on_entity_cloned, function(event)
+	event.created_entity=event.destination
 	entities_build(event)
 end)
 
