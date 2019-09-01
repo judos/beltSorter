@@ -197,7 +197,10 @@ beltSorterEntity.tick = function(entity,data)
 	local maxEnergy = game.entity_prototypes['belt-sorter'..data.lvl].max_energy_usage
 	-- entity.energy is usually 6.666% more than used for 1 tick (factorio 0.17.52)
 	-- but that's ok, beltSorter will still run with 100% speed at 93% of energy provided
-	local energyPercentage = math.min(entity.energy,maxEnergy) / maxEnergy
+	local energyPercentage = 1
+	if settings.startup['beltSorter-usePower'].value then
+		energyPercentage = math.min(entity.energy,maxEnergy) / maxEnergy
+	end
 	local nextUpdate= math.floor(maxUpdateTicks[data.lvl] / energyPercentage)
 	
 	if nextUpdate>minimalUpdateTicks then

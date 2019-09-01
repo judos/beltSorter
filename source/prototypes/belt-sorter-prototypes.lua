@@ -22,6 +22,8 @@ local function picture(lvl,mode)
 end
 
 function createBeltSorterPrototype(i, energy)
+
+
 	local beltSorter = deepcopy(data.raw["lamp"]["small-lamp"])
 	overwriteContent(beltSorter, {
 		name = "belt-sorter"..i,
@@ -44,16 +46,19 @@ function createBeltSorterPrototype(i, energy)
 		collision_box = {{0, 0}, {0, 0}},
 		selection_box = {{0, 0}, {0, 0}},
 		energy_usage_per_tick = tostring(energy).."W",
-		energy_source = {
-			type = "electric",
-			usage_priority = "primary-input"
-		},
 		light = {intensity = 0, size = 0},
 		flags = {"placeable-off-grid", "not-repairable", "not-on-map"},
 		picture_off= noPicture,
 		picture_on = picture(i,"on")
 	})
 	beltSorterLamp.circuit_connector_sprites = nil
+	
+	print(x(settings.startup['beltSorter-usePower']))
+	if not settings.startup['beltSorter-usePower'].value then
+		beltSorterLamp.energy_source.type = "void"
+		beltSorter.energy_source.type = "void"
+	end
+	
 	data:extend({	beltSorterLamp })
 end
 
