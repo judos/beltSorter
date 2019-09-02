@@ -1,6 +1,6 @@
 {
 	"name": "beltSorter",
-	"version": "0.6.3",
+	"version": "0.6.4",
 	"title": "Belt sorter",
 	"author": "judos & Cordina",
 	"description": "Adds 3 sorting entities which allows to sort items from belts to belts - recommended for the hardCrafting mod.",
