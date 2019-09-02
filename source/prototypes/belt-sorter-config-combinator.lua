@@ -10,8 +10,8 @@ local noPicture = {
 local entity = deepcopy(data.raw["constant-combinator"]["constant-combinator"])
 overwriteContent(entity,{
 	name = "belt-sorter-config-combinator",
-	item_slot_count = 20,
-  	icon = "__beltSorter__/graphics/icons/belt-sorter-config.png",
+	item_slot_count = 21,
+	icon = "__beltSorter__/graphics/icons/belt-sorter-config.png",
 	minable = {hardness = 10, mining_time = 10, results={}},
 	order = "zzz",
 	collision_box = {{0,0},{0,0}},

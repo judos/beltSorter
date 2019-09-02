@@ -37,6 +37,7 @@ local configOffsetY = 0.2
 --   guiFilter[$row.."."..$slot] = $itemName
 --            [$row.."."..$slot..".sides"] = { $bool, $bool } (on which belt lane should itmes go)
 --            [$row] = $prio
+--            ['splitter'] = $bool (split items instead of prioritize)
 --   lvl = $number (1=basic,2=average,3=advanced)
 --   condition = $bool (whether circuit condition allows entity to work
 --   nextConditionUpdate = int(tick) (when next check of circuit condition is done)
@@ -162,18 +163,16 @@ end
 
 beltSorter.sanityCheckFilter = function(data)
 	if data.lvl < 2 then
-		local newFilter = {}
 		for side=1,4 do
 			for slot=1,beltSorterGui.slotsAvailable[1] do
 				if data.guiFilter[side.."."..slot] then
-					newFilter[side.."."..slot] = data.guiFilter[side.."."..slot]
-					newFilter[side.."."..slot..".sides"] = {true,true}
+					data.guiFilter[side.."."..slot..".sides"] = {true,true}
 				end
 			end
 		end
-		data.guiFilter = newFilter
 	end
 	if data.lvl < 3 then
+		-- remove priorization for lower tier beltSorters
 		for side=1,4 do
 			data.guiFilter[side] = side
 		end
@@ -264,14 +263,14 @@ beltSorter.distributeItems = function(entity,data)
 		if not inputAccess or not inputAccess:isValid() then
 			data.input[inputSide] = nil
 		else
-			for itemName,_ in pairs(inputAccess:get_contents()) do
+			for itemName,amount in pairs(inputAccess:get_contents()) do
 				local sideList = data.filter[itemName]
 				if sideList then
-					beltSorter.distributeItemToSides(data,inputAccess,itemName,sideList)
+					beltSorter.distributeItemToSides(data,inputAccess,itemName,sideList,amount)
 				else -- item can go nowhere, check rest filter
 					sideList = data.filter["belt-sorter-everythingelse"]
 					if sideList then
-						beltSorter.distributeItemToSides(data,inputAccess,itemName,sideList)
+						beltSorter.distributeItemToSides(data,inputAccess,itemName,sideList,amount)
 					end
 				end
 			end
@@ -280,34 +279,66 @@ beltSorter.distributeItems = function(entity,data)
 end
 
 
-beltSorter.distributeItemToSides = function(data,inputAccess,itemName,sideList)
+beltSorter.distributeItemToSides = function(data,inputAccess,itemName,sideList,amount)
 	local itemStack = {name=itemName,count=1}
+	local validSides = 0
+	for key,arr in pairs(sideList) do
+		local side = arr[1]
+		local outputAccess = data.output[side]
+		local outputOnLanes = arr[2]
+		if (not outputAccess) or (not outputAccess:isValid()) or 
+		   (outputOnLanes[1]==false and outputOnLanes[2]==false) then
+			data.output[side] = nil
+			sideList[key] = nil
+		else
+			validSides = validSides + 1
+		end
+	end
+	local perSide = {amount, amount, amount, amount}
+	local excessItems = 0 -- 8 items, 3 sides -> perSide = 2, another 2 items distributed randomly
+	if data.guiFilter['splitter'] then
+		perSide = beltSorter.distributeEvenlyToSides(sideList, amount, validSides)
+	end
 	for _,arr in pairs(sideList) do
 		local side = arr[1]
 		local outputOnLanes = arr[2]
 		local outputAccess = data.output[side]
-		if outputAccess then
-			if not outputAccess:isValid() then
-				data.output[side] = nil
-			else
-				beltSorter.insertAsManyAsPossible(inputAccess,outputAccess,itemStack,outputOnLanes)
-			end
-		end
+		beltSorter.insertItemsFromTo(inputAccess,outputAccess,itemStack,outputOnLanes, perSide[side])
 	end
 end
 
-beltSorter.insertAsManyAsPossible = function(inputAccess,outputAccess,itemStack,outputOnLanes)
+beltSorter.distributeEvenlyToSides = function(sideList, amount, validSides)
+	local x = math.floor(amount / validSides)
+	perSide = {x,x,x,x}
+	excess = amount % validSides
+	while excess > 0 do
+		local index = math.random(1, 4)
+		if sideList[index] then
+			local sideArr = sideList[index]
+			local side = sideArr[1]
+			perSide[side] = perSide[side] + 1
+			excess = excess - 1
+		end
+	end
+	return perSide
+end
+
+beltSorter.insertItemsFromTo = function(inputAccess,outputAccess,itemStack,outputOnLanes, insert)
 	local curPos = 0
 	while curPos <= 1 do
 		if outputOnLanes[1] and outputAccess:can_insert_on_at(false,curPos) then
 			local result = inputAccess:remove_item(itemStack)
 			if result == 0 then	return end
 			outputAccess:insert_on_at(false,curPos,itemStack)
+			insert = insert - 1
+			if insert == 0 then return end
 		end
 		if outputOnLanes[2] and outputAccess:can_insert_on_at(true,curPos) then
 			local result = inputAccess:remove_item(itemStack)
 			if result == 0 then	return end
 			outputAccess:insert_on_at(true,curPos,itemStack)
+			insert = insert - 1
+			if insert == 0 then return end
 		end
 		curPos = curPos + 0.2815
 	end

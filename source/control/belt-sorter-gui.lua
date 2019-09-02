@@ -47,6 +47,7 @@ beltSorterGui.open = function(player,entity)
 	frame.add{type="table",name="settings",column_count=2}
 	frame.settings.add{type="button",name="beltSorter.copy",caption={"copy"}}
 	frame.settings.add{type="button",name="beltSorter.paste",caption={"paste"}}
+	frame.add{type="checkbox", name="beltSorter.splitter",caption={"belt-sorter-splitter"},state=false}
 	beltSorterGui.refreshGui(player,entity)
 end
 
@@ -85,6 +86,8 @@ beltSorterGui.click = function(nameArr,player,entity)
 		beltSorterGui.adjustPriorities(data,tonumber(nameArr[1]),tonumber(nameArr[2]))
 		beltSorterGui.refreshGui(player,entity)
 		beltSorterGui.rebuildFilterFromGui(data)
+	elseif fieldName == "splitter" then
+		data.guiFilter['splitter'] = not data.guiFilter['splitter']
 	else --may happen if you click a table or some button which is not defined yet
 		info("unknown gui clicked: "..fieldName.." arr: "..serpent.block(nameArr))
 	end
@@ -119,6 +122,10 @@ beltSorterGui.refreshGui = function(player,entity)
 	end
 	if data.guiFilter == nil then return end
 	local frame = player.gui.left.beltSorterGui
+	
+	if data.guiFilter['splitter'] then
+		frame['beltSorter.splitter'].state = true
+	end
 	for row = 1,4 do
 		for slot = 1,beltSorterGui.slotsAvailable[data.lvl] do
 			local itemName = data.guiFilter[row.."."..slot]
@@ -214,6 +221,11 @@ beltSorterGui.storeConfigToCombinator = function(data)
 			count = data.guiFilter[row]
 		} 
 	end
+	param.parameters[21] = {
+		index = 21,
+		signal = {type="item", name="belt-sorter-everythingelse"},
+		count = data.guiFilter['splitter'] and 1 or 0
+	}
 	behavior.parameters = param
 end
 
@@ -240,6 +252,9 @@ beltSorterGui.loadFilterFromConfig = function(data)
 		else
 			data.guiFilter[row] = row
 		end
+	end
+	if params[21] and params[21].signal.name then
+		data.guiFilter['splitter'] = params[21].count and true or false
 	end
 	info(data.guiFilter)
 	beltSorterGui.rebuildFilterFromGui(data)
