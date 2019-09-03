@@ -1,3 +1,9 @@
+Version 0.6.4 (1.Sep 2019)
+
+- Add startup setting such that beltSorters don't need energy (default off)
+- Fix integration issue (support for warptorio)
+- Add option to use beltSorters as splitter (distribution is not perfectly balanced but randomized)
+
 Version 0.6.3 (3.Jul 2019)
 
 - Fix beltSorters didn't use any energy at all (except if condition is set), did you actually notice this earlier? :D
