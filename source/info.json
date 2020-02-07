@@ -1,10 +1,10 @@
 {
 	"name": "beltSorter",
-	"version": "0.6.4",
+	"version": "0.7.0",
 	"title": "Belt sorter",
 	"author": "judos & Cordina",
-	"description": "Adds 3 sorting entities which allows to sort items from belts to belts - recommended for the hardCrafting mod.",
+	"description": "Adds sorting entities which allows to sort items from belts to belts - recommended for the hardCrafting mod.",
 	"dependencies": ["base >= 0.17.0"],
-	"homepage": "https://github.com/Cordina90/beltSorter",
-	"factorio_version": "0.17"
+	"homepage": "https://github.com/judos/beltSorter",
+	"factorio_version": "0.18"
 }
