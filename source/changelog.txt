@@ -1,6 +1,16 @@
 ---------------------------------------------------------------------------------------------------
+Version: 0.8.0
+Date: 12. December 2020
+  Changes:
+    - Updated to work with Factorio 1.1 (ALPHA RELEASE)
+---------------------------------------------------------------------------------------------------
+Version: 0.7.1
+Date: 12. December 2020
+  Changes:
+    - Updated prerequisites to tier 3 to require the production science pack technology to be researched.
+---------------------------------------------------------------------------------------------------
 Version: 0.7.0
-Date: 2.Feb 2020
+Date: 26. March 2020
   Changes:
     - Updated for Factorio 0.18
     - Updated Russian locales (thanks to traiben on GitHub)

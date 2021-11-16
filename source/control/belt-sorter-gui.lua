@@ -213,7 +213,7 @@ beltSorterGui.storeConfigToCombinator = function(data)
 			if sides then
 				slotConfig.count = (sides[1] and 1 or 0) + (sides[2] and 2 or 0)
 			end
-			param.parameters[index] = slotConfig
+			param.parameters = slotConfig
 		end
 		param.parameters[16+row] = { 
 			index = 16+row, 

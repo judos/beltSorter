@@ -1,6 +1,5 @@
 require "libs.prototypes.all"
 
-
 -- Technology
 data:extend({
 	{
@@ -41,15 +40,11 @@ data:extend({
 		name = "belt-sorter3",
 		icon = "__beltSorter__/graphics/technology/belt-sorter3.png",
 		icon_size = 128,
-		prerequisites = {"belt-sorter2", "advanced-electronics-2" },
+		prerequisites = {"belt-sorter2", "advanced-electronics-2", "production-science-pack"},
 		effects = {},
 		unit = {
 			count = 20,
-			ingredients = {
-				{"automation-science-pack", 3},
-				{"logistic-science-pack", 6},
-				{"utility-science-pack", 3},
-			},
+			ingredients = {{"automation-science-pack", 3},{"logistic-science-pack", 6},{"production-science-pack", 3}},
 			time = 15
 		},
 		order = "_belt-sorter3"

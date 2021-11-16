@@ -25,3 +25,8 @@ if bobsLogistics or ultimateBelts or krastorio then
 	end
 
 end
+
+if data.raw.tool["advanced-logistic-science-pack"] then
+  bobmods.lib.tech.replace_science_pack("belt-sorter3", "production-science-pack", "advanced-logistic-science-pack")
+  bobmods.lib.tech.replace_prerequisite("belt-sorter3", "production-science-pack", "advanced-logistic-science-pack")
+end
