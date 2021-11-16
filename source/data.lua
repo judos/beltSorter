@@ -1,9 +1,17 @@
-require "libs.all"
+require("libs.all")
+require("prototypes.belt-sorter-prototypes")
 
-require "prototypes.belt-sorter-items"
-require "prototypes.belt-sorter-recipes"
-require "prototypes.belt-sorter-entities"
-require "prototypes.belt-sorter-technologies"
+-- Entity
+-- 25kW, 50kW, 100kW
+-- use rounded up values when dividing by 60 such that an round number shows up in electricity UI.
+local energy = {25020, 50040, 100020} -- in Watt
+for i=1,3 do
+  createBeltSorterItemPrototype(i)
+  createBeltSorterPrototype(i, energy[i])
+end
 
-require "prototypes.everything-else-filter-item"
-require "prototypes.belt-sorter-config-combinator"
+require("prototypes.belt-sorter-recipes")
+require("prototypes.belt-sorter-technologies")
+
+require("prototypes.everything-else-filter-item")
+require("prototypes.belt-sorter-config-combinator")

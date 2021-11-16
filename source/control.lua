@@ -1,12 +1,12 @@
 
-require "libs.all"
-require "libs.prototypes.all"
-require "libs.control.functions"
+require("libs.all")
+require("libs.prototypes.all")
+require("libs.control.functions")
 
-require "constants"
+require("constants")
 
-require "control.belt-sorter"
-require "control.belt-sorter-config"
+require("control.belt-sorter")
+require("control.belt-sorter-config")
 
 -- global data used:
 -- beltSorter.version = $version
