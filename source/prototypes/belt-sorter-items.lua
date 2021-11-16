@@ -1,5 +1,5 @@
 require "prototypes.belt-sorter-prototypes"
 
 for i=1,3 do
-	createBeltSorterItemPrototype(i)
+  createBeltSorterItemPrototype(i)
 end

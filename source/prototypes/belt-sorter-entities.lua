@@ -7,5 +7,5 @@ require "prototypes.belt-sorter-prototypes"
 local energy = {25020,50040, 100020} -- in Watt
 
 for i=1,3 do
-	createBeltSorterPrototype(i, energy[i])
+  createBeltSorterPrototype(i, energy[i])
 end
