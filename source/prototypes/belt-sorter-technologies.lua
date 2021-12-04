@@ -55,6 +55,6 @@ data:extend({
   }
 })
 
-addTechnologyUnlocksRecipe("belt-sorter1","belt-sorter1")
-addTechnologyUnlocksRecipe("belt-sorter2","belt-sorter2")
-addTechnologyUnlocksRecipe("belt-sorter3","belt-sorter3")
+addTechnologyUnlocksRecipe("belt-sorter1", "belt-sorter1")
+addTechnologyUnlocksRecipe("belt-sorter2", "belt-sorter2")
+addTechnologyUnlocksRecipe("belt-sorter3", "belt-sorter3")

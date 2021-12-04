@@ -1,10 +1,4 @@
--- Pictures helpers
-local noPicture = {
-  filename="__beltSorter__/graphics/entity/empty.png",
-  width = 1,
-  height = 1,
-  shift = {0, 0}
-}
+local noPicture = { filename = "__beltSorter__/graphics/entity/empty.png", size = 1 }
 
 local function picture(lvl, mode_on)
   layering = {
@@ -32,10 +26,9 @@ local function picture(lvl, mode_on)
           scale = 0.5,
           draw_as_shadow = true,
         }
-      },
+      }
     }
   }
-
   if mode_on then
     table.insert(layering.layers, {
         filename = "__beltSorter__/graphics/entity/belt-sorter-light-on.png",
@@ -71,7 +64,7 @@ function createBeltSorterPrototype(i, energy)
   if not settings.startup['beltSorter-usePower'].value then
     beltSorter.energy_source.type = "void"
   end
-  data:extend({ beltSorter })
+  data:extend({beltSorter})
 
   -- Entity: fake lamp for wire connection
   local beltSorterLamp = deepcopy(data.raw["lamp"]["belt-sorter" .. i])
@@ -81,8 +74,8 @@ function createBeltSorterPrototype(i, energy)
   beltSorterLamp.selection_box = {{0, 0}, {0, 0}}
   beltSorterLamp.flags = {"placeable-off-grid", "not-repairable", "not-on-map"}
   beltSorterLamp.picture_off = noPicture
-  beltSorterLamp.picture_on = picture(i, true)
-  data:extend({ beltSorterLamp })
+  beltSorterLamp.picture_on = noPicture
+  data:extend({beltSorterLamp})
 
 end
 
@@ -97,5 +90,5 @@ function createBeltSorterItemPrototype(i)
     place_result = "belt-sorter" .. i,
     stack_size = 50,
   }
-  data:extend({ beltSorter })
+  data:extend({beltSorter})
 end

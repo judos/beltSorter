@@ -17,37 +17,37 @@ gui["belt-sorter5"] = beltSorterGui
 -- Gui events
 ---------------------------------------------------
 
-beltSorterGui.open = function(player,entity)
+beltSorterGui.open = function(player, entity)
   local lvl = tonumber(entity.name:sub(-1))
-  local frame = player.gui.left.add{type="frame",name="beltSorterGui",direction="vertical",caption={"belt-sorter-title"}}
-  frame.add{type="label",name="description",caption={"belt-sorter-advanced-description"}}
-  local colspans = {3,7,13,13,13}
-  frame.add{type="table",name="table",column_count=colspans[lvl]}
+  local frame = player.gui.left.add{type = "frame", name = "beltSorterGui", direction = "vertical", caption = {"belt-sorter-title"}}
+  frame.add{type = "label", name = "description", caption = {"belt-sorter-advanced-description"}}
+  local colspans = {3, 7, 13, 13, 13}
+  frame.add{type = "table", name = "table", column_count = colspans[lvl]}
 
-  local labels={"up","left","right","down"}
+  local labels = {"up", "left", "right", "down"}
   for i,label in pairs(labels) do
-    frame.table.add{type="label",name="title"..i,caption={"",{label},":"}}
+    frame.table.add{type = "label", name = "title"..i, caption = {"", {label}, ":"}}
     for j=1,beltSorterGui.slotsAvailable[lvl] do
-      frame.table.add{type="choose-elem-button",name="beltSorter.slot."..i.."."..j,elem_type="item"}
+      frame.table.add{type = "choose-elem-button", name = "beltSorter.slot." .. i .. "." .. j,  elem_type = "item"}
       if lvl>1 then
-        local sides = frame.table.add{type="table",name="sides."..i.."."..j,column_count=1}
-        local caption = {"left","right"}
+        local sides = frame.table.add{type = "table", name = "sides." .. i .. "." .. j, column_count = 1}
+        local caption = {"left", "right"}
         for side = 1,2 do
-          sides.add{type="checkbox",name="beltSorter.side."..i.."."..j.."."..side,caption={caption[side]},state=false}
+          sides.add{type = "checkbox", name = "beltSorter.side." .. i .. "." .. j .. "." .. side, caption = {caption[side]}, state = false}
         end
       end
     end
     if lvl>2 then
       --local prioList = frame.table.add{type="table",name="priority"..i,colspan=4}
       for prio = 1,4 do
-        frame.table.add{type="flow",name="flow."..i.."."..prio}
+        frame.table.add{type = "flow", name = "flow."..i.."."..prio}
       end
     end
   end
-  frame.add{type="table",name="settings",column_count=2}
-  frame.settings.add{type="button",name="beltSorter.copy",caption={"copy"}}
-  frame.settings.add{type="button",name="beltSorter.paste",caption={"paste"}}
-  frame.add{type="checkbox", name="beltSorter.splitter",caption={"belt-sorter-splitter"},state=false}
+  frame.add{type = "table", name = "settings", column_count = 2}
+  frame.settings.add{type = "button", name = "beltSorter.copy", caption = {"copy"}}
+  frame.settings.add{type = "button", name = "beltSorter.paste", caption = {"paste"}}
+  frame.add{type = "checkbox", name = "beltSorter.splitter", caption = {"belt-sorter-splitter"}, state=false}
   beltSorterGui.refreshGui(player,entity)
 end
 
@@ -57,14 +57,14 @@ beltSorterGui.close = function(player)
   end
 end
 
-beltSorterGui.click = function(nameArr,player,entity)
+beltSorterGui.click = function(nameArr, player, entity)
   local data = global.entityData[idOfEntity(entity)]
-  local fieldName = table.remove(nameArr,1)
+  local fieldName = table.remove(nameArr, 1)
   if fieldName == "slot" then
-    local box = player.gui.left.beltSorterGui.table["beltSorter.slot."..nameArr[1].."."..nameArr[2]]
+    local box = player.gui.left.beltSorterGui.table["beltSorter.slot." .. nameArr[1] .. "." .. nameArr[2]]
     local itemName = box.elem_value
-    local activeBeltLanes = {false,false}
-    if data.lvl == 1 then activeBeltLanes = {true,true} end
+    local activeBeltLanes = {false, false}
+    if data.lvl == 1 then activeBeltLanes = {true, true} end
     beltSorterGui.setSlotFilter(entity,nameArr,itemName,activeBeltLanes)
     beltSorterGui.refreshGui(player,entity)
   elseif fieldName == "side" then
@@ -97,7 +97,7 @@ end
 -- Methods
 ---------------------------------------------------
 
-beltSorterGui.adjustPriorities = function(data,setRow,newPrio)
+beltSorterGui.adjustPriorities = function(data, setRow, newPrio)
   local oldPrio = data.guiFilter[setRow]
   local bigger = (newPrio > oldPrio)
 
@@ -113,10 +113,10 @@ beltSorterGui.adjustPriorities = function(data,setRow,newPrio)
 end
 
 
-beltSorterGui.refreshGui = function(player,entity)
+beltSorterGui.refreshGui = function(player, entity)
   local data = global.entityData[idOfEntity(entity)]
   if not data then
-    err("no data found for "..entity.name.." id:"..idOfEntity(entity)..". Remove it and place it again!")
+    err("no data found for " .. entity.name .. " id:" .. idOfEntity(entity) .. ". Remove it and place it again!")
     gui[entity.name].close(player)
     return
   end
@@ -150,16 +150,14 @@ beltSorterGui.refreshGui = function(player,entity)
         end
       end
     end
-    if data.lvl>2 then
+    if data.lvl > 2 then
       for prio = 1,4 do
-        local flow = frame.table["flow."..row.."."..prio]
+        local flow = frame.table["flow." .. row .. "." .. prio]
         flow.clear()
         if data.guiFilter[row] == prio then
-          flow.add{type="label",caption=prio.."."}
+          flow.add{type = "label", caption = prio .. "."}
         else
-          local btn = flow.add{
-            type="button",name="beltSorter.prio."..row.."."..prio,caption={"make-this-priority",tostring(prio)},state=false
-          }
+          local btn = flow.add{type = "button", name = "beltSorter.prio." .. row .. "." .. prio, caption = {"make-this-priority", tostring(prio)}, state = false}
           btn.style.width = 35
         end
       end
@@ -171,7 +169,7 @@ end
 -- data handling
 ---------------------------------------------------
 
-beltSorterGui.setSlotFilter = function(entity,nameArr,itemName,sides)
+beltSorterGui.setSlotFilter = function(entity, nameArr, itemName, sides)
   local data = global.entityData[idOfEntity(entity)]
   if data.guiFilter == nil then data.guiFilter = {} end
   data.guiFilter[nameArr[1].."."..nameArr[2]] = itemName
@@ -188,10 +186,10 @@ beltSorterGui.rebuildFilterFromGui = function(data)
   for prio = 1,4 do
     local row = data.filter[prio]
     for slot = 1,beltSorterGui.slotsAvailable[data.lvl] do
-      local itemName = data.guiFilter[row.."."..slot]
+      local itemName = data.guiFilter[row .. "." .. slot]
       if itemName then
         if data.filter[itemName] == nil then data.filter[itemName] = {} end
-        local sides = data.guiFilter[row.."."..slot..".sides"]
+        local sides = data.guiFilter[row .. "." .. slot .. ".sides"]
         table.insert(data.filter[itemName], {row, sides})
       end
     end
@@ -208,7 +206,7 @@ beltSorterGui.storeConfigToCombinator = function(data)
     for slot = 1,beltSorterGui.slotsAvailable[data.lvl] do
       local index = (row-1)*beltSorterGui.slotsAvailable[data.lvl] + slot
       local sides = data.guiFilter[row.."."..slot..".sides"]
-      local slotConfig = { count = 0, index = index, signal = {type="item"}}
+      local slotConfig = {count = 0, index = index, signal = {type = "item"}}
       slotConfig.signal.name = data.guiFilter[row.."."..slot]
       if sides then
         slotConfig.count = (sides[1] and 1 or 0) + (sides[2] and 2 or 0)
@@ -217,13 +215,13 @@ beltSorterGui.storeConfigToCombinator = function(data)
     end
     param.parameters[16+row] = {
       index = 16+row,
-      signal = {type="item", name="belt-sorter-everythingelse"},
+      signal = {type = "item", name = "belt-sorter-everythingelse"},
       count = data.guiFilter[row]
     }
   end
   param.parameters[21] = {
     index = 21,
-    signal = {type="item", name="belt-sorter-everythingelse"},
+    signal = {type = "item", name = "belt-sorter-everythingelse"},
     count = data.guiFilter['splitter'] and 1 or 0
   }
   behavior.parameters = param

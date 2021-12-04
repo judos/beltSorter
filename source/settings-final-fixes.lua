@@ -1,5 +1,4 @@
 --if settings.global.log_master == nil then
-
 data:extend({
   {
     type = "bool-setting",
@@ -32,5 +31,4 @@ data:extend({
     default_value = true,
   }
 })
-
 --end

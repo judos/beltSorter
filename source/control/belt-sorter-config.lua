@@ -1,4 +1,3 @@
-
 local minimalUpdateTicks = 20
 
 -- Registering entity into system
@@ -13,11 +12,11 @@ ghost.build = function(entity)
   return nil
 end
 
-ghost.tick = function(entity,data)
+ghost.tick = function(entity, data)
   if data == nil then
     if entity.valid then
       info(global)
-      err("data not found of beltSorter config entity "..serpent.block(entity.position))
+      err("data not found of beltSorter config entity " .. serpent.block(entity.position))
     else
       err("invalid entity to tick")
     end
@@ -28,9 +27,9 @@ ghost.tick = function(entity,data)
   if not data.beltSorter then
     local pos = entity.position
     local entities = entity.surface.find_entities_filtered{
-      area={{pos.x-0.5,pos.y-0.5},{pos.x+0.5,pos.y+0.5}},
-      name="entity-ghost",
-      force=entity.force
+      area = {{pos.x-0.5, pos.y-0.5}, {pos.x+0.5, pos.y+0.5}},
+      name = "entity-ghost",
+      force = entity.force
     }
     local beltSorter
     for i=1,#entities do
@@ -52,15 +51,15 @@ ghost.tick = function(entity,data)
 end
 
 
-ghost.premine = function(entity,data,player)
-  local entityName = entity.ghost_name:sub(1,11)
+ghost.premine = function(entity, data, player)
+  local entityName = entity.ghost_name:sub(1, 11)
   if entityName == "belt-sorter" then
     info("removed belt-sorter ghost")
     local pos = entity.position
     local entities = entity.surface.find_entities_filtered{
-      area={{pos.x-0.5,pos.y-0.5},{pos.x+0.5,pos.y+0.5}},
-      name="entity-ghost",
-      force=entity.force
+      area = {{pos.x-0.5, pos.y-0.5}, {pos.x+0.5, pos.y+0.5}},
+      name = "entity-ghost",
+      force = entity.force
     }
     for i=1,#entities do
       if entities[i].ghost_name == "belt-sorter-config-combinator" then

@@ -1,48 +1,50 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.8.1
-Date: 12. November 2021
+Date: 2021-12-04
+  Info:
+    - Update by snouz
   Changes:
     -
 ---------------------------------------------------------------------------------------------------
 Version: 0.8.0
-Date: 12. December 2020
+Date: 2020-12-12
   Changes:
     - Updated to work with Factorio 1.1 (ALPHA RELEASE)
 ---------------------------------------------------------------------------------------------------
 Version: 0.7.1
-Date: 12. December 2020
+Date: 2020-12-12
   Changes:
     - Updated prerequisites to tier 3 to require the production science pack technology to be researched.
 ---------------------------------------------------------------------------------------------------
 Version: 0.7.0
-Date: 26. March 2020
+Date: 2020-03-26
   Changes:
     - Updated for Factorio 0.18
     - Updated Russian locales (thanks to traiben on GitHub)
 ---------------------------------------------------------------------------------------------------
 Version: 0.6.4
-Date: 1.Sep 2019
+Date: 2019-09-01
   Changes:
     - Add startup setting such that beltSorters don't need energy (default off)
     - Fix integration issue (support for warptorio)
     - Add option to use beltSorters as splitter (distribution is not perfectly balanced but randomized)
 ---------------------------------------------------------------------------------------------------
 Version 0.6.3
-Date: 3.Jul 2019
+Date: 2019-07-03
   Changes:
     - Fix beltSorters didn't use any energy at all (except if condition is set), did you actually notice this earlier? :D
     - Above also fixes an issue with Realistic Power mod making beltSorters not work in general
     - Add support for krastorio, advanced-logistics unlocks Turbo BeltSorter
 ---------------------------------------------------------------------------------------------------
 Version 0.6.2
-Date: 1.Jul 2019
+Date: 2019-07-01
   Changes:
     - Fix update speed to match new speed of belts (factorio 0.17)
     - Add Turbo and Ultimate BeltSorter with speed of 60-75 Items/s
     - Add migration such that bobs' logistics-4 and ultimateBelts' ultra fast logistics unlock these beltSorter
 ---------------------------------------------------------------------------------------------------
 Version 0.6.1
-Date: 28.Jun 2019
+Date: 2019-06-28
   Changes:
     - Add thumbnail for the beautiful mod portal
     - Fix priority button width for belt-sorter-3, add label for translation "Make this priority __1__"
@@ -50,22 +52,22 @@ Date: 28.Jun 2019
       -> Note: the speed is halfed because loaders only have half a belt, and the beltSorter usually waits for a belt to have filled before transfering items.
 ---------------------------------------------------------------------------------------------------
 Version 0.6.0
-Date: 9.Mar 2019
+Date: 2019-03-09
   Changes:
     - Updated to work with Factorio 0.17.x
 ---------------------------------------------------------------------------------------------------
 Version 0.5.4
-Date: 26.Dec 2017
+Date: 2017-12-26
   Changes:
     - fix entity system crash when beltSorter is removed.
 ---------------------------------------------------------------------------------------------------
 Version 0.5.3
-Date: 26.Dec 2017
+Date: 2017-12-26
   Changes:
     - add russian locale thanks to ProShow
 ---------------------------------------------------------------------------------------------------
 Version 0.5.2
-Date: 26.Dec 2017
+Date: 2017-12-26
   Changes:
     - add beltSorter support to pickerDolly (let's you move beltSorters around. See PickerExtended Mod)
     - improved player logging of errors
@@ -78,13 +80,13 @@ Date: 26.Dec 2017
     - fix no energy symbol blinking in low energy setups in 0.16
 ---------------------------------------------------------------------------------------------------
 Version 0.4.1
-Date: 8.Jun 2017
+Date: 2017-06-08
   Changes:
     - fix migration for items which don't exist anymore
     - fix migration problem printed for all beltSorters, even if there was no problem
 ---------------------------------------------------------------------------------------------------
 Version 0.4.0
-Date: 6.Jun 2017
+Date: 2017-06-06
   Changes:
     - there are now 3 tiers of beltSorter: basic, average and advanced
     - basic belt sorter only allows setting 2 filter slots, average 3, advanced 4.
@@ -98,12 +100,12 @@ Date: 6.Jun 2017
     - refactored control logic of beltSorters, all beltSorters use now the same distribution logic
 ---------------------------------------------------------------------------------------------------
 Version 0.3.6
-Date: 6.May 2017
+Date: 2017-05-06
   Changes:
     - migrate to support factorio 0.15.9
 ---------------------------------------------------------------------------------------------------
 Version 0.3.4
-Date: 18.Nov 2016
+Date: 2016-11-18
   Changes:
     - fix config not copied in blueprint when blueprint is rotated
     - fix config not loaded when advanced beltsorter is built by blueprint
@@ -111,17 +113,17 @@ Date: 18.Nov 2016
     - Recipe is a LOT cheaper now - adapted to the much more powerful inserters since factorio 0.14
 ---------------------------------------------------------------------------------------------------
 Version 0.3.3
-Date: 29.Sep 2016
+Date: 2016-09-29
   Changes:
     - fix crash when selecting belt side on advanced sorter before an item was selected in any slot.
 ---------------------------------------------------------------------------------------------------
 Version 0.3.2
-Date: 20.Sep 2016
+Date: 2016-09-20
   Changes:
     - Fix name collision problem with caused crash with other mods. (Thanks to Lappro)
 ---------------------------------------------------------------------------------------------------
 Version 0.3.1
-Date: 18.Sep 2016
+Date: 2016-09-18
   Changes:
     - added advanced belt-sorter
     - new tech for advanced-belt-sorter
@@ -132,7 +134,7 @@ Date: 18.Sep 2016
     - added small description to belt-sorter guis
 ---------------------------------------------------------------------------------------------------
 Version 0.3.0
-Date: 11.Sep 2016
+Date: 2016-09-11
   Changes:
     - support factorio 0.14
     - hide filter item from default factorio item selection gui
@@ -140,13 +142,13 @@ Date: 11.Sep 2016
     - item Selection list in beltSorter is now scrollable
 ---------------------------------------------------------------------------------------------------
 Version 0.2.2
-Date: 17.Oct 2016
+Date: 2016-08-17
   Changes:
     - entity system works for multiple surfaces
     - add filter item to sort out all other items
 ---------------------------------------------------------------------------------------------------
 Version 0.2.1
-Date: 5.Aug 2016
+Date: 2016-08-05
   Changes:
     - new graphics for belt Sorter (thanks to Arch666Angel)
   Fixes:
@@ -155,7 +157,7 @@ Date: 5.Aug 2016
     - added missing locale messages (just in english) (Thanks to vitorboschi)
 ---------------------------------------------------------------------------------------------------
 Version 0.2.0
-Date: 5.Aug 2016
+Date: 2016-08-05
   Changes:
     - Split off mod from hardCrafting. For factorio 0.13.0
     - define 4 items as filter for each direction

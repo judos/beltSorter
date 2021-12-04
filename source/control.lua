@@ -1,4 +1,3 @@
-
 require("libs.all")
 require("libs.prototypes.all")
 require("libs.control.functions")
@@ -86,4 +85,3 @@ end)
 script.on_event(defines.events.on_marked_for_deconstruction, function(event)
   entities_marked_for_deconstruction(event)
 end)
-
