@@ -1,6 +1,6 @@
 -- Item
 data:extend({
-  {
+  --[[{
     type = "item-group",
     name = "beltSorter-filters",
     order = "g",
@@ -12,14 +12,14 @@ data:extend({
     name = "beltSorter-filters",
     group = "beltSorter-filters",
     order = "a"
-  },
+  },]]
   {
     type = "item",
     name = "belt-sorter-everythingelse",
     order = "z[belt-sprter-everythingelse]",
     icon_size = 64,
     icon = "__beltSorter__/graphics/icons/belt-sorter-everythingelse.png",
-    subgroup = "beltSorter-filters",
+    --subgroup = "beltSorter-filters",
     stack_size = 1,
   }
 })
