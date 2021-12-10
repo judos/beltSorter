@@ -229,11 +229,15 @@ end
 
 beltSorterGui.loadFilterFromConfig = function(data)
   local params = data.config.get_or_create_control_behavior().parameters.parameters
+  if not params or not data then
+    --game.print("Couldn't paste config into Belt Sorter")
+    return
+  end
   if not data.guiFilter then data.guiFilter = {} end
   for row = 1,4 do
     for slot = 1,beltSorterGui.slotsAvailable[data.lvl] do
       local index = (row-1)*beltSorterGui.slotsAvailable[data.lvl] + slot
-      if params[index].signal.name then
+      if params[index] and params[index].signal and params[index].signal.name then
         data.guiFilter[row.."."..slot] = params[index].signal.name
         info(tostring(index).." "..tostring(params[index].signal.name))
         local count = params[index].count

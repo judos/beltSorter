@@ -4,7 +4,7 @@ Date: 2021-12-10
   Info:
     - Update by snouz
   Visuals:
-    - New entity graphics (better colors, doesn't go over items, less flat, cleaner).
+    - New entity graphics (less flat, better colors, doesn't go over items, cleaner, repositioned).
     - Off belt sorter has its led turned off.
     - New hd icons.
     - New hd techs.
@@ -15,8 +15,11 @@ Date: 2021-12-10
     - "Everything else" filter is now in "Unsorted" tab.
     - Belt sorters are now with belts in the GUI.
     - Updated French locale.
+  Bugfixes:
+    - Fixed crash when bots build a sorter (still doesn't copy the config though)
+    - Fixed that config entity was blueprintable.
   Compatibility:
-    - Added separate technologies for Belt Sorter 4 & 5 (when mods add those tiers) and added custom prerequisite per mod.
+    - Added separate technologies for Belt Sorter 4 & 5 (when mods add those tiers) and added custom prerequisites per mod.
     - Added compatibility with Krastorio 2.
     - Added compatibility with Mod Mash: Logistics.
     - Added compatibility with 5Dim: New Transport.
