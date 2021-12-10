@@ -1,78 +1,133 @@
+local function BSpicture(lvl)
+  return {
+    layers = {
+      {
+        filename = "__beltSorter__/graphics/entity/belt-sorter-" .. lvl .. "-base.png",
+        width = 64,
+        height = 64,
+        hr_version = {
+          filename = "__beltSorter__/graphics/entity/hr-belt-sorter-" .. lvl .. "-base.png",
+          width = 128,
+          height = 128,
+          scale = 0.5,
+        }
+      },
+      {
+        filename = "__beltSorter__/graphics/entity/belt-sorter-shadow.png",
+        width = 64,
+        height = 64,
+        draw_as_shadow = true,
+        hr_version = {
+          filename = "__beltSorter__/graphics/entity/hr-belt-sorter-shadow.png",
+          width = 128,
+          height = 128,
+          scale = 0.5,
+          draw_as_shadow = true,
+        }
+      }
+    }
+  }
+end
 
--- Pictures helpers
-local noPicture = {
-	filename="__beltSorter__/graphics/entity/empty.png",
-	width = 1,
-	height = 1,
-	shift = {0, 0}
+local BSledpicture = {
+  filename = "__beltSorter__/graphics/entity/belt-sorter-light-on.png",
+  width = 64,
+  height = 64,
+  draw_as_glow = true,
+  hr_version = {
+    filename = "__beltSorter__/graphics/entity/hr-belt-sorter-light-on.png",
+    width = 128,
+    height = 128,
+    scale = 0.5,
+    draw_as_glow = true,
+  }
 }
-local function picture(lvl,mode)
-	return {
-		filename="__beltSorter__/graphics/entity/belt-sorter"..lvl.."-"..mode..".png",
-		width = 64,
-		height = 64,
-		shift = {0, 0},
-		hr_version = {
-			filename="__beltSorter__/graphics/entity/belt-sorter"..lvl.."-hr-"..mode..".png",
-			width = 128,
-			height = 128,
-			scale = 0.5
-		}
-	}
+
+circuit_connector_definitions["beltsorter"] = circuit_connector_definitions.create(universal_connector_template, {
+  {variation = 26, main_offset = util.by_pixel(7, 13), shadow_offset = util.by_pixel(0, 7), show_shadow = true}
+})
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+function BeltSorterItemPrototype(i)
+  data:extend({
+    {
+      type = "item",
+      name = "belt-sorter" .. i,
+      icon = "__beltSorter__/graphics/icons/belt-sorter" .. i .. ".png",
+      icon_size = 64,
+      subgroup = "belt",
+      order = "z[belt-sorter]" .. i,
+      place_result = "belt-sorter" .. i,
+      stack_size = 50,
+    }
+  })
 end
 
-function createBeltSorterPrototype(i, energy)
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+function BeltSorterPrototype(i, energy)
+  local beltSorter = deepcopy(data.raw["lamp"]["small-lamp"])
+  beltSorter.name = "belt-sorter"..i
+  beltSorter.icon = "__beltSorter__/graphics/icons/belt-sorter"..i..".png"
+  beltSorter.energy_usage_per_tick = tostring(energy).."W"
+  beltSorter.light = {intensity = 0, size = 0}
+  beltSorter.picture_off = BSpicture(i)
+  beltSorter.picture_on = BSledpicture
+  beltSorter.alert_icon_scale = 0.2
+  beltSorter.minable.result = "belt-sorter"..i
+  beltSorter.circuit_connector_sprites = nil
+  beltSorter.circuit_wire_connection_point = circuit_connector_definitions["beltsorter"].points
+  beltSorter.next_upgrade = nil
+  print(x(settings.startup['beltSorter-usePower']))
+  if not settings.startup['beltSorter-usePower'].value then
+    beltSorter.energy_source.type = "void"
+  end
+  data:extend({beltSorter})
 
-
-	local beltSorter = deepcopy(data.raw["lamp"]["small-lamp"])
-	overwriteContent(beltSorter, {
-		name = "belt-sorter"..i,
-		icon = "__beltSorter__/graphics/icons/belt-sorter"..i..".png",
-		energy_usage_per_tick = tostring(energy).."W",
-		light = {intensity = 0, size = 0},
-		picture_off = picture(i,"off"),
-		picture_on = picture(i,"on")
-	})
-	beltSorter.minable.result = "belt-sorter"..i
-	beltSorter.circuit_connector_sprites = nil
-	data:extend({	beltSorter })
-
-	-- Entity: fake lamp for wire connection
-	local beltSorterLamp = deepcopy(data.raw["lamp"]["small-lamp"])
-	overwriteContent(beltSorterLamp, {
-		name = "belt-sorter-lamp"..i,
-		icon = "__beltSorter__/graphics/icons/belt-sorter"..i..".png",
-		order = "zzz",
-		collision_box = {{0, 0}, {0, 0}},
-		selection_box = {{0, 0}, {0, 0}},
-		energy_usage_per_tick = tostring(energy).."W",
-		light = {intensity = 0, size = 0},
-		flags = {"placeable-off-grid", "not-repairable", "not-on-map"},
-		picture_off= noPicture,
-		picture_on = picture(i,"on")
-	})
-	beltSorterLamp.circuit_connector_sprites = nil
-	
-	print(x(settings.startup['beltSorter-usePower']))
-	if not settings.startup['beltSorter-usePower'].value then
-		beltSorterLamp.energy_source.type = "void"
-		beltSorter.energy_source.type = "void"
-	end
-	
-	data:extend({	beltSorterLamp })
+  -- Entity: fake lamp for wire connection -- snouz: I think this should go but the control logic is convoluted, and it needs some tricky migration.
+  local beltSorterLamp = deepcopy(data.raw["lamp"]["belt-sorter" .. i])
+  beltSorterLamp.name = "belt-sorter-lamp"..i
+  beltSorterLamp.collision_box = {{0, 0}, {0, 0}}
+  beltSorterLamp.selection_box = {{0, 0}, {0, 0}}
+  beltSorterLamp.flags = {"placeable-off-grid", "not-repairable", "not-on-map"}
+  beltSorterLamp.picture_off = { filename = "__beltSorter__/graphics/entity/empty.png", size = 1 }
+  beltSorterLamp.picture_on = BSledpicture
+  data:extend({beltSorterLamp})
 end
 
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+function BeltSorterRecipePrototype(i, ingredients)
+  data:extend({
+    {
+      type = "recipe",
+      name = "belt-sorter" .. i,
+      enabled = false,
+      ingredients = ingredients,
+      result = "belt-sorter" .. i
+    }
+  })
+end
 
-
-function createBeltSorterItemPrototype(i)
-	local beltSorter = deepcopy(data.raw["item"]["wooden-chest"])
-	overwriteContent(beltSorter, {
-		name = "belt-sorter"..i,
-		order = "z[belt-sorter]"..i,
-		subgroup = "inserter",
-		place_result = "belt-sorter"..i,
-		icon = "__beltSorter__/graphics/icons/belt-sorter"..i..".png",
-		fuel_value = "0MJ"
-	})
-	data:extend({	beltSorter })
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+function BeltSorterTechPrototype(i, prerequisites, count, ingredients)
+  data:extend({
+    {
+      type = "technology",
+      name = "belt-sorter" .. i,
+      icon = "__beltSorter__/graphics/technology/belt-sorter" .. i .. ".png",
+      icon_size = 256,
+      prerequisites = prerequisites,
+      effects = {
+        {
+          type = "unlock-recipe",
+          recipe = "belt-sorter" .. i
+        }
+      },
+      unit = {
+        count = count,
+        ingredients = ingredients,
+        time = 15
+      },
+      order = "zzzz_belt-sorter" .. i
+    }
+  })
 end
