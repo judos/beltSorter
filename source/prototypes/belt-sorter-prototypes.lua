@@ -76,6 +76,7 @@ function BeltSorterPrototype(i, energy)
   beltSorter.minable.result = "belt-sorter"..i
   beltSorter.circuit_connector_sprites = nil
   beltSorter.circuit_wire_connection_point = circuit_connector_definitions["beltsorter"].points
+  beltSorter.next_upgrade = nil
   print(x(settings.startup['beltSorter-usePower']))
   if not settings.startup['beltSorter-usePower'].value then
     beltSorter.energy_source.type = "void"

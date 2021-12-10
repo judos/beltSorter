@@ -27,6 +27,7 @@ Date: 2021-12-10
     - Added compatibility with Iper Belt.
     - Added compatibility with Hiladdar's Belts.
     - Bob's Logistics: Item/recipe moved in GUI.
+    - Fixed crash with 5Dim: New Energy
   Optimization:
     - Code refactorisation.
     - PNG size optimized.
