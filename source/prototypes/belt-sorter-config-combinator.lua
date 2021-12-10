@@ -6,7 +6,7 @@ combinator.minable = {hardness = 10, mining_time = 10, results = {}}
 combinator.order = "zzz"
 combinator.collision_box = {{0,0}, {0,0}}
 combinator.selection_box = {{0,0}, {0,0}}
-combinator.flags = {"placeable-neutral", "player-creation", "not-on-map", "placeable-off-grid", "not-repairable", "not-blueprintable"}
+combinator.flags = {"placeable-neutral", "player-creation", "not-on-map", "placeable-off-grid", "not-repairable", "hidden"}
 combinator.sprites = { filename = "__beltSorter__/graphics/entity/empty.png", size = 1 }
 data:extend({combinator})
 

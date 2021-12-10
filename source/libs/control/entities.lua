@@ -8,7 +8,7 @@ require "libs.logging"
 --[[
  Data used:
 	global.schedule[tick][idEntity] = {
-		entity = $entity, 
+		entity = $entity,
 		[noTick = true],									-- no entity update - used when entity is premined (to remove asap)
 		[clearSchedule = true], 					-- used when entity is premined (to clear out of ordinary schedule)
 	}
@@ -18,32 +18,32 @@ require "libs.logging"
 
 
  Register custom entity build, tick or remove function:
-	[$entityName] = { 
-		build = function(entity):dataArr,	
+	[$entityName] = {
+		build = function(entity):dataArr,
 			if returned arr is nil no data is registered (no remove will be called later)
 			Note: tick your entity with scheduleAdd(entity,TICK_SOON)
-																		 
+
 		tick = function(entity,data):(nextTick,reason),
-																			
+
 		premine = function(entity,data,player):manuallyHandle
 			if manuallyHandle is true entity will not be added to schedule (tick for removal)
-		
+
 		orderDeconstruct = function(entity,data,player)
-				
+
 		remove = function(data),
 			clean up any additional entities from your custom data
-			
+
 		rotate = function(entity,data),
 			called when an entity is rotated by the player
-				
+
 		copy = function(source,srcData,target,targetData)
 			coppy settings when shift+rightclick -> shift+leftclick
-			
+
 		move = function(entity,data,player,start_pos)
 			Called when pickerDolly moves an entity. The method should do the
 			required afterwork to make sure everything works.
 			If the method is not implemented moving the entity will be prevented
-			
+
 	}
 
 
@@ -57,7 +57,7 @@ require "libs.logging"
 	entities_settings_pasted(event)
 	entities_marked_for_deconstruction(event)
 ]]--
-	                   
+
 entities = {}
 
 -- Constants:
@@ -69,7 +69,7 @@ TICK_SOON = 1 --game.tick used in cleanup when entity should be schedule randoml
 -- -------------------------------------------------
 
 function entities_init()
-	if global.schedule == nil then 
+	if global.schedule == nil then
 		global.schedule = {}
 		global.entityData = {}
 		global.entityDataVersion = 4
@@ -124,7 +124,7 @@ function entities_move(event)
 			info("data while moving: "..serpent.block(data).." for "..idOfEntity(entity))
 			global.entityData[oldId] = nil
 			global.entityData[idOfEntity(entity)] = data
-			
+
 			entities[name].move(entity,data,player,startPos)
 		else
 			info("Entity "..name.." does not support dolly-moving")
@@ -156,6 +156,7 @@ end
 
 function entities_tick()
 	-- schedule events from migration
+	if not global then return end
 	if global.schedule[TICK_ASAP] ~= nil then
 		if global.schedule[game.tick] == nil then global.schedule[game.tick] = {} end
 		for id,arr in pairs(global.schedule[TICK_ASAP]) do

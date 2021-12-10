@@ -333,14 +333,14 @@ end
 beltSorter.insertItemsFromTo = function(inputAccess, outputAccess, itemStack, outputOnLanes, insert)
   local curPos = 0
   while curPos <= 1 do
-    if outputOnLanes[1] and outputAccess:can_insert_on_at(false, curPos) then
+    if outputOnLanes[1] and outputAccess and outputAccess:can_insert_on_at(false, curPos) then
       local result = inputAccess:remove_item(itemStack)
       if result == 0 then return end
       outputAccess:insert_on_at(false, curPos, itemStack)
       insert = insert - 1
       if insert == 0 then return end
     end
-    if outputOnLanes[2] and outputAccess:can_insert_on_at(true, curPos) then
+    if outputOnLanes[2] and outputAccess and outputAccess:can_insert_on_at(true, curPos) then
       local result = inputAccess:remove_item(itemStack)
       if result == 0 then return end
       outputAccess:insert_on_at(true, curPos, itemStack)
