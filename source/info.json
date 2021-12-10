@@ -1,7 +1,7 @@
 {
 	"name": "beltSorter",
-	"version": "0.9.0",
-	"title": "Belt sorter",
+	"version": "0.9.1",
+	"title": "Belt Sorter",
 	"author": "judos & Cordina",
 	"description": "Sorting mechanism managing items from belts to belts.\n 3 Tiers available (+2 with other mods)",
 	"dependencies": [
