@@ -1,5 +1,3 @@
-local noPicture = { filename = "__beltSorter__/graphics/entity/empty.png", size = 1 }
-
 -- Config entity
 local combinator = deepcopy(data.raw["constant-combinator"]["constant-combinator"])
 combinator.name = "belt-sorter-config-combinator"
@@ -9,7 +7,7 @@ combinator.order = "zzz"
 combinator.collision_box = {{0,0}, {0,0}}
 combinator.selection_box = {{0,0}, {0,0}}
 combinator.flags = {"placeable-neutral", "player-creation", "not-on-map", "placeable-off-grid", "not-repairable"}
-combinator.sprites = noPicture
+combinator.sprites = { filename = "__beltSorter__/graphics/entity/empty.png", size = 1 }
 data:extend({combinator})
 
 -- Config item (needed to be stored in blueprint)

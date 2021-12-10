@@ -15,6 +15,13 @@ Date: 2021-12-10
     - "Everything else" filter is now in "Unsorted" tab.
     - Belt sorters are now with belts in the GUI.
     - Updated French locale.
+  Compatibility:
+    - Added separate technologies for Belt Sorter 4 & 5 (when mods add those tiers) and added custom prerequisite per mod.
+    - Bob's Logistics: Item/recipe moved in GUI.
+    - Krastorio 2: made Ultimate Belt Sorter available, switched green and purple to match K2's belts.
+  Optimization:
+    - Prototype refactorisation.
+    - PNG size optimized.
 ---------------------------------------------------------------------------------------------------
 Version: 0.8.0
 Date: 2020-12-12
