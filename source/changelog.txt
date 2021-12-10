@@ -1,13 +1,17 @@
 ---------------------------------------------------------------------------------------------------
 Version: 0.9.0
-Date: 2021-12-04
+Date: 2021-12-10
   Info:
     - Update by snouz
-  Changes:
-    - New graphics (entity, icons, technology).
-    - Adjusted position of entity and wire.
+  Visuals:
+    - New entity graphics (better colors, doesn't go over items, less flat, cleaner).
     - Off belt sorter has its led turned off.
+    - New hd icons.
+    - New hd techs.
+    - Adjusted position of wires.
     - New mod icon.
+  Changes:
+    - Belt sorter technologies are now dependant on their logistics technology counterparts.
     - "Everything else" filter is now in "Unsorted" tab.
     - Belt sorters are now with belts in the GUI.
     - Updated French locale.

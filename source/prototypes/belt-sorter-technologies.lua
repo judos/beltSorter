@@ -7,7 +7,7 @@ data:extend({
     name = "belt-sorter1",
     icon = "__beltSorter__/graphics/technology/belt-sorter1.png",
     icon_size = 256,
-    prerequisites = {"electronics"},
+    prerequisites = {"electronics", "logistics"},
     effects = {},
     unit = {
       count = 50,
@@ -23,7 +23,7 @@ data:extend({
     name = "belt-sorter2",
     icon = "__beltSorter__/graphics/technology/belt-sorter2.png",
     icon_size = 256,
-    prerequisites = {"belt-sorter1", "advanced-electronics"},
+    prerequisites = {"belt-sorter1", "advanced-electronics", "logistics-2"},
     effects = {},
     unit = {
       count = 20,
@@ -40,7 +40,7 @@ data:extend({
     name = "belt-sorter3",
     icon = "__beltSorter__/graphics/technology/belt-sorter3.png",
     icon_size = 256,
-    prerequisites = {"belt-sorter2", "advanced-electronics-2", "production-science-pack"},
+    prerequisites = {"belt-sorter2", "advanced-electronics-2", "logistics-3"},
     effects = {},
     unit = {
       count = 60,
