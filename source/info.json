@@ -1,12 +1,12 @@
 {
 	"name": "beltSorter",
-	"version": "0.9.1",
+	"version": "0.10.0",
 	"title": "Belt Sorter",
 	"author": "judos & Cordina",
 	"description": "Sorting mechanism managing items from belts to belts.\n 3 Tiers available (+2 with other mods)",
 	"dependencies": [
-		"base >= 1.1.0"
+		"base >= 2.0.0"
 	],
 	"homepage": "https://github.com/judos/beltSorter",
-	"factorio_version": "1.1"
+	"factorio_version": "2.0"
 }
